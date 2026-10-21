@@ -189,6 +189,7 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 | `openspec-archive-change` | `.agents/skills/openspec-archive-change/` | Archivar un cambio |
 | `openspec-sync-specs` | `.agents/skills/openspec-sync-specs/` | Sincronizar specs |
 | `openspec-workflow` | `.agents/skills/openspec-workflow/` | Pipeline completo y gates |
+| `grilling` | `.agents/skills/grilling/` | Estresar un plan o diseño antes de construir |
 | `test-driven-development` | `.agents/skills/test-driven-development/` | Rojo → verde → refactor |
 | `implementation-standards` | `.agents/skills/implementation-standards/` | Criterio de ingeniería: SOLID, Clean Code, refactors |
 | `using-git-worktrees` | `.agents/skills/using-git-worktrees/` | Aislar el cambio |
