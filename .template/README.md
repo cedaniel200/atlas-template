@@ -39,6 +39,10 @@ Lo consume `BOOTSTRAP.md` en la primera sesión.
 | `architecture.notes` | texto \| `null` | Reglas de frontera que declara el proyecto |
 | `profile` | id de perfil \| `null` | Perfil de stack aplicado |
 | `packs` | lista | Packs activados |
+| `preferences.openspec_commands` | `user` \| `agent` \| `ask` | Quién ejecuta los comandos OpenSpec |
+| `preferences.orchestration` | `orchestrated` \| `manual` | Si el analyst encadena las fases o el usuario las invoca |
+| `quality.crap_threshold` | entero | Umbral CRAP por método (default `6`) |
+| `docs.*` | rutas | Carpetas de documentación (nombres en inglés; contenido en `language.user`) |
 | `phase` | `0`–`3` | Última fase completada |
 | `displaced` | lista | Rutas movidas a `adapters/` |
 | `override_reason` | texto \| `null` | Motivo si el usuario saltó el gate de validación |
