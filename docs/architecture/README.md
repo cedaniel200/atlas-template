@@ -14,5 +14,5 @@ Esta carpeta contiene la documentación arquitectónica del proyecto.
 ## Formato
 
 - Markdown con diagramas **Mermaid** inline
-- Referencias a ADRs: `Ver [ADR-0001](../adr/0001-decision.md)`
+- Referencias a ADRs: `Ver [ADR-0001](../../adr/0001-decision.md)`
 - Actualizar cuando cambie la arquitectura

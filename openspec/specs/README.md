@@ -10,7 +10,7 @@ openspec/specs/<capacidad>/spec.md
 
 - Requisitos con `### Requirement: <nombre>` y descripción normativa (**SHALL** / **MUST**).
 - Escenarios con **exactamente** `#### Scenario: <nombre>` (cuatro almohadillas; con tres se ignoran).
-- Cada escenario en **GIVEN / WHEN / THEN** y en **lenguaje ubicuo** del dominio, no en lenguaje técnico
+- Cada escenario en **GIVEN / WHEN / THEN** y en **lenguaje del dominio**, no en lenguaje técnico
   (nada de DTO, repositorio, service).
 - Cada requisito tiene **al menos un escenario**.
 - Una capacidad no se duplica: si cambia el comportamiento, se modifica su spec existente.

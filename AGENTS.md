@@ -207,7 +207,7 @@ Reglas normativas transversales que aplican a **todos los agentes en todas las f
 - **Commits incrementales**: commitear tras cada cambio lógico usando conventional commits. No acumular cambios.
 - **Byline de rol en commits**: cuando un agente ejecuta un commit, añade `By <rol>.` al final del body (ej. `feat: mensaje\n\nBy engineer.`). Los commits del usuario no llevan byline.
 - **Sensores de calidad**: antes de commitear ejecutar `{{QUALITY_COMMAND}}`. **Regla de 0 hallazgos Checkstyle**: no se dejan pasar violaciones en los archivos que se tocan; si el archivo tiene violaciones preexistentes, se resuelven (no se deja deuda "porque no era mía").
-- **Comentarios en código**: referencian **ADRs** (`adr/00NN-...`) o documentación funcional (`docs/funcional/`), **nunca** specs de `openspec/` (son delta que se archiva/muta).
+- **Comentarios en código**: referencian **ADRs** (`adr/00NN-...`) o documentación funcional (`docs/functional/`), **nunca** specs de `openspec/` (son delta que se archiva/muta).
 - **Datos de prueba directos en BD**: los datos creados por SQL directo (seed QA) deben respetar las invariantes de negocio (validaciones de VO, estados válidos, hashes, auditoría, columnas NOT NULL, `debe_cambiar_password=false`). Preferir crear datos por la API. Si se usa SQL directo, declarar en el QA Context qué invariantes se respetaron y cuáles no.
 - **Regla de anuncio de rol:** Cada vez que un agente cambie de rol (analyst → engineer → reviewer), debe anunciarlo explícitamente con el formato `"🎩 Ahora soy {rol}"` antes de ejecutar cualquier acción del nuevo rol. Esto aplica incluso si el mismo agente está desempeñando múltiples roles en la misma sesión.
 
@@ -231,11 +231,11 @@ Este proyecto usa [OpenSpec](https://openspec.dev) v1.5.0 + schema `spec-driven-
 
 | Ruta | Propósito |
 |------|-----------|
-| `openspec/specs/` | Especificaciones del dominio (lenguaje ubicuo) |
+| `openspec/specs/` | Especificaciones del dominio (lenguaje del dominio) |
 | `openspec/changes/<feature>/` | Cambio activo: proposal, specs, design, tasks, reviewer-report-*.md |
 | `openspec/config.yaml` | Schema y contexto del proyecto |
 | `adr/` | Architecture Decision Records (persisten siempre) |
-| `docs/funcional/` | Documentación funcional (Use Cases Cockburn) — actualizar al cambiar reglas de negocio |
+| `docs/functional/` | Documentación funcional (Use Cases Cockburn) — actualizar al cambiar reglas de negocio |
 
 Comandos disponibles en el chat: `/opsx:{propose,explore,apply,archive,sync}`.
 
@@ -254,7 +254,7 @@ Documentadas en `adr/`. Los agentes `analyst` e `engineer` deben consultarlas al
 | Skills disponibles y triggers | **Skill Registry** (abajo) |
 | Especificaciones del dominio (GIVEN/WHEN/THEN) | `openspec/specs/` |
 | ADRs (decisiones arquitectónicas) | `adr/` |
-| Documentación funcional (Use Cases Cockburn) | `docs/funcional/` |
+| Documentación funcional (Use Cases Cockburn) | `docs/functional/` |
 | Reportes de revisión de código | `openspec/changes/<feature>/reviewer-report-*.md` |
 | Reportes de pruebas funcionales | `openspec/changes/<feature>/qa-report-*.md` |
 | Inventario preliminar de escenarios QA | `openspec/changes/<feature>/qa-scenarios.md` |
@@ -313,7 +313,7 @@ H2 sigue siendo válido en `@IntegrationTest` cuando el comportamiento es equiva
 
 ### Documentación (pre-merge, cierre de ciclo)
 
-En el cierre de ciclo el `analyst` invoca a `doc-writer` como sub‑agente **dentro del worktree, ANTES del merge**, para que analice el cambio y actualice la documentación **técnica y funcional**. El `analyst` valida la consistencia de la documentación con el cambio y los specs, y **crea el PR**; el usuario revisa el PR una vez (documentación incluida). Si el cambio afecta reglas de negocio, el `doc-writer` debe actualizar los Use Cases correspondientes en `docs/funcional/`. Si el código diverge de los specs, el `doc-writer` **no documenta la divergencia**: la reporta al `analyst`.
+En el cierre de ciclo el `analyst` invoca a `doc-writer` como sub‑agente **dentro del worktree, ANTES del merge**, para que analice el cambio y actualice la documentación **técnica y funcional**. El `analyst` valida la consistencia de la documentación con el cambio y los specs, y **crea el PR**; el usuario revisa el PR una vez (documentación incluida). Si el cambio afecta reglas de negocio, el `doc-writer` debe actualizar los Use Cases correspondientes en `docs/functional/`. Si el código diverge de los specs, el `doc-writer` **no documenta la divergencia**: la reporta al `analyst`.
 
 ---
 

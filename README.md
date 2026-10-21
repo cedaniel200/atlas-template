@@ -253,7 +253,7 @@ Define las que necesite tu proyecto (no solo DB):
 │   ├── architecture/   # Diagramas C4, decisiones
 │   ├── api/            # Contratos API (REST, GraphQL, gRPC, etc.)
 │   ├── guides/         # Guías desarrollo, setup, CI/CD
-│   └── funcional/      # Use Cases Cockburn (contractual)
+│   └── functional/     # Use Cases Cockburn (contractual)
 ├── PROJECT-README.md   # ← Tu documentación final (renombrar a README.md)
 ├── AGENTS.md           # Configuración agentes + workflow + placeholders
 ├── .gitignore
