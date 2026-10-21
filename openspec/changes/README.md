@@ -16,9 +16,9 @@ Artefactos de proceso (no los genera el schema, los producen los agentes):
 
 | Archivo | Origen |
 |---|---|
-| `qa-scenarios.md` | Inventario preliminar de escenarios E2E (`ddd-analyst`) |
+| `qa-scenarios.md` | Inventario preliminar de escenarios E2E (`analyst`) |
 | `qa-report-*.md` | Evidencia de pruebas funcionales (`qa-analyst`) |
-| `reviewer-report-*.md` | Evidencia de revisión de código (`ddd-reviewer`) |
+| `reviewer-report-*.md` | Evidencia de revisión de código (`reviewer`) |
 
 ## Regla de orden
 

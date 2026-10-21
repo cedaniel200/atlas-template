@@ -1,6 +1,6 @@
 # Template DDD + OpenSpec + Agents
 
-> **Plantilla base para proyectos de software con Domain-Driven Design, OpenSpec y agentes especializados.**
+> **Plantilla base para proyectos de software con OpenSpec y agentes especializados.**
 > Funciona para **backend, frontend, mobile, monorepos** (multi-proyecto) o cualquier stack que use spec-driven development.
 >
 > ⚠️ **Docker es opcional** — Se menciona en varios lugares (QA, MCP postgres, bases de datos) pero **no es obligatorio**. Úsalo solo si tu proyecto lo necesita.
@@ -38,7 +38,7 @@ cp .env.example .env 2>/dev/null || true
 # docker compose up -d   # solo si tu proyecto usa Docker
 
 # 8. Primera feature: explorar + proponer
-#    En opencode: cambiar a agente ddd-analyst
+#    En opencode: cambiar a agente analyst
 #    Ejecutar: /opsx:explore
 ```
 
@@ -94,7 +94,7 @@ git push -u origin main
 
 ## 🤖 Los agentes te ayudan a personalizar
 
-> **Tip:** Pídele al agente `ddd-analyst` (o cualquiera) que te guíe en la customización.
+> **Tip:** Pídele al agente `analyst` (o cualquiera) que te guíe en la customización.
 > Ejemplo: *"Ayúdame a adaptar AGENTS.md y opencode.json para un proyecto React Native con Expo"*
 >
 > Los agentes conocen la plantilla y pueden:
@@ -107,13 +107,13 @@ git push -u origin main
 
 ## 🔧 Patrón de configuración: Prompts genéricos + AGENTS.md concreto
 
-**Principio:** Los prompts de los agentes (`.opencode/agent/*.md`) son **genéricos y reutilizables** — usan placeholders como `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}`, `{{HEALTH_PATH}}`. **AGENTS.md es el único lugar** donde defines los valores reales para tu stack.
+**Principio:** Los prompts de los agentes (`agents/*.md`) son **genéricos y reutilizables** — usan placeholders como `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}`, `{{HEALTH_PATH}}`. **AGENTS.md es el único lugar** donde defines los valores reales para tu stack.
 
 ### Cómo funciona
 
 | Capa | Qué hace | Ejemplo |
 |------|----------|---------|
-| **Prompts (`.opencode/agent/*.md`)** | Lógica genérica, referencian placeholders | `"Valida health en {{HEALTH_URL}}"` |
+| **Prompts (`agents/*.md`)** | Lógica genérica, referencian placeholders | `"Valida health en {{HEALTH_URL}}"` |
 | **AGENTS.md** | Valores concretos por proyecto | `{{HEALTH_URL}} = "http://localhost:8080/healthz"` |
 | **README.md (este archivo)** | Documenta el patrón y da ejemplos | Tabla de placeholders con ejemplos por stack |
 
@@ -199,21 +199,17 @@ Define las que necesite tu proyecto (no solo DB):
 
 | Agente | Rol | Cuándo usarlo |
 |--------|-----|---------------|
-| `ddd-analyst` | Análisis y planificación OpenSpec | Inicio de feature: `/opsx:explore` → `/opsx:propose` |
-| `ddd-engineer` | Implementación TDD + DDD | Tras aprobar proposal: `/opsx:apply` |
-| `ddd-reviewer` | Revisión código (SOLO LECTURA) | Tras QA aprobado |
+| `analyst` | Análisis y planificación OpenSpec | Inicio de feature: `/opsx:explore` → `/opsx:propose` |
+| `engineer` | Implementación TDD + arquitectura declarada | Tras aprobar proposal: comando apply |
+| `reviewer` | Revisión código (SOLO LECTURA) | Tras QA aprobado |
 | `qa-analyst` | Pruebas funcionales E2E | Sub-agente, invocado por engineer/usuario |
-| `doc-writer` | Documentación pre-merge | Invocado por analyst en cierre de ciclo |
+| `doc-writer` | Documentación técnica y funcional pre-merge | Invocado por analyst en cierre de ciclo |
 
-> **Placeholders en agentes:** Algunos agentes (`ddd-engineer`, `qa-analyst`, etc.) tienen placeholders `{{APP_PORT}}`, `{{HEALTH_URL}}`, `{{SERVICE_NAME}}`, `{{QUALITY_COMMAND}}`, etc. en sus prompts. **Edítalos en AGENTS.md** y los agentes los heredarán vía los placeholders compartidos.
+> **Placeholders en agentes:** Algunos agentes (`engineer`, `qa-analyst`, etc.) tienen placeholders `{{APP_PORT}}`, `{{HEALTH_URL}}`, `{{SERVICE_NAME}}`, `{{QUALITY_COMMAND}}`, etc. en sus prompts. **Edítalos en AGENTS.md** y los agentes los heredarán vía los placeholders compartidos.
 
-> **⚠️ Agentes que asumen Docker (QA/E2E):**
-> Los siguientes agentes tienen prompts que asumen Docker Compose para el entorno de QA y pruebas E2E con PostgreSQL real:
-> - `ddd-analyst` — menciona Docker Compose en el handoff a QA
-> - `ddd-engineer` — levanta entorno QA con `docker compose up -d --build`, valida health dentro de Docker, usa PostgreSQL en Docker para E2E
-> - `qa-analyst` — requiere Docker Compose listo, ejecuta tests contra API en Docker, valida health via `docker exec`
->
-> **Si tu proyecto NO usa Docker:** Debes editar los prompts de estos agentes (archivos en `.opencode/agent/*.md`) para adaptar la estrategia de QA/E2E a tu entorno (dev server local, emulador, Testcontainers, base de datos local, etc.). Los placeholders `{{SERVICE_NAME}}`, `{{APP_PORT}}`, `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}` en AGENTS.md también deberán ajustarse o eliminarse.
+> **Entorno de QA:** los prompts no asumen un stack. El entorno (Docker, dev server local, emulador,
+> Testcontainers, base de datos local…) se declara en `AGENTS.md` (§ Detalle operativo) y los agentes lo
+> respetan.
 
 ---
 
@@ -226,11 +222,15 @@ Define las que necesite tu proyecto (no solo DB):
 ├── openspec-apply-change
 ├── openspec-archive-change
 ├── openspec-sync-specs
+├── openspec-workflow
 ├── test-driven-development
 ├── using-git-worktrees
+├── git-workflow
 ├── architectural-decision-records
 ├── gherkin-specs
-└── conventional-commits
+├── conventional-commits
+├── session-startup
+└── session-end
 ```
 
 ---
@@ -239,25 +239,23 @@ Define las que necesite tu proyecto (no solo DB):
 
 ```
 .
-├── .opencode/
-│   ├── agent/          # 5 agentes
-│   ├── commands/       # Comandos custom (vacío)
-│   ├── plugins/        # Plugins (vacío)
-│   └── skills/         # 10 skills (autocontenidas)
+├── agents/             # 5 prompts canónicos + README
+├── .agents/
+│   └── skills/         # 14 skills (autocontenidas)
+├── .template/          # hosts, profiles, packs, state.json, manifest.json
 ├── openspec/
 │   ├── config.yaml     # Schema spec-driven-with-adr
-│   ├── specs/          # Especificaciones dominio (Gherkin)
-│   ├── changes/        # Cambios activos (worktree)
+│   ├── specs/          # Especificaciones (Gherkin)
+│   ├── changes/        # Cambios activos
 │   └── schemas/        # Schemas OpenSpec
 ├── adr/                # Architecture Decision Records
 ├── docs/
 │   ├── architecture/   # Diagramas C4, decisiones
 │   ├── api/            # Contratos API (REST, GraphQL, gRPC, etc.)
 │   ├── guides/         # Guías desarrollo, setup, CI/CD
-│   └── funcional/      # Use Cases Cockburn (contractual)
+│   └── functional/     # Use Cases Cockburn (contractual)
 ├── PROJECT-README.md   # ← Tu documentación final (renombrar a README.md)
 ├── AGENTS.md           # Configuración agentes + workflow + placeholders
-├── opencode.json       # Config opencode + modelos + MCP
 ├── .gitignore
 └── README.md           # ← ESTE ARCHIVO (borrar al finalizar setup)
 ```
@@ -275,7 +273,7 @@ Define las que necesite tu proyecto (no solo DB):
 > ├── infra/                # Terraform, Kubernetes, Docker, scripts
 > └── docs/                 # Documentación compartida (esta carpeta)
 > ```
-> Cada subproyecto tiene su propio `package.json`, `build.gradle`, `go.mod`, `pubspec.yaml`, etc., y su propia configuración de tests/lint. El `AGENTS.md` y `opencode.json` en la raíz coordinan el workflow global; cada subproyecto puede tener su propio `AGENTS.md` si necesita agentes especializados.
+> Cada subproyecto tiene su propio `package.json`, `build.gradle`, `go.mod`, `pubspec.yaml`, etc., y su propia configuración de tests/lint. El `AGENTS.md` y el adaptador del host (generado por el bootstrap) coordinan el workflow global; cada subproyecto puede tener su propio `AGENTS.md` si necesita agentes especializados.
 
 ---
 

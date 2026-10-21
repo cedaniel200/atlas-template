@@ -17,5 +17,5 @@ Esta carpeta contiene la documentación de las interfaces públicas del proyecto
 
 - Markdown con tablas para endpoints
 - Ejemplos de request/response en bloques de código
-- Referencia a OpenAPI/Swagger generado: `Ver [OpenAPI JSON](../api/openapi.json)`
+- Referencia a OpenAPI/Swagger generado: `Ver [OpenAPI JSON](openapi.json)`
 - Actualizar con cada cambio en la API

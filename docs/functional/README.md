@@ -1,5 +1,8 @@
 # Documentación Funcional (Use Cases)
 
+> El nombre de la carpeta (`functional/`) es un identificador técnico en inglés; el **contenido** sigue
+> `language.user`. Si el proyecto prefiere otro nombre, renuébralo y actualice `AGENTS.md` § Mapa de documentos.
+
 Esta carpeta contiene los **Casos de Uso** en formato Cockburn, que son la **fuente de verdad de las reglas de negocio**.
 
 > ⚠️ **Contractual:** El agente `doc-writer` **debe** actualizar esta carpeta cuando un cambio afecte reglas de negocio (pre-merge, dentro del worktree).
@@ -7,7 +10,7 @@ Esta carpeta contiene los **Casos de Uso** en formato Cockburn, que son la **fue
 ## Estructura sugerida
 
 ```
-funcional/
+functional/
 ├── UC-001-registrar-usuario.md
 ├── UC-002-iniciar-sesion.md
 ├── UC-003-crear-recurso.md
@@ -40,7 +43,7 @@ funcional/
 - RN-002: [Otra regla]
 
 ## Referencias
-- ADR: [ADR-00XX](../adr/00XX-decision.md)
+- ADR: [ADR-00XX](../../adr/00XX-decision.md)
 - Specs: [openspec/specs/.../feature.md](../../openspec/specs/...)
 ```
 
@@ -49,4 +52,4 @@ funcional/
 - **Un archivo por Use Case** (número secuencial + nombre descriptivo)
 - **Actualizar en el mismo commit** que cambia la regla de negocio
 - **Referenciar ADRs y Specs** — no duplicar información
-- **Lenguaje ubicuo** del dominio (términos del negocio, no técnicos)
+- **Lenguaje del dominio** (términos del negocio, no técnicos)
