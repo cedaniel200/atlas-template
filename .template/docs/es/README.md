@@ -23,7 +23,7 @@ Es **agnóstico** de:
 
 | Ruta | Qué es | Propiedad |
 |---|---|---|
-| `agents/` | Prompts canónicos de rol, sin frontmatter de host | managed |
+| `.template/agents/` | Prompts canónicos de rol, sin frontmatter de host | managed |
 | `.agents/skills/` | Procedimientos portables bajo demanda | managed |
 | `openspec/schemas/spec-driven-with-adr/` | Schema de OpenSpec vendorizado | managed |
 | `.template/hosts/<host>/` | Plantillas de adaptador por herramienta | managed |
@@ -32,7 +32,7 @@ Es **agnóstico** de:
 | `.template/state.json` | Entradas del bootstrap y estado | owned tras configurar |
 | `.template/manifest.json` | Archivos generados, hashes y propiedad | generated |
 | `AGENTS.md` | Contrato del proyecto: arquitectura, comandos, límites | owned |
-| `BOOTSTRAP.md` | Ritual de primera sesión | managed |
+| `.template/BOOTSTRAP.md` | Ritual de primera sesión | managed |
 | `docs/` | Documentación (arnés, uso, proyecto) | mixta |
 
 ---
@@ -40,7 +40,7 @@ Es **agnóstico** de:
 ## Cómo funciona
 
 ```text
-BOOTSTRAP.md
+.template/BOOTSTRAP.md
   ├── detecta el host y crea su adaptador
   ├── interroga al usuario (idioma, stack, calidad, arquitectura, límites)
   ├── rellena AGENTS.md + openspec/config.yaml + docs
@@ -71,4 +71,4 @@ Los procedimientos detallados viven en skills, para que `AGENTS.md` siga siendo 
 - Extender el arnés: [`extending.md`](extending.md)
 - Actualizar un proyecto configurado: [`updating.md`](updating.md)
 - Usar el arnés: [`../../../docs/harness/es/QUICKSTART.md`](../../../docs/harness/es/QUICKSTART.md)
-- Diferencias por herramienta: [`../../../COMPATIBILITY.md`](../../../COMPATIBILITY.md)
+- Diferencias por herramienta: [`../../../docs/harness/es/COMPATIBILITY.md`](../../../docs/harness/es/COMPATIBILITY.md)

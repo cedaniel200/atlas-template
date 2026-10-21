@@ -21,7 +21,7 @@ Copia del template solo lo que falte:
 | `AGENTS.md` | **No sobrescribir**; fusionar por diff |
 | `openspec/config.yaml` | Fusionar `context:` y `rules:` |
 | `openspec/specs/`, `adr/` | Conservar los del proyecto |
-| `.agents/skills/`, `agents/` | Conservar las propias; añadir las del template con prefijo o como pack |
+| `.agents/skills/`, `.template/agents/` | Conservar las propias; añadir las del template con prefijo o como pack |
 | `docs/README.md` | Fusionar: conservar el índice del proyecto y enlazar las secciones del arnés |
 | Adaptadores (`.opencode/`, `.claude/`) | Preservar; adaptar solo lo que colisione |
 

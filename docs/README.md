@@ -21,7 +21,7 @@ Para arrancar, abre el proyecto con tu herramienta y di:
 > **“Configura este proyecto”**
 
 El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` está `pending` y ejecuta
-[`../BOOTSTRAP.md`](../BOOTSTRAP.md).
+[`../.template/BOOTSTRAP.md`](../.template/BOOTSTRAP.md).
 
 ---
 
@@ -40,10 +40,10 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 | Componente | Detalle |
 |---|---|
 | **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
-| **Agentes** | `analyst`, `engineer`, `reviewer`, `qa-analyst`, `doc-writer` en `agents/` |
-| **Skills** | 14 skills portables en `.agents/skills/` |
-| **Ritual** | [`../BOOTSTRAP.md`](../BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
-| **Compatibilidad** | [`../COMPATIBILITY.md`](../COMPATIBILITY.md): matriz por host |
+| **Agentes** | `analyst`, `engineer`, `reviewer`, `qa-analyst`, `doc-writer` en `.template/agents/` |
+| **Skills** | 16 skills portables en `.agents/skills/` |
+| **Ritual** | [`../.template/BOOTSTRAP.md`](../.template/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
+| **Compatibilidad** | [`harness/es/COMPATIBILITY.md`](harness/es/COMPATIBILITY.md): matriz por host |
 | **Estado** | [`.template/`](../.template/README.md): hosts, perfiles, packs, manifiesto y estado |
 
 ---
@@ -52,22 +52,24 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 
 ```
 .
-├── agents/              # 5 prompts canónicos
+├── AGENTS.md            # contrato del proyecto
+├── CLAUDE.md            # stub para Claude Code
 ├── .agents/
-│   └── skills/          # 14 skills portables
+│   └── skills/          # 16 skills portables
 ├── .template/
+│   ├── BOOTSTRAP.md     # ritual de primera sesión
+│   ├── PROJECT-README.md # plantilla del README del proyecto
+│   ├── agents/          # 5 prompts canónicos
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
 │   └── state.json manifest.json
 ├── docs/
 │   ├── README.md        # este índice
-│   ├── harness/es|en/   # guías de uso
+│   ├── harness/es|en/   # guías de uso + COMPATIBILITY
 │   ├── architecture/ api/ functional/ guides/   # documentación del proyecto
 ├── openspec/            # config, specs, changes, schemas
 ├── adr/
-├── AGENTS.md            # contrato del proyecto
-├── BOOTSTRAP.md         # ritual de primera sesión
-├── COMPATIBILITY.md     # matriz por herramienta
+├── .githooks/           # hooks de git (gitleaks)
 ├── SECURITY.md          # confidencialidad y responsabilidad
 └── LICENSE              # MIT
 ```

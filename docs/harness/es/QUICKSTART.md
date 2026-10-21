@@ -31,7 +31,7 @@ Abre el proyecto y escribe:
 
 > **“Configura este proyecto”**
 
-El agente lee `AGENTS.md`, ve que `.template/state.json` está `pending` y ejecuta `BOOTSTRAP.md`.
+El agente lee `AGENTS.md`, ve que `.template/state.json` está `pending` y ejecuta `.template/BOOTSTRAP.md`.
 
 | Herramienta | Qué ocurre |
 |---|---|
@@ -104,3 +104,4 @@ El `analyst` te pregunta al inicio si orquesta el ciclo o prefieres invocar cada
 - Proyecto existente → [`ADOPTION.md`](ADOPTION.md)
 - Herramientas y MCP → [`TOOLS.md`](TOOLS.md)
 - Calidad y CRAP → [`QUALITY.md`](QUALITY.md)
+- Compatibilidad por herramienta → [`COMPATIBILITY.md`](COMPATIBILITY.md)

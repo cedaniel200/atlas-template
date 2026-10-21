@@ -31,7 +31,7 @@ Open the project and say:
 
 > **“Set up this project”**
 
-The agent reads `AGENTS.md`, sees `.template/state.json` is `pending`, and runs `BOOTSTRAP.md`.
+The agent reads `AGENTS.md`, sees `.template/state.json` is `pending`, and runs `.template/BOOTSTRAP.md`.
 
 | Host | What happens |
 |---|---|
@@ -105,3 +105,4 @@ The `analyst` asks at the start whether to orchestrate the cycle or let you invo
 - Existing project → [`ADOPTION.md`](ADOPTION.md)
 - Tools and MCP → [`TOOLS.md`](TOOLS.md)
 - Quality and CRAP → [`QUALITY.md`](QUALITY.md)
+- Host compatibility → [`COMPATIBILITY.md`](COMPATIBILITY.md)
