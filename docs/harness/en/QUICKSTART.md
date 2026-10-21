@@ -106,3 +106,4 @@ The `analyst` asks at the start whether to orchestrate the cycle or let you invo
 - Tools and MCP → [`TOOLS.md`](TOOLS.md)
 - Quality and CRAP → [`QUALITY.md`](QUALITY.md)
 - Host compatibility → [`COMPATIBILITY.md`](COMPATIBILITY.md)
+- Glossary → [`GLOSSARY.md`](GLOSSARY.md)
