@@ -90,6 +90,16 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles
 
 ---
 
+## Gobernanza de skills
+
+- Toda skill se registra en `AGENTS.md` § Skill Registry; una skill sin registro está huérfana.
+- Valida el descubrimiento con `ls .agents/skills/*/SKILL.md` y, si el host lo permite, reinicia y
+  comprueba que aparece.
+- Marca las skills del núcleo como `managed` en el manifiesto; las de packs, como opcionales.
+- Antes de modificar una skill existente, busca quién la invoca
+  (`grep -rn "<skill>" .template/agents .agents/skills docs`) y avisa de posibles roturas.
+- No hay versionado de skills todavía: si el cambio es incompatible, documenta la migración en el commit.
+
 ## Checklist de verificación
 
 ```bash

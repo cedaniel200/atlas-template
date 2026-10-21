@@ -90,6 +90,16 @@ A profile is **data**, not procedure. See `.template/profiles/README.md` for the
 
 ---
 
+## Skill governance
+
+- Every skill is registered in `AGENTS.md` § Skill Registry; an unregistered skill is orphaned.
+- Validate discovery with `ls .agents/skills/*/SKILL.md` and, if the host allows it, restart and check
+  that it appears.
+- Mark core skills as `managed` in the manifest; pack skills as optional.
+- Before modifying an existing skill, search who invokes it
+  (`grep -rn "<skill>" .template/agents .agents/skills docs`) and warn about possible breakage.
+- There is no skill versioning yet: if the change is incompatible, document the migration in the commit.
+
 ## Verification checklist
 
 ```bash

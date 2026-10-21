@@ -25,7 +25,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 
 ---
 
-## Tres capas de documentación
+## Capas de documentación
 
 | Capa | Dónde | Para quién |
 |---|---|---|
