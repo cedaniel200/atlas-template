@@ -220,7 +220,7 @@ Define las que necesite tu proyecto (no solo DB):
 ## 🔧 Skills incluidas (autocontenidas)
 
 ```
-.opencode/skills/
+.agents/skills/
 ├── openspec-explore
 ├── openspec-propose
 ├── openspec-apply-change
@@ -331,4 +331,4 @@ git commit -m "chore: setup project from template"
 - [Engram](https://github.com/Gentleman-Programming/engram) — Memoria persistente
 - [Context7 MCP](https://context7.com) — Docs oficiales librerías
 - ADRs en `adr/` — Decisiones arquitectónicas
-- Skills en `.opencode/skills/` — Autocontenidas
+- Skills en `.agents/skills/` — Autocontenidas
