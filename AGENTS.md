@@ -318,16 +318,16 @@ En el cierre de ciclo el `ddd-analyst` invoca a `doc-writer` como sub‑agente *
 
 | Skill | Ruta | Trigger | Fase |
 |-------|------|---------|------|
-| `openspec-explore` | `.opencode/skills/openspec-explore/` | Explorar una idea antes de proponer | Desarrollo (análisis) |
-| `openspec-propose` | `.opencode/skills/openspec-propose/` | Planificar un cambio: specs + design + ADR + tasks | Desarrollo (análisis) |
-| `openspec-apply-change` | `.opencode/skills/openspec-apply-change/` | Implementar los tasks de un cambio | Desarrollo (implementación) |
-| `openspec-archive-change` | `.opencode/skills/openspec-archive-change/` | Cerrar un cambio completado | Desarrollo (análisis) |
-| `openspec-sync-specs` | `.opencode/skills/openspec-sync-specs/` | Sincronizar specs archivadas | Desarrollo (análisis) |
-| `test-driven-development` | `.opencode/skills/test-driven-development/` | Escribir código: test rojo → verde → refactor | Desarrollo (implementación) |
-| `using-git-worktrees` | `.opencode/skills/using-git-worktrees/` | Aislar cambios en rama al iniciar feature | Desarrollo (implementación) |
-| `architectural-decision-records` | `.opencode/skills/architectural-decision-records/` | Documentar una decisión arquitectónica significativa | Desarrollo (análisis) |
-| `gherkin-specs` | `.opencode/skills/gherkin-specs/` | Escribir escenarios Given/When/Then | Desarrollo (análisis) |
-| `conventional-commits` | `.opencode/skills/conventional-commits/` | En cada commit: un cambio lógico = un commit con prefijo | Todas |
+| `openspec-explore` | `.agents/skills/openspec-explore/` | Explorar una idea antes de proponer | Desarrollo (análisis) |
+| `openspec-propose` | `.agents/skills/openspec-propose/` | Planificar un cambio: specs + design + ADR + tasks | Desarrollo (análisis) |
+| `openspec-apply-change` | `.agents/skills/openspec-apply-change/` | Implementar los tasks de un cambio | Desarrollo (implementación) |
+| `openspec-archive-change` | `.agents/skills/openspec-archive-change/` | Cerrar un cambio completado | Desarrollo (análisis) |
+| `openspec-sync-specs` | `.agents/skills/openspec-sync-specs/` | Sincronizar specs archivadas | Desarrollo (análisis) |
+| `test-driven-development` | `.agents/skills/test-driven-development/` | Escribir código: test rojo → verde → refactor | Desarrollo (implementación) |
+| `using-git-worktrees` | `.agents/skills/using-git-worktrees/` | Aislar cambios en rama al iniciar feature | Desarrollo (implementación) |
+| `architectural-decision-records` | `.agents/skills/architectural-decision-records/` | Documentar una decisión arquitectónica significativa | Desarrollo (análisis) |
+| `gherkin-specs` | `.agents/skills/gherkin-specs/` | Escribir escenarios Given/When/Then | Desarrollo (análisis) |
+| `conventional-commits` | `.agents/skills/conventional-commits/` | En cada commit: un cambio lógico = un commit con prefijo | Todas |
 
 ---
 

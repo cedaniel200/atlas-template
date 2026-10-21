@@ -1,6 +1,7 @@
 ---
 name: architectural-decision-records
 description: Use when documenting, drafting, reviewing, or updating architectural decisions, ADRs, decision logs, tradeoffs, rationale, consequences, alternatives, or architecture decision history.
+license: MIT
 ---
 
 # Architectural Decision Records

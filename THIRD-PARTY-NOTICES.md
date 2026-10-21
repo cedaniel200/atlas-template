@@ -8,6 +8,9 @@ origen. Si redistribuyes este template, mantén este archivo y los avisos de cop
 | Skill(s) | Origen | Licencia |
 |---|---|---|
 | `openspec-explore`, `openspec-propose`, `openspec-apply-change`, `openspec-archive-change`, `openspec-sync-specs` | [Fission-AI/OpenSpec](https://github.com/Fission-AI/OpenSpec) | MIT — Copyright (c) 2024 OpenSpec Contributors |
+
+> Las skills de OpenSpec se adaptaron para eliminar la sintaxis de comandos dependiente de la
+> herramienta anfitriona. El resto del contenido se mantiene.
 | `grilling`, `grill-me`, `grill-with-docs`, `teach` | [mattpocock/skills](https://github.com/mattpocock/skills) | MIT — Copyright (c) 2026 Matt Pocock |
 | `test-driven-development`, `using-git-worktrees` | [obra/superpowers](https://github.com/obra/superpowers) | MIT — Copyright (c) 2025 Jesse Vincent |
 | `architectural-decision-records` | [intent-driven-dev/openspec-schemas](https://github.com/intent-driven-dev/openspec-schemas) | MIT — Copyright (c) 2026 |
