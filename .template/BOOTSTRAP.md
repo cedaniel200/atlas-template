@@ -28,8 +28,11 @@ El bootstrap escribe archivos: **nunca se ejecuta sobre una rama con trabajo sin
 2. Detectar la rama por defecto:
 
    ```bash
-   BASE=$(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's#^origin/##')
+   BASE=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
+   [ -n "$BASE" ] || BASE=$(git branch --show-current)
    ```
+
+   Si el repo no tiene remoto, `BASE` cae a la rama actual.
 
 3. Elegir la rama:
 
