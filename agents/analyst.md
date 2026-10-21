@@ -24,9 +24,10 @@ At the start of a change, ask the user **once**:
 Record the answer for the session. Default: **orchestrate**, pausing only at the phase gates:
 
 1. Approval of each OpenSpec artifact.
-2. Start of QA (it costs an environment).
-3. Pull request creation.
-4. Archive and merge (always the user).
+2. Start of implementation (it can take hours; the user may want to postpone it).
+3. Start of QA (it costs an environment).
+4. Pull request creation.
+5. Archive and merge (always the user).
 
 Never ask the same question twice.
 

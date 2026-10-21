@@ -193,7 +193,7 @@ LOOP (límite global 5 iteraciones QA + Reviewer):
 Al inicio de un cambio, el `analyst` pregunta **una sola vez**:
 *"¿Orquesto el ciclo hasta el PR o prefieres invocar cada fase tú mismo?"*
 
-- **Orquestado (default):** el `analyst` encadena las fases y se detiene solo en los gates: aprobación de cada artefacto, inicio de QA, creación del PR y archive/merge.
+- **Orquestado (default):** el `analyst` encadena las fases y se detiene solo en los gates: aprobación de cada artefacto, **inicio de implementación** (puede durar horas; el usuario decide si arranca ahora o lo retoma en otra sesión), inicio de QA, creación del PR y archive/merge.
 - **Manual:** el usuario invoca cada agente; el `analyst` indica el orden y verifica que no se salte ningún gate.
 
 Nunca se pregunta dos veces lo mismo.
