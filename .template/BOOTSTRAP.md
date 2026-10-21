@@ -140,11 +140,16 @@ No se escriben a mano: los genera OpenSpec.
 
 ```bash
 cp AGENTS.md /tmp/agents.bootstrap.bak
-openspec update --tools <opencode|claude|codex>   # o openspec init --tools <host> si falta openspec/
+openspec init --tools <opencode|claude|codex>
 diff /tmp/agents.bootstrap.bak AGENTS.md && echo "AGENTS.md intacto" || echo "⚠️ revisar y fusionar"
+
+# openspec init puede duplicar las skills de OpenSpec en .opencode/skills/.
+# El canonico es .agents/skills/: elimina la copia duplicada.
+rm -rf .opencode/skills
 ```
 
 Salida esperada: `.opencode/commands/opsx-*` · `.claude/commands/opsx/*` · `.codex/prompts/*`.
+`openspec update` no acepta `--tools`: úsalo solo para actualizar instrucciones ya generadas.
 Si `openspec init` reescribe `AGENTS.md`, restáuralo desde el backup y fusiona solo lo nuevo.
 
 **Commit:** `chore(bootstrap): adaptar el entorno a <host>`
