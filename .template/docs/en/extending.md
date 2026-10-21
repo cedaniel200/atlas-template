@@ -32,7 +32,7 @@ metadata: <optional string map>
 
 ## Add an agent
 
-1. Create `agents/<role>.md` with the prompt body and **no host frontmatter**.
+1. Create `.template/agents/<role>.md` with the prompt body and **no host frontmatter**.
 2. Name it by role, not by architecture (`analyst`, not `ddd-analyst`).
 3. The bootstrap generates the adapters:
    - OpenCode: `.opencode/agent/<role>.md` (`description`, `mode: all`).
@@ -51,7 +51,7 @@ A pack exists only for **procedural knowledge that cannot be expressed as a comm
   pack.yaml
   README.md
   skills/<name>/SKILL.md
-  agents/<role>.md
+  .template/agents/<role>.md
 ```
 
 ```yaml
@@ -64,7 +64,7 @@ stack_hints: [<stack>]
 license: MIT
 ```
 
-- It is **not** discovered automatically; the bootstrap copies it into `.agents/skills/` and `agents/`.
+- It is **not** discovered automatically; the bootstrap copies it into `.agents/skills/` and `.template/agents/`.
 - It is never required for the core to work.
 - Register it in the pack catalog and in `THIRD-PARTY-NOTICES.md` if it vendors third-party content.
 
@@ -85,7 +85,7 @@ A profile is **data**, not procedure. See `.template/profiles/README.md` for the
 
 1. Create `.template/hosts/<host>/` with the files the host needs at the project root.
 2. Document the adapter in `.template/hosts/README.md`.
-3. Update `COMPATIBILITY.md` with the capability matrix and any degradation.
+3. Update `docs/harness/en/COMPATIBILITY.md` with the capability matrix and any degradation.
 4. The bootstrap must be able to create the adapter without destroying other hosts' files.
 
 ---
@@ -96,7 +96,7 @@ A profile is **data**, not procedure. See `.template/profiles/README.md` for the
 # skills
 for f in .agents/skills/*/SKILL.md; do sed -n '1,5p' "$f"; done
 # agent references
-grep -rn "ddd-\|opencode\|claude" agents/ .agents/skills/ || true
+grep -rn "ddd-\|opencode\|claude" .template/agents/ .agents/skills/ || true
 # profiles
 python3 -c "import yaml,glob;[yaml.safe_load(open(f)) for f in glob.glob('.template/profiles/*.yaml')]"
 # contract

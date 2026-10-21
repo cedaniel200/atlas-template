@@ -1,7 +1,7 @@
 # Packs opcionales
 
 Un pack agrupa **conocimiento procedimental** —skills y agentes— que no se puede expresar como un
-comando o una ruta. **No se descubre automáticamente**: vive fuera de `.agents/skills/` y `agents/`,
+comando o una ruta. **No se descubre automáticamente**: vive fuera de `.agents/skills/` y `.template/agents/`,
 así que no consume contexto en sesiones donde no aplica.
 
 ## Regla de admisión
@@ -50,7 +50,7 @@ license: MIT
 
 1. El bootstrap lee los `pack.yaml` y propone los que encajan con el perfil detectado.
 2. El usuario elige.
-3. El bootstrap copia el contenido a `.agents/skills/` y `agents/`, y registra `{name, version}` en
+3. El bootstrap copia el contenido a `.agents/skills/` y `.template/agents/`, y registra `{name, version}` en
    `state.json.packs`.
 
 Desactivar un pack = borrar sus archivos copiados (o restaurarlos desde este directorio).

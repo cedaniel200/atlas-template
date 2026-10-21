@@ -74,7 +74,7 @@ Inspecciona y registra en `docs/template-adoption.md` (guía: `docs/harness/<lan
 | Tests, lint, CI, Docker | Pre-rellenar el menú de calidad y QA |
 | `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, reglas de agentes | **Fusionar con diff**, nunca sobrescribir |
 | `openspec/` existente | Fusionar `context:` y `rules:`; no reemplazar specs |
-| `agents/`, `.agents/skills/`, `.opencode/` propios | Preservar; adaptar solo lo que colisione |
+| `.opencode/agent/`, `.claude/agents/`, `.agents/skills/` propios | Preservar; adaptar solo lo que colisione |
 | `.env`, secretos, credenciales | Detectar y **no** copiar valores |
 
 ## −1.3 Política de conflicto
@@ -115,7 +115,7 @@ Codex. Si la señal de entorno y la evidencia de archivos discrepan, **pregunta*
 | Acción | OpenCode | Claude Code | Codex |
 |---|---|---|---|
 | `opencode.json` | crear desde `.template/hosts/opencode/` | ignorar | ignorar |
-| `agents/` | fuente canónica | fuente canónica | fuente canónica |
+| `.template/agents/` | fuente canónica | fuente canónica | fuente canónica |
 | Adaptador de agentes | `.opencode/agent/<rol>.md` | `.claude/agents/<rol>.md` | *(no hay subagentes)* |
 | Skills | `.agents/skills/` (nativo) | `.claude/skills` → symlink a `.agents/skills` | `.agents/skills/` (nativo) |
 | `CLAUDE.md` | conservar | debe contener solo `@AGENTS.md` | conservar |
@@ -207,7 +207,7 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 |---|---|
 | `AGENTS.md` | Resumen, arquitectura, comandos, estructura, no tocar, preferencias, placeholders |
 | `openspec/config.yaml` | Bloque `context:` y `rules:` (reglas de diseño según la arquitectura elegida) |
-| `PROJECT-README.md` | Nombre, descripción, quick start, C4, variables de entorno |
+| `.template/PROJECT-README.md` → `README.md` del proyecto | Nombre, descripción, quick start, C4, variables de entorno |
 | `.env.example` | Variables detectadas, sin valores reales |
 | `.gitignore` / `.gitattributes` / `.editorconfig` | Stack, secretos, estado local, EOL, indentación |
 | `docs/` | Renombrar carpetas si el usuario eligió otros nombres y actualizar `AGENTS.md` |
@@ -219,11 +219,11 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 Reglas:
 
 - Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
-  `grep -r "{{" AGENTS.md openspec/config.yaml PROJECT-README.md` debe devolver **vacío**.
-- **Idioma**: `AGENTS.md`, `PROJECT-README.md` y `docs/README.md` se escriben en `language.user`. Si el
-  usuario eligió un idioma distinto del template (español), tradúcelos. Las guías del template
-  (`docs/README.md`, `BOOTSTRAP.md`,
-  `COMPATIBILITY.md`) pueden quedarse en español salvo que el usuario pida traducirlas.
+  `grep -r "{{" AGENTS.md openspec/config.yaml README.md` debe devolver **vacío**.
+- **Idioma**: `AGENTS.md`, el `README.md` del proyecto (generado desde `.template/PROJECT-README.md`) y
+  `docs/README.md` se escriben en `language.user`. Si el usuario eligió un idioma distinto del template
+  (español), tradúcelos. Las guías del template (`docs/README.md`, `.template/BOOTSTRAP.md`,
+  `docs/harness/<lang>/COMPATIBILITY.md`) pueden quedarse en español salvo que el usuario pida traducirlas.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adaptadores, comandos, CLAUDE.md).
 - Si el usuario dio términos de dominio, sustituye los ejemplos `<entity>` de las skills.
@@ -242,7 +242,7 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `AGENTS.md` tiene `## Estructura` y `## Reglas de No Tocar`
 - [ ] `AGENTS.md` tiene `## Preferencias` con `language`, comandos OpenSpec y orquestación
 - [ ] `AGENTS.md` tiene `## Arquitectura`
-- [ ] No quedan `{{...}}` en `AGENTS.md`, `openspec/config.yaml`, `PROJECT-README.md`
+- [ ] No quedan `{{...}}` en `AGENTS.md`, `openspec/config.yaml` y `README.md`
 - [ ] `openspec doctor` → root ok
 - [ ] `openspec schema which spec-driven-with-adr` → `Source: project`
 - [ ] `openspec context` → sin warnings
@@ -283,6 +283,6 @@ Anuncia: **"Bootstrap completo. Ya puedes proponer un cambio."**
 ## Lo que este ritual NO hace
 
 - No instala dependencias del stack.
-- No configura MCP (es por herramienta; ver `COMPATIBILITY.md`).
+- No configura MCP (es por herramienta; ver `docs/harness/<lang>/COMPATIBILITY.md`).
 - No crea specs, ADRs ni código de negocio.
 - No decide la arquitectura: la recoge y la declara.

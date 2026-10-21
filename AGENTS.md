@@ -2,7 +2,7 @@
 
 > **Punto de entrada para cualquier agente.**
 > **Primera sesión:** si `.template/state.json` no existe o su `status` es `pending`, lee y ejecuta
-> `BOOTSTRAP.md` **antes de cualquier otra acción**.
+> `.template/BOOTSTRAP.md` **antes de cualquier otra acción**.
 > Si el usuario dice **"configura este proyecto"**, **"haz el setup inicial"** o cualquier equivalente,
 > esto es lo que debe ejecutar.
 >
@@ -114,13 +114,13 @@ Además:
 
 | Rol | Prompt canónico | Función |
 |---|---|---|
-| `analyst` | `agents/analyst.md` | Análisis y planificación |
-| `engineer` | `agents/engineer.md` | Implementación con TDD |
-| `reviewer` | `agents/reviewer.md` | Revisión de código (solo lectura) |
-| `qa-analyst` | `agents/qa-analyst.md` | Pruebas funcionales |
-| `doc-writer` | `agents/doc-writer.md` | Documentación técnica y funcional |
+| `analyst` | `.template/agents/analyst.md` | Análisis y planificación |
+| `engineer` | `.template/agents/engineer.md` | Implementación con TDD |
+| `reviewer` | `.template/agents/reviewer.md` | Revisión de código (solo lectura) |
+| `qa-analyst` | `.template/agents/qa-analyst.md` | Pruebas funcionales |
+| `doc-writer` | `.template/agents/doc-writer.md` | Documentación técnica y funcional |
 
-Los adaptadores por herramienta los genera el bootstrap desde `agents/`. Codex no tiene subagentes: los
+Los adaptadores por herramienta los genera el bootstrap desde `.template/agents/`. Codex no tiene subagentes: los
 roles se emulan con este archivo y el anuncio de rol.
 
 ---
@@ -132,7 +132,7 @@ explore → propose → apply → QA → review → cierre
          (proposal → specs → design → adr → tasks)
 ```
 
-> **Excepción — bootstrap:** la configuración inicial (`BOOTSTRAP.md`) corre en su propia rama
+> **Excepción — bootstrap:** la configuración inicial (`.template/BOOTSTRAP.md`) corre en su propia rama
 > (`chore/bootstrap`), no en un worktree de cambio. Un commit por fase y el merge lo hace el usuario.
 
 ### Gates
@@ -206,7 +206,7 @@ Las skills de packs (`.template/packs/`) solo existen cuando el pack está activ
 
 ## Placeholders
 
-Los prompts de `agents/` usan estos placeholders. **Este archivo es el único lugar donde se definen.**
+Los prompts de `.template/agents/` usan estos placeholders. **Este archivo es el único lugar donde se definen.**
 
 | Placeholder | Valor |
 |---|---|

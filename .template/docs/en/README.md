@@ -23,7 +23,7 @@ It is **agnostic** of:
 
 | Path | What it is | Ownership |
 |---|---|---|
-| `agents/` | Canonical role prompts, no host frontmatter | managed |
+| `.template/agents/` | Canonical role prompts, no host frontmatter | managed |
 | `.agents/skills/` | Portable procedures loaded on demand | managed |
 | `openspec/schemas/spec-driven-with-adr/` | Vendored OpenSpec schema | managed |
 | `.template/hosts/<host>/` | Host adapter templates | managed |
@@ -32,7 +32,7 @@ It is **agnostic** of:
 | `.template/state.json` | Bootstrap inputs and status | owned after setup |
 | `.template/manifest.json` | Generated files, hashes and ownership | generated |
 | `AGENTS.md` | Project contract: architecture, commands, limits | owned |
-| `BOOTSTRAP.md` | First-session ritual | managed |
+| `.template/BOOTSTRAP.md` | First-session ritual | managed |
 | `docs/` | Documentation (harness, usage, project) | mixed |
 
 ---
@@ -40,7 +40,7 @@ It is **agnostic** of:
 ## How it works
 
 ```text
-BOOTSTRAP.md
+.template/BOOTSTRAP.md
   ├── detects the host and creates its adapter
   ├── interrogates the user (language, stack, quality, architecture, limits)
   ├── fills AGENTS.md + openspec/config.yaml + docs
@@ -70,4 +70,4 @@ The detailed procedures live in skills, so `AGENTS.md` stays a contract instead 
 - Extend the harness: [`extending.md`](extending.md)
 - Update a configured project: [`updating.md`](updating.md)
 - Use the harness: [`../../../docs/harness/en/QUICKSTART.md`](../../../docs/harness/en/QUICKSTART.md)
-- Host differences: [`../../../COMPATIBILITY.md`](../../../COMPATIBILITY.md)
+- Host differences: [`../../../docs/harness/en/COMPATIBILITY.md`](../../../docs/harness/en/COMPATIBILITY.md)

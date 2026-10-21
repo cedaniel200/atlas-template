@@ -21,7 +21,7 @@ Copy only what is missing from the template:
 | `AGENTS.md` | **Do not overwrite**; merge with a diff |
 | `openspec/config.yaml` | Merge `context:` and `rules:` |
 | `openspec/specs/`, `adr/` | Keep the project's |
-| `.agents/skills/`, `agents/` | Keep the project's; add the template's with a prefix or as a pack |
+| `.agents/skills/`, `.template/agents/` | Keep the project's; add the template's with a prefix or as a pack |
 | `docs/README.md` | Merge: keep the project's index and link the harness sections |
 | Adapters (`.opencode/`, `.claude/`) | Preserve; adapt only what collides |
 

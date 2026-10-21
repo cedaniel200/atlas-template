@@ -105,3 +105,4 @@ The `analyst` asks at the start whether to orchestrate the cycle or let you invo
 - Existing project → [`ADOPTION.md`](ADOPTION.md)
 - Tools and MCP → [`TOOLS.md`](TOOLS.md)
 - Quality and CRAP → [`QUALITY.md`](QUALITY.md)
+- Host compatibility → [`COMPATIBILITY.md`](COMPATIBILITY.md)

@@ -104,3 +104,4 @@ El `analyst` te pregunta al inicio si orquesta el ciclo o prefieres invocar cada
 - Proyecto existente → [`ADOPTION.md`](ADOPTION.md)
 - Herramientas y MCP → [`TOOLS.md`](TOOLS.md)
 - Calidad y CRAP → [`QUALITY.md`](QUALITY.md)
+- Compatibilidad por herramienta → [`COMPATIBILITY.md`](COMPATIBILITY.md)

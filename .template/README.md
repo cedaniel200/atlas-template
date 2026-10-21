@@ -1,7 +1,7 @@
 # `.template/` — estado y material del ritual
 
 Este directorio es el **único** lugar del repo que sabe que el proyecto todavía no está configurado.
-Lo consume `BOOTSTRAP.md` en la primera sesión.
+Lo consume `.template/BOOTSTRAP.md` en la primera sesión.
 
 ## Estructura
 
@@ -9,6 +9,10 @@ Lo consume `BOOTSTRAP.md` en la primera sesión.
 |---|---|---|
 | `state.json` | ✅ sí | **Inputs**: estado del ritual y decisiones tomadas |
 | `manifest.json` | ✅ sí | **Outputs**: archivos generados, hash y propiedad (base para actualizar) |
+| `BOOTSTRAP.md` | ✅ sí | Ritual de primera sesión |
+| `PROJECT-README.md` | ✅ sí | Plantilla del README del proyecto (se copia a `README.md` al adoptar) |
+| `agents/` | ✅ sí | Prompts canónicos de rol; el bootstrap genera los adaptadores desde aquí |
+| `docs/` | ✅ sí | Documentación interna del arnés (`en/` canónico, `es/` traducción) |
 | `hosts/<host>/` | ✅ sí | Plantillas de adaptador por herramienta |
 | `profiles/<stack>.yaml` | ✅ sí | **Datos** por stack: comandos, rutas, calidad |
 | `packs/<pack>/` | ✅ sí | **Procedimiento** opcional (skills/agentes), fuera de discovery |
