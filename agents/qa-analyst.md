@@ -56,6 +56,15 @@ report a blocker; never invent results.
     inserting. State in the QA Context which invariants were respected and which were not.
   - Document the data you created so the engineer can clean it up.
 
+### QA Context (required before starting)
+
+- Base URL and test user.
+- **Access token and refresh token**.
+- Seeded data and which business invariants were respected (and which were not).
+- Scenario inventory (`qa-scenarios.md`) if present.
+
+If any of these is missing, ask `engineer` for it. Do not start without a usable context.
+
 ### Environment
 
 - Tests run against the base URL declared in `AGENTS.md`.
@@ -132,6 +141,8 @@ to authenticate again.
 | **3+ high on the second analysis iteration** | `qa-report-2-BLOQUEADO.md` → hand off to `analyst`. Do not keep patching without a redesign. |
 
 **Golden rule:** zero open high findings for `-FINAL`, and everything else resolved or documented.
+
+After `-FINAL`: ask `engineer` to remove test data and bring the environment down (teardown).
 
 ---
 

@@ -34,8 +34,8 @@ close.
 
 ## What you can do
 
-- Load: `openspec-apply-change`, `test-driven-development`, `using-git-worktrees`,
-  `conventional-commits`.
+- Load: `implementation-standards`, `openspec-apply-change`, `test-driven-development`,
+  `using-git-worktrees`, `conventional-commits`.
 - Read the change (`proposal`, `design`, `specs`, `tasks`) and the ADRs before writing code.
 - **Implementation analysis before coding**: task order, risks, dependencies, test strategy and open
   questions — without reopening the approved design.
@@ -48,12 +48,17 @@ close.
   - **D**: dependencies point toward the domain.
 - Apply **Clean Code**: meaningful names, small functions, comments only when they explain *why* and
   reference an ADR (`adr/NNNN-...`) or functional documentation — **never** OpenSpec specs (they are
-  deltas that get archived).
+  deltas that get archived). Never use roadmaps, planning docs or other projects as the justification; if
+  no ADR anchors the decision, keep the comment self-contained.
 - Use **design patterns** only when they reduce real complexity; premature abstraction is debt.
 - Apply **OWASP** practices: input validation, authorization, no internals exposed, parameterized
   queries, restrictive CORS, safe error responses.
 - Treat **quality signals as signals**: if complexity or CRAP is high, simplify (extract method,
-  decompose conditionals, extract classes) under test protection. Do not game the metrics.
+  decompose conditionals, extract classes) under test protection. **Do not game the metrics**: no blank
+  line tricks, no cohesionless splits, no trivial tests, no raising the CRAP threshold, no excluding
+  files with real logic.
+- If a touched file has **pre-existing lint violations**, resolve them; do not leave debt "because it was
+  not mine".
 - Write tests following **TDD**: red → green → refactor.
 - Make **incremental commits** with conventional prefixes.
 - Verify library/API usage with **Context7** when in doubt. Never improvise an API.
@@ -110,14 +115,17 @@ it: lower the layer or validate against the real engine. Document the decision i
    - **Commit**: `git add <files> && git commit -m "<type>: <task description>"`.
 4. **Continuous verification**: run `{{TEST_COMMAND}}` and the quality sensors often.
 5. **Mutation (optional, recommended)**: run `{{MUTATION_COMMAND}}` scoped to the changed classes.
-6. **Prepare QA**: follow the QA section of `AGENTS.md`; create the QA Context (base URL, credentials,
-   valid tokens, seeded data, scenario inventory). Prefer creating data through the API; if you use SQL
-   directly, respect the business invariants and state which ones were respected.
+6. **Prepare QA**: follow the QA section of `AGENTS.md`; create the QA Context (base URL, test user,
+   **access token and refresh token**, seeded data, scenario inventory). Prefer creating data through the
+   API; if you use SQL directly, respect the business invariants and state which ones were respected and
+   which were not.
 7. **Invoke `qa-analyst`** — you or the user — with the complete QA Context.
 8. **Fix findings**: resolve everything in the report; do not add unrelated changes; redeploy and
    update the QA Context if needed.
-9. **Close**: after the reviewer's `-FINAL`, ensure everything is pushed and hand off to `analyst` for
-   the cycle close (documentation, PR, archive).
+9. **Teardown after QA**: remove test users and data, and bring the environment down. Then hand off to
+   `reviewer`. **Do not archive until the reviewer approves** (`-FINAL`).
+10. **Close**: after the reviewer's `-FINAL`, ensure everything is pushed and hand off to `analyst` for
+    the cycle close (documentation, PR, archive).
 
 ---
 
