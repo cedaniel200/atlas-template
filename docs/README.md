@@ -62,6 +62,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 │   ├── agents/          # 5 prompts canónicos
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
+│   ├── scripts/         # helpers portables (sha256.sh / sha256.ps1)
 │   └── state.json manifest.json
 ├── docs/
 │   ├── README.md        # este índice
@@ -80,6 +81,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 
 - **Git**
 - **Node.js** + **OpenSpec CLI** (`npm i -g @fission-ai/openspec`)
+- **Shell POSIX** (`sh`, `grep`, `diff`). En **Windows**: Git Bash o WSL (no `cmd.exe`)
 - Opcional: Docker, MCP (`Context7`), memoria persistente (`Engram`)
 
 ---

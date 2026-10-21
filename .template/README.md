@@ -16,6 +16,7 @@ Lo consume `.template/BOOTSTRAP.md` en la primera sesión.
 | `hosts/<host>/` | ✅ sí | Plantillas de adaptador por herramienta |
 | `profiles/<stack>.yaml` | ✅ sí | **Datos** por stack: comandos, rutas, calidad |
 | `packs/<pack>/` | ✅ sí | **Procedimiento** opcional (skills/agentes), fuera de discovery |
+| `scripts/` | ✅ sí | Helpers portables del ritual (`sha256.sh` para POSIX, `sha256.ps1` para PowerShell) |
 | `adapters/<host>/` | ❌ no (gitignored) | Artefactos desplazados por `prune` (estado local) |
 | `backups/<timestamp>/` | ❌ no (gitignored) | Copia previa a una fusión en modo brownfield |
 

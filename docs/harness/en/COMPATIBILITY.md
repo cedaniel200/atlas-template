@@ -83,6 +83,26 @@ external service; never include proprietary code, secrets or personal data.
 
 ---
 
+## Shell and operating system
+
+The ritual uses **POSIX** commands (`sh`, `grep`, `diff`, `mkdir`). On Windows run it from
+**Git Bash or WSL** (recommended), not from `cmd.exe`.
+
+| Environment | Shell | Manifest hash helper |
+|---|---|---|
+| macOS / Linux | POSIX (`sh`) | `.template/scripts/sha256.sh` |
+| Windows + Git Bash / WSL | POSIX | `.template/scripts/sha256.sh` |
+| Native Windows | PowerShell 5.1+ | `.template/scripts/sha256.ps1` |
+
+- **Do not** call `certutil` or `Get-FileHash` directly: they emit **uppercase** and a different
+  format (`certutil` also adds a header and footer) → the manifest becomes incomparable and the
+  update reports **false drift**.
+- **EOL:** the hash is computed on the file on disk. The generated `.gitattributes` sets
+  `* text=auto eol=lf`, so the hash is comparable across systems.
+- If neither a POSIX shell nor PowerShell is available, the ritual must **stop** and ask the user.
+
+---
+
 ## Verified sources
 
 - **OpenCode** — *Agent Skills*: `.opencode/`, `.claude/`, `.agents/` paths; frontmatter

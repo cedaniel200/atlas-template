@@ -8,6 +8,7 @@
 
 - **Git**
 - **Node.js 20+** y **OpenSpec CLI** (`npm i -g @fission-ai/openspec`)
+- **Shell POSIX** (`sh`, `grep`, `diff`). En **Windows**: Git Bash o WSL
 - Una herramienta: **OpenCode**, **Claude Code** o **Codex**
 - Opcional: Docker, Context7 (MCP), Engram (memoria)
 

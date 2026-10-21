@@ -83,6 +83,26 @@ un servicio externo; nunca incluir código propietario, secretos ni datos person
 
 ---
 
+## Shell y sistema operativo
+
+El ritual usa comandos **POSIX** (`sh`, `grep`, `diff`, `mkdir`). En Windows se ejecuta desde
+**Git Bash o WSL** (recomendado); no desde `cmd.exe`.
+
+| Entorno | Shell | Helper de hash del manifiesto |
+|---|---|---|
+| macOS / Linux | POSIX (`sh`) | `.template/scripts/sha256.sh` |
+| Windows + Git Bash / WSL | POSIX | `.template/scripts/sha256.sh` |
+| Windows nativo | PowerShell 5.1+ | `.template/scripts/sha256.ps1` |
+
+- **No** usar `certutil` ni `Get-FileHash` directamente: emiten **mayúsculas** y otro formato
+  (`certutil` además con cabecera y pie) → el manifiesto queda incomparable y la actualización
+  reporta **falso drift**.
+- **EOL:** el hash se calcula sobre el archivo en disco. El `.gitattributes` generado fija
+  `* text=auto eol=lf`, de modo que el hash es comparable entre sistemas.
+- Si no hay shell POSIX ni PowerShell, el ritual debe **detenerse** y pedirlo al usuario.
+
+---
+
 ## Fuentes verificadas
 
 - **OpenCode** — *Agent Skills*: rutas `.opencode/`, `.claude/`, `.agents/`; frontmatter
