@@ -1,5 +1,10 @@
 {
   "bootstrap_version": 1,
+  "template_version": "0.1.0",
+  "template_source": {
+    "url": null,
+    "commit": null
+  },
   "status": "pending",
   "mode": null,
   "host": null,
@@ -8,6 +13,11 @@
     "user": null,
     "agent": "en"
   },
+  "architecture": {
+    "stance": null,
+    "notes": null
+  },
+  "profile": null,
   "packs": [],
   "phase": 0,
   "displaced": [],

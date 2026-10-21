@@ -12,16 +12,20 @@ context: |
 # IMPORTANTE: cada regla debe ser un string entre comillas.
 # Un ": " sin comillas convierte el ítem en un mapa y OpenSpec descarta TODA la regla
 # del artefacto ("must be an array of strings"). Validar con: openspec context
+#
+# Las reglas son agnósticas de arquitectura: la postura concreta (capas, hexagonal,
+# DDD táctico, la que ya tenga el proyecto) se declara en AGENTS.md §Arquitectura y
+# el bootstrap puede ajustar estas reglas a ella.
 rules:
   proposal:
     - "Máximo 250 palabras"
-    - "Incluir una sección de capacidades mapeadas al dominio (agregados, value objects, eventos)"
+    - "Incluir una sección de capacidades mapeadas al dominio del negocio"
   specs:
-    - "Usar el lenguaje ubicuo definido en AGENTS.md; no introducir sinónimos"
+    - "Usar el lenguaje del dominio definido en AGENTS.md; no introducir sinónimos"
     - "Escenarios GIVEN/WHEN/THEN en lenguaje de negocio, no técnico"
   design:
     - "Alinear con la arquitectura declarada en AGENTS.md"
-    - "Respetar las fronteras entre capas: el dominio no depende de la infraestructura"
+    - "Respetar las fronteras y la dirección de dependencias que declare el proyecto"
     - "Incluir diagramas C4 en Mermaid cuando sea relevante (Context → Container → Component)"
   adr:
     - "Registrar solo decisiones durables; no inventar ADRs para detalles tácticos"
