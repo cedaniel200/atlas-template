@@ -216,6 +216,16 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 | `.template/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
 | `.template/docs/` | Si no se contribuye, mover a `.template/archive/docs/` y quitar la sección del índice |
 
+### Generación de adaptadores y manifiesto
+
+- **Agentes**: por cada rol de `.template/agents/<rol>.md`:
+  - OpenCode: `.opencode/agent/<rol>.md` con frontmatter `description` y `mode: all` + cuerpo canónico.
+  - Claude Code: `.claude/agents/<rol>.md` con frontmatter `name` y `description` + cuerpo canónico.
+- **Manifiesto**: `sha256` con `shasum -a 256` (macOS) o `sha256sum` (Linux); escribe
+  `.template/manifest.json` con `origin`, `sha256` y `ownership`.
+- **Placeholders**: el perfil y las respuestas son la fuente de valores; sustituye en `AGENTS.md`,
+  `openspec/config.yaml` y `README.md`. No dejes `{{...}}`.
+
 Reglas:
 
 - Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
