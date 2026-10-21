@@ -43,8 +43,8 @@ functional/
 - RN-002: [Otra regla]
 
 ## Referencias
-- ADR: [ADR-00XX](../../adr/00XX-decision.md)
-- Specs: [openspec/specs/.../feature.md](../../openspec/specs/...)
+- ADR: `../../adr/00XX-decision.md`
+- Specs: `../../openspec/specs/<capacidad>/spec.md`
 ```
 
 ## Reglas

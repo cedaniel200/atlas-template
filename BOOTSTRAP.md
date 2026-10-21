@@ -66,7 +66,7 @@ Confirma con el usuario antes de seguir.
 
 ## −1.2 Inventario (solo lectura, brownfield)
 
-Inspecciona y registra en `docs/template-adoption.md`:
+Inspecciona y registra en `docs/template-adoption.md` (guía: `docs/harness/<lang>/ADOPTION.md`):
 
 | Se detecta | Acción |
 |---|---|
@@ -175,7 +175,7 @@ Carga la skill `grilling` si está disponible y conduce **3 rondas como máximo*
 | Lint y análisis estático | Checkstyle/ESLint/ruff/… |
 | Cobertura | JaCoCo/c8/pytest-cov/… |
 | Mutación | PIT/Stryker/mutmut/… |
-| **CRAP** | Umbral por método; default **6** |
+| **CRAP** | Umbral por método; default **6** (ver `docs/harness/<lang>/QUALITY.md`) |
 | Secretos | gitleaks (tool‑agnóstico) |
 | Entorno de QA | Docker sí/no, servicio, puerto, health, métricas |
 
@@ -193,6 +193,8 @@ Carga la skill `grilling` si está disponible y conduce **3 rondas como máximo*
 7. **Comandos OpenSpec**: `user` (siempre el humano), `agent` (siempre el agente) o `ask` (preguntar en
    cada sesión). Default: `ask`.
 8. **Orquestación**: orquestada (default) o manual.
+9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas, `.template/docs/`
+   se puede retirar (se mueve a `.template/archive/` y se quita del índice).
 
 > Si el usuario responde “lo que sea”, elige el default de su stack **y dilo** para que lo corrija.
 > Las respuestas se escriben directamente en `AGENTS.md`; no se inventan comandos.
@@ -212,13 +214,15 @@ Carga la skill `grilling` si está disponible y conduce **3 rondas como máximo*
 | `CLAUDE.md` | Verificar el stub de una línea: `@AGENTS.md` |
 | Adaptadores | Agentes y comandos del host detectado |
 | `.template/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
+| `.template/docs/` | Si no se contribuye, mover a `.template/archive/docs/` y quitar la sección del índice |
 
 Reglas:
 
 - Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
   `grep -r "{{" AGENTS.md openspec/config.yaml PROJECT-README.md` debe devolver **vacío**.
-- **Idioma**: `AGENTS.md` y `PROJECT-README.md` se escriben en `language.user`. Si el usuario eligió un
-  idioma distinto del template (español), tradúcelos. Las guías del template (`README.md`, `BOOTSTRAP.md`,
+- **Idioma**: `AGENTS.md`, `PROJECT-README.md` y `docs/README.md` se escriben en `language.user`. Si el
+  usuario eligió un idioma distinto del template (español), tradúcelos. Las guías del template
+  (`docs/README.md`, `BOOTSTRAP.md`,
   `COMPATIBILITY.md`) pueden quedarse en español salvo que el usuario pida traducirlas.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adaptadores, comandos, CLAUDE.md).

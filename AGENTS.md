@@ -229,6 +229,7 @@ Si el stack no usa un concepto, el valor es `N/A` (nunca se deja el placeholder 
 | Inventario preliminar de QA | `openspec/changes/<cambio>/qa-scenarios.md` |
 | Reportes de QA | `openspec/changes/<cambio>/qa-report-*.md` |
 | Reportes de revisión | `openspec/changes/<cambio>/reviewer-report-*.md` |
+| Guías del arnés | `docs/README.md` (índice) · `docs/harness/es/` · `docs/harness/en/` |
 
 ---
 
