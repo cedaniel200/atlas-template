@@ -222,7 +222,7 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 | `CLAUDE.md` | Verificar el stub de una línea: `@AGENTS.md` |
 | Adaptadores | Agentes y comandos del host detectado |
 | `.template/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
-| `.template/docs/` | Si no se contribuye, mover a `.template/archive/docs/` y quitar la sección del índice |
+| `.template/docs/` | Si no se contribuye, mover a `.template/archive/docs/` y quitar la fila del índice |
 
 ### Generación de adaptadores y manifiesto
 
