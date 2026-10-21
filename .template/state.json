@@ -1,0 +1,16 @@
+{
+  "bootstrap_version": 1,
+  "status": "pending",
+  "mode": null,
+  "host": null,
+  "host_source": null,
+  "language": {
+    "user": null,
+    "agent": "en"
+  },
+  "packs": [],
+  "phase": 0,
+  "displaced": [],
+  "override_reason": null,
+  "configured_at": null
+}
