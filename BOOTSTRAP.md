@@ -150,7 +150,7 @@ Si `openspec init` reescribe `AGENTS.md`, restáuralo desde el backup y fusiona 
 
 # Fase 1 — Interrogatorio
 
-Carga la skill `grilling` si está disponible y conduce **3 rondas como máximo**, agrupando preguntas.
+Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 
 ## Ronda 0 — Idioma
 
