@@ -1,0 +1,48 @@
+# ILUSTRATIVO — no normativo.
+# No forma parte del catálogo soportado. Muestra la forma de un perfil.
+# Los valores de framework e infraestructura van como placeholders: no fijan
+# ningún framework concreto. El catálogo se define al final del template.
+name: node-ts
+description: Proyecto Node.js + TypeScript (ejemplo)
+
+stack:
+  language: TypeScript
+  runtime: Node.js
+  package_manager: "{{PACKAGE_MANAGER}}"
+
+structure:
+  source: src/
+  tests: test/
+
+commands:
+  install: "{{PACKAGE_MANAGER}} install"
+  build: "{{PACKAGE_MANAGER}} build"
+  run: "{{RUN_APP_COMMAND}}"
+  test: "{{PACKAGE_MANAGER}} test"
+  test_unit: "{{PACKAGE_MANAGER}} test -- --run"
+  lint: "{{PACKAGE_MANAGER}} lint"
+  lint_tests: "{{PACKAGE_MANAGER}} lint"
+  typecheck: "{{PACKAGE_MANAGER}} typecheck"
+  static_analysis: "{{PACKAGE_MANAGER}} lint && {{PACKAGE_MANAGER}} typecheck"
+  quality: "{{PACKAGE_MANAGER}} lint && {{PACKAGE_MANAGER}} typecheck && {{PACKAGE_MANAGER}} test"
+  coverage: "{{PACKAGE_MANAGER}} test -- --coverage"
+  mutation: "npx stryker run"
+  crap: "node scripts/crap.mjs"
+
+quality:
+  crap_threshold: 6
+  coverage_min: null
+  tools: [eslint, prettier, tsc, vitest, gitleaks]
+  suggested: [stryker, dependency-cruiser, semgrep]
+
+qa:
+  docker: false
+  service_name: "{{SERVICE_NAME}}"
+  app_port: "{{APP_PORT}}"
+  health_path: "{{HEALTH_PATH}}"
+  metrics_path: "{{METRICS_PATH}}"
+
+notes: |
+  Solo los comandos de build y calidad son propios del toolchain.
+  El gestor de paquetes, el comando de arranque, el puerto y las rutas de
+  health/métricas se resuelven en el cuestionario.

@@ -4,6 +4,9 @@ Un pack agrupa **conocimiento procedimental** —skills y agentes— que no se p
 comando o una ruta. **No se descubre automáticamente**: vive fuera de `.agents/skills/` y `agents/`,
 así que no consume contexto en sesiones donde no aplica.
 
+> ⚠️ **Catálogo provisional.** Solo se listan los packs agnósticos de tecnología. Los packs de stack
+> se definen al final del template (ver "Por definir al final").
+
 ## Regla de admisión
 
 Antes de crear un pack, clasifica el conocimiento:
@@ -32,15 +35,13 @@ proceso del núcleo; con pack, gana profundidad.
 
 ```yaml
 # pack.yaml
-name: node-ts
+name: ddd
 version: 0.1.0
-description: Prácticas procedimentales para Node.js + TypeScript
+description: Modelado estratégico y táctico de dominio
 provides:
-  - skills/node-testing
-  - skills/node-security
-requires:
-  - profile:node-ts
-stack_hints: [node, typescript]
+  - skills/ddd-modeling
+requires: []
+stack_hints: []
 license: MIT
 ```
 
@@ -58,21 +59,33 @@ license: MIT
 Desactivar un pack = borrar sus archivos copiados (o restaurarlos desde este directorio).
 En una actualización, **solo se actualizan los packs activados**.
 
-## Catálogo
+## Catálogo (candidatos agnósticos)
 
-**v1: el mecanismo existe, sin packs.** Se añaden en cambios posteriores.
+Estos packs no prometen soporte de ninguna tecnología concreta, por eso pueden quedar definidos:
 
 | Pack | Qué aporta | Requiere |
 |---|---|---|
 | `ddd` | Modelado estratégico y táctico: agregados, VOs, eventos, context mapping | — |
-| `java-quality` | Gates JVM: Checkstyle, SpotBugs, ArchUnit, PIT, CRAP | `profile:java-*` |
-| `node-ts` | Testing, seguridad y estructura para Node/TypeScript | `profile:node-*` |
-| `react-frontend` | Patrones React, accesibilidad, rendimiento, seguridad frontend | `profile:node-*` |
-| `kmp-mobile` | Kotlin Multiplatform, Compose MP, MASVS (incluye agente `mobile`) | `profile:kotlin-*` |
-| `qa-http` | Pruebas E2E con HTTP y SQL (curl/psql) | — |
-| `design-system` | Tokens, componentes, iconografía y accesibilidad | — |
 | `business-modeling` | Modelo de negocio y propuesta de valor (agente `business`) | — |
 | `integrations` | Memoria persistente (Engram) y grafo de conocimiento (Graphify) | — |
+
+**v1: el mecanismo existe, sin packs.** Se materializan en cambios posteriores.
+
+## Por definir al final
+
+Packs que dependen de una tecnología y que **no** forman parte del catálogo soportado todavía:
+
+| Pack previsto | Depende de |
+|---|---|
+| `java-quality` | Perfil JVM |
+| `node-ts` | Perfil Node/TS |
+| `react-frontend` | Perfil Node/TS |
+| `kmp-mobile` | Perfil Kotlin |
+| `qa-http` | Herramientas HTTP/SQL |
+| `design-system` | Sistema de diseño del proyecto |
+
+La decisión de cuáles se soportan, con qué alcance y con qué perfiles se toma al final, junto con la
+definición definitiva de los perfiles.
 
 ## Lo que un pack NO es
 

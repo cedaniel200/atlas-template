@@ -1,5 +1,9 @@
+# ILUSTRATIVO — no normativo.
+# No forma parte del catálogo soportado. Muestra la forma de un perfil.
+# Los valores de framework e infraestructura van como placeholders: no fijan
+# ninguna tecnología concreta. El catálogo se define al final del template.
 name: java-gradle
-description: Proyecto Java + Gradle
+description: Proyecto Java + Gradle (ejemplo)
 
 stack:
   language: Java
@@ -13,7 +17,7 @@ structure:
 commands:
   install: "./gradlew dependencies"
   build: "./gradlew build"
-  run: "./gradlew bootRun"
+  run: "{{RUN_APP_COMMAND}}"
   test: "./gradlew test"
   test_unit: "./gradlew test --tests '*UnitTest'"
   lint: "./gradlew checkstyleMain"
@@ -32,12 +36,13 @@ quality:
   suggested: [errorprone, archunit, pit, owasp-dependency-check]
 
 qa:
-  docker: true
-  service_name: api
-  app_port: 8080
-  health_path: /actuator/health
-  metrics_path: /actuator/prometheus
+  docker: false
+  service_name: "{{SERVICE_NAME}}"
+  app_port: "{{APP_PORT}}"
+  health_path: "{{HEALTH_PATH}}"
+  metrics_path: "{{METRICS_PATH}}"
 
 notes: |
-  Perfil de ejemplo. Ajusta los nombres de tareas a los plugins reales del proyecto.
-  Un gate que no existe en el build debe quitarse del perfil, no dejarse como comando roto.
+  Solo los comandos de build y calidad son propios del toolchain.
+  El comando de arranque, el puerto y las rutas de health/métricas dependen del
+  framework y la infraestructura: se resuelven en el cuestionario.
