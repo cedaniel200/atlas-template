@@ -1,59 +1,62 @@
 ---
 name: conventional-commits
-description: Use for ALL commits — enforces incremental commits with Conventional Commits prefixes and descriptive messages in Spanish.
+description: Use for ALL commits — enforces incremental commits with Conventional Commits prefixes and descriptive messages in the project language.
+license: MIT
 ---
 
 # Conventional Commits
 
 ## Overview
 
-Hacer commits pequeños e incrementales tras cada cambio lógico completado. Usar prefijos estandarizados para facilitar la navegación del historial y la reversión selectiva.
+Make small, incremental commits after each completed logical change. Use standardized prefixes to make
+the history navigable and allow selective reverts.
 
 ## When to Use
 
-**Siempre.** Cada commit debe seguir esta convención, desde el primer cambio hasta el final de la sesión.
+**Always.** Every commit follows this convention, from the first change to the end of the session.
 
-## Regla de oro: un cambio lógico = un commit
+## Golden rule: one logical change = one commit
 
-Commitear inmediatamente después de completar UN cambio atómico:
+Commit immediately after completing ONE atomic change:
 
-- ✅ Spec escrita → `docs: spec de registro de oveja`
-- ✅ Test implementado → `test: validar crotal duplicado en compra`
-- ✅ Código implementado → `feat: registrar compra individual`
-- ✅ ADR creado → `docs: ADR 0001 - DTOs con factory methods`
-- ✅ Refactor → `refactor: extrae validación de crotal a método`
-- ❌ NO acumular: "Agrega spec, test, código, ADR y arregla bug" en un solo commit
+- ✅ Spec written → `docs: especificación de registro de <entidad>`
+- ✅ Test implemented → `test: rechazar identificador duplicado`
+- ✅ Code implemented → `feat: registrar <entidad>`
+- ✅ ADR created → `docs: ADR 0001 - decisiones de persistencia`
+- ✅ Refactor → `refactor: extrae validación de identificador a método`
+- ❌ Do NOT accumulate: "add spec, test, code, ADR and fix bug" in a single commit
 
-## Prefijos
+## Prefixes
 
-| Prefijo | Cuándo usarlo | Ejemplo |
-|---------|---------------|---------|
-| `feat:` | Nueva feature de dominio (código) | `feat: registrar parto con múltiples crías` |
-| `test:` | Tests nuevos o modificados | `test: rechazar parto con madre en fase incorrecta` |
-| `docs:` | Specs, ADRs, documentación (no código) | `docs: spec de fases de ciclo de vida` |
-| `refactor:` | Cambio de estructura sin cambio funcional | `refactor: extrae máquina de estados a método privado` |
-| `fix:` | Corrección de bug | `fix: validar crotal nulo antes de comparar` |
-| `chore:` | Config, build, archivos de proyecto | `chore: actualiza skills-lock.json` |
+| Prefix | When to use | Example |
+|---|---|---|
+| `feat:` | New domain feature (code) | `feat: registrar <evento> con múltiples elementos` |
+| `test:` | New or modified tests | `test: rechazar transición en estado inválido` |
+| `docs:` | Specs, ADRs, documentation (no code) | `docs: especificación de estados del ciclo de vida` |
+| `refactor:` | Structural change without functional change | `refactor: extrae máquina de estados a método privado` |
+| `fix:` | Bug fix | `fix: validar identificador nulo antes de comparar` |
+| `chore:` | Config, build, project files | `chore: actualiza configuración del linter` |
 
-## Flujo de trabajo
+## Workflow
 
-1. Hacer un cambio atómico
-2. `git add -A`
-3. `git commit -m "<prefijo>: <mensaje descriptivo en español>"`
-4. Repetir
+1. Make one atomic change
+2. `git add <files>`
+3. `git commit -m "<prefix>: <descriptive message>"`
+4. Repeat
 
-No esperar al final de la sesión para commitear. Los commits incrementales permiten revertir cambios específicos sin afectar al resto.
+Do not wait until the end of the session to commit. Incremental commits allow reverting specific
+changes without affecting the rest.
 
-## Byline de rol (cuando el commit lo ejecuta un agente)
+## Role byline (when the commit is executed by an agent)
 
-Los commits ejecutados por un agente llevan el rol como byline al final del body:
+Commits executed by an agent carry the role as a byline at the end of the body:
 
 ```text
-git commit -m "feat: registrar parto con múltiples crías
+git commit -m "feat: registrar <evento> con múltiples elementos
 
-By ddd-engineer."
+By <role>."
 ```
 
-- Solo cuando el commit lo ejecuta un agente. Los commits del usuario no llevan byline.
-- El byline se añade al **body**, nunca al título (el título conserva el prefijo conventional).
-- Ejemplo de body: `By ddd-analyst.`, `By ddd-engineer.`, `By qa-analyst.`
+- Only when the commit is executed by an agent. User commits do not carry a byline.
+- The byline goes in the **body**, never in the title (the title keeps the conventional prefix).
+- Examples: `By analyst.`, `By engineer.`, `By qa-analyst.`

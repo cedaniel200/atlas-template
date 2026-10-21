@@ -1,21 +1,24 @@
 ---
 name: gherkin-specs
-description: Use when writing or editing spec documents in openspec/specs/ — guides Gherkin-style GIVEN/WHEN/THEN scenarios with ubiquitous domain language.
+description: Use when writing or editing OpenSpec specs — guides Gherkin-style GIVEN/WHEN/THEN scenarios in the domain's business language.
+license: MIT
 ---
 
 # Gherkin Specs
 
 ## Overview
 
-Write domain specifications using Gherkin-style scenarios. Each scenario describes one behavior from the user's perspective using the domain's ubiquitous language.
+Write domain specifications using Gherkin-style scenarios. Each scenario describes one behavior from the
+user's perspective, using the domain's business language.
 
 ## When to Use
 
-- During `/opsx:propose` — when writing the `specs/` phase
+- During the **propose** phase, when writing `specs/`
 - Editing existing specs in `openspec/specs/<capability>/spec.md`
-- Adding new scenarios to cover edge cases or new requirements
+- Adding scenarios for edge cases or new requirements
 
-Do NOT use for implementation details, technical design, or test code. Specs describe WHAT the system does, not HOW.
+Do NOT use for implementation details, technical design, or test code. Specs describe **WHAT** the
+system does, not **HOW**.
 
 ## Format
 
@@ -32,34 +35,47 @@ Do NOT use for implementation details, technical design, or test code. Specs des
 
 ## Conventions
 
-- **Lenguaje ubicuo**: usar términos del dominio (oveja, crotal, rebaño, fase, parto, procedencia). No usar términos técnicos (DTO, repositorio, service).
-- **Un comportamiento por escenario**: no probar múltiples variantes en un mismo escenario.
-- **GIVEN obligatorio**: todo escenario necesita un contexto inicial explícito.
-- **Independencia**: los escenarios no dependen entre sí. Cada uno establece su propio GIVEN.
-- **Negocio, no UI**: describir intención, no clicks o endpoints.
+- **Domain language**: use the business terms defined in `AGENTS.md`; do not introduce synonyms.
+- **No implementation terms**: avoid class names, layers, endpoints or data structures.
+- **One behavior per scenario**: do not test several variants in the same scenario.
+- **GIVEN is mandatory**: every scenario needs an explicit initial state.
+- **Independence**: scenarios do not depend on each other; each sets its own GIVEN.
+- **Business, not UI**: describe intent, not clicks or screens.
 
 ## Examples
 
-### Requirement: Registrar oveja por compra individual
-El sistema permite registrar una oveja adquirida por compra.
+> The identifiers in angle brackets are **placeholders**. Replace them with the project's domain terms.
 
-#### Scenario: Compra exitosa con fecha de nacimiento
-- **GIVEN** un crotal válido (8-10 alfanuméricos) que no existe en el sistema
-- **WHEN** se registra una compra con crotal, raza, sexo, peso, fase REPRODUCTORA y fecha de nacimiento
-- **THEN** la oveja se crea con los datos proporcionados
-- **AND** se publica un evento `OvejaRegistrada`
+### Requirement: Register `<entity>` with a unique identifier
 
-#### Scenario: Crotal duplicado rechazado
-- **GIVEN** una oveja existente con crotal X
-- **WHEN** se intenta registrar otra oveja con el mismo crotal X
-- **THEN** el sistema rechaza la operación con excepción de crotal duplicado
+The system allows registering an `<entity>` with a unique identifier.
 
-### Requirement: Registrar parto
-El sistema permite registrar el nacimiento de crías.
+#### Scenario: Successful registration
 
-#### Scenario: Parto exitoso con una cría
-- **GIVEN** una oveja HEMBRA en fase REPRODUCTORA con estado gestacional PREÑADA
-- **WHEN** se registra un parto con 1 cría (crotal, raza, sexo, peso)
-- **THEN** la cría se crea en fase LACTANCIA
-- **AND** la madre actualiza su estado gestacional a VACIA
-- **AND** se publican eventos `PartoRegistrado`, `NoGestacion` y `OvejaRegistrada`
+- **GIVEN** a valid identifier that does not exist in the system
+- **WHEN** an `<entity>` is registered with its mandatory data
+- **THEN** the `<entity>` is created with the provided data
+- **AND** the corresponding domain event is published
+
+#### Scenario: Duplicate identifier rejected
+
+- **GIVEN** an existing `<entity>` with identifier X
+- **WHEN** another `<entity>` is registered with the same identifier X
+- **THEN** the system rejects the operation with a duplicate error
+
+### Requirement: Register `<lifecycle event>`
+
+The system allows recording a `<lifecycle event>` for an existing `<entity>`.
+
+#### Scenario: Successful lifecycle transition
+
+- **GIVEN** an `<entity>` in a state that allows the transition
+- **WHEN** the `<lifecycle event>` is registered with its data
+- **THEN** the `<entity>` moves to the new state
+- **AND** the state change is visible in subsequent queries
+
+#### Scenario: Invalid transition rejected
+
+- **GIVEN** an `<entity>` in a state that does not allow the transition
+- **WHEN** the `<lifecycle event>` is registered
+- **THEN** the system rejects the operation with an invalid-state error
