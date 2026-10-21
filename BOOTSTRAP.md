@@ -66,7 +66,7 @@ Confirma con el usuario antes de seguir.
 
 ## −1.2 Inventario (solo lectura, brownfield)
 
-Inspecciona y registra en `docs/template-adoption.md`:
+Inspecciona y registra en `docs/template-adoption.md` (guía: `docs/ADOPTION.md`):
 
 | Se detecta | Acción |
 |---|---|
@@ -175,7 +175,7 @@ Carga la skill `grilling` si está disponible y conduce **3 rondas como máximo*
 | Lint y análisis estático | Checkstyle/ESLint/ruff/… |
 | Cobertura | JaCoCo/c8/pytest-cov/… |
 | Mutación | PIT/Stryker/mutmut/… |
-| **CRAP** | Umbral por método; default **6** |
+| **CRAP** | Umbral por método; default **6** (ver `docs/QUALITY.md`) |
 | Secretos | gitleaks (tool‑agnóstico) |
 | Entorno de QA | Docker sí/no, servicio, puerto, health, métricas |
 

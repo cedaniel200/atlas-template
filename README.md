@@ -16,6 +16,7 @@
 | **Skills** | 14 skills portables en `.agents/skills/` |
 | **Ritual** | `BOOTSTRAP.md`: detecta la herramienta, interroga y genera el contexto |
 | **Compatibilidad** | `COMPATIBILITY.md`: matriz de capacidades y degradaciones por host |
+| **Guías** | `docs/QUICKSTART.md`, `ADOPTION.md`, `TOOLS.md`, `QUALITY.md` |
 | **Estado** | `.template/`: plantillas de host, perfiles, packs, manifiesto y estado |
 
 ---
@@ -92,6 +93,10 @@ Detalle completo en [`BOOTSTRAP.md`](BOOTSTRAP.md).
 │   └── schemas/         # Schema spec-driven-with-adr vendorizado
 ├── adr/                 # Decisiones arquitectónicas
 ├── docs/
+│   ├── QUICKSTART.md    # Proyecto nuevo, paso a paso
+│   ├── ADOPTION.md      # Proyecto existente
+│   ├── TOOLS.md         # MCP y herramientas opcionales
+│   ├── QUALITY.md       # Gates, métricas y CRAP
 │   ├── architecture/
 │   ├── api/
 │   ├── guides/
@@ -120,7 +125,11 @@ Detalle completo en [`BOOTSTRAP.md`](BOOTSTRAP.md).
 
 - [`BOOTSTRAP.md`](BOOTSTRAP.md) — ritual de primera sesión.
 - [`COMPATIBILITY.md`](COMPATIBILITY.md) — qué funciona igual y qué degrada por herramienta.
-- [`docs/`](docs/) — arquitectura, API, guías y documentación funcional del proyecto.
+- [`docs/QUICKSTART.md`](docs/QUICKSTART.md) — proyecto nuevo, paso a paso.
+- [`docs/ADOPTION.md`](docs/ADOPTION.md) — proyecto existente, inventario y conflictos.
+- [`docs/TOOLS.md`](docs/TOOLS.md) — MCP, memoria y herramientas opcionales.
+- [`docs/QUALITY.md`](docs/QUALITY.md) — gates, métricas y CRAP.
+- [`docs/`](docs/) — documentación del proyecto (arquitectura, API, guías, funcional).
 
 ---
 
