@@ -91,11 +91,14 @@ Read the reports the implementer or CI already produced:
 - **Lint/style**: any violation in files touched by the change → 🟠 HIGH.
 - **CRAP**: methods in touched files above the threshold declared in `AGENTS.md` (default **6**) → 🟠
   HIGH. Suggest reducing complexity or raising coverage; never suggest gaming the metric.
+- **Threshold or exclusions changed**: if the CRAP threshold, coverage exclusions or gate configuration
+  changed, treat it as 🟠 HIGH unless the change explicitly justifies it in `design.md` or an ADR.
 - **Coverage**: new or touched files have reasonable coverage; critical paths have no uncovered
   branches.
 - **Mutation**: a very low mutation score in touched classes → 🟡 MEDIUM.
-- **Comments**: code comments reference ADRs (`adr/NNNN-...`) or functional documentation, never
-  OpenSpec specs → if a comment cites a spec, 🟢 LOW.
+- **Comments**: code comments reference ADRs (`adr/NNNN-...`) or functional documentation — never
+  OpenSpec specs, roadmaps or other projects. If no ADR anchors the decision, the comment must be
+  self-contained → otherwise 🟢 LOW.
 
 ### Phase 2.7 — Design judgment
 
@@ -203,3 +206,17 @@ What tools cannot see:
   or documented — no invisible debt is carried to close.
 - After **3 iterations** with critical findings, do not write a fourth report: recommend a design
   session with `analyst` and stop.
+- **Global cap**: no more than **5 iterations** between QA and review combined. If exceeded, stop and
+  escalate to the user.
+
+---
+
+## Quick PR checklist
+
+- [ ] Declared architecture and boundaries respected.
+- [ ] Security: input validation, authorization, no data exposure, safe errors.
+- [ ] Tests: unit/integration green, no shortcuts, edge cases covered.
+- [ ] Gates: lint 0 (including pre-existing violations in touched files), CRAP ≤ threshold, coverage,
+      mutation.
+- [ ] No threshold or coverage-exclusion change without justification in `design.md` or an ADR.
+- [ ] Comments anchored to ADRs or functional docs — never specs, roadmaps or other projects.

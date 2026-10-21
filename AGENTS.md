@@ -162,9 +162,16 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 - **Commits incrementales**: un cambio lógico = un commit (ver `conventional-commits`).
 - **Byline de rol** en commits de agente: `By <rol>.` al final del body.
 - **Comentarios en código**: referencian ADRs (`adr/NNNN-...`) o documentación funcional, **nunca**
-  specs de `openspec/`.
-- **Calidad**: 0 violaciones de lint en los archivos tocados; CRAP ≤ `{{CRAP_THRESHOLD}}` por método.
-- **Los controles de calidad son señales, no objetivos**: no se manipulan métricas.
+  specs de `openspec/`, roadmaps ni otros proyectos. Si no hay ADR que ancle la decisión, el comentario
+  es autocontenido: decisión y razón.
+- **Calidad**: 0 violaciones de lint en los archivos tocados (si había preexistentes, se resuelven);
+  CRAP ≤ `{{CRAP_THRESHOLD}}` por método.
+- **Los controles de calidad son señales, no objetivos**: no se manipulan métricas; no se borran líneas,
+  no se dividen métodos sin cohesión, no se añaden tests triviales, no se sube el umbral ni se excluyen
+  archivos con lógica para pasar un gate.
+- **Ningún hallazgo se cierra en silencio**: se corrige o se documenta y se consulta al usuario.
+- **Disciplina de contexto**: búsquedas puntuales; evita barridos masivos (`grep -r`, `ls -R`,
+  `find` + `cat`). Si el proyecto tiene un índice o grafo, úsalo.
 - **No inventar librerías, APIs ni comportamiento**: verificar con **Context7** o preguntar.
 - **Datos de prueba**: si se crean por SQL directo, respetan las invariantes de negocio y se declaran.
 - **Anuncio de rol**: `🎩 Ahora soy <rol>` al cambiar de rol.
@@ -182,7 +189,9 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 | `openspec-archive-change` | `.agents/skills/openspec-archive-change/` | Archivar un cambio |
 | `openspec-sync-specs` | `.agents/skills/openspec-sync-specs/` | Sincronizar specs |
 | `openspec-workflow` | `.agents/skills/openspec-workflow/` | Pipeline completo y gates |
+| `grilling` | `.agents/skills/grilling/` | Estresar un plan o diseño antes de construir |
 | `test-driven-development` | `.agents/skills/test-driven-development/` | Rojo → verde → refactor |
+| `implementation-standards` | `.agents/skills/implementation-standards/` | Criterio de ingeniería: SOLID, Clean Code, refactors |
 | `using-git-worktrees` | `.agents/skills/using-git-worktrees/` | Aislar el cambio |
 | `git-workflow` | `.agents/skills/git-workflow/` | Ramas, worktrees, PR, limpieza |
 | `architectural-decision-records` | `.agents/skills/architectural-decision-records/` | Documentar una decisión durable |

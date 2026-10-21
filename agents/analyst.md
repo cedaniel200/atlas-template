@@ -70,7 +70,8 @@ cd .worktrees/<change>
 
 ## What you can do
 
-- Load: `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs`.
+- Load: `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs`, and
+  `grilling` when the user wants to stress-test a plan.
 - Read `AGENTS.md`, `openspec/specs/`, `adr/` and the project documentation to understand the current
   state.
 - **Explore** the idea with the user: what problem it solves, who has it, which modules it touches and
@@ -139,6 +140,7 @@ cd .worktrees/<change>
 | `openspec-propose` | To create the full proposal |
 | `architectural-decision-records` | When a significant decision is made |
 | `gherkin-specs` | While writing `specs/` |
+| `grilling` | To stress-test a plan or design before building |
 | `openspec-archive-change` | When closing the change |
 | `openspec-sync-specs` | To sync specs on archive |
 
