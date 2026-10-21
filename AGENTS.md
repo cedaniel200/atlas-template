@@ -130,6 +130,9 @@ explore → propose → apply → QA → review → cierre
          (proposal → specs → design → adr → tasks)
 ```
 
+> **Excepción — bootstrap:** la configuración inicial (`BOOTSTRAP.md`) corre en su propia rama
+> (`chore/bootstrap`), no en un worktree de cambio. Un commit por fase y el merge lo hace el usuario.
+
 ### Gates
 
 El `analyst` orquesta por defecto y se detiene en:

@@ -65,10 +65,11 @@ rm -rf .git && git init
 
 | Fase | Qué hace |
 |---|---|
+| **−2. Aislamiento** | Árbol limpio y rama propia (`chore/bootstrap`); nunca sobre trabajo sin commitear |
 | **−1. Modo** | Distingue proyecto nuevo (greenfield) de proyecto existente (brownfield) e inventaría el segundo |
 | **0. Herramienta** | Detecta el host y genera su adaptador sin borrar nada |
 | **1. Interrogatorio** | Idioma, stack, comandos, calidad, arquitectura, dominio, límites, memoria |
-| **2. Generación** | Rellena `AGENTS.md`, `config.yaml`, README, `.env.example`, lint/EOL y adaptadores |
+| **2. Generación** | Rellena `AGENTS.md`, `config.yaml`, README, lint/EOL y adaptadores; genera `.env.example` si el proyecto usa variables |
 | **3. Validación** | Gate bloqueante: sin contrato completo no se propone ningún cambio |
 
 Detalle completo en [`BOOTSTRAP.md`](BOOTSTRAP.md).

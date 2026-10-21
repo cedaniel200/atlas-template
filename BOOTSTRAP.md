@@ -20,6 +20,39 @@
 
 ---
 
+# Fase −2 — Aislamiento (antes de tocar nada)
+
+El bootstrap escribe archivos: **nunca se ejecuta sobre una rama con trabajo sin commitear**.
+
+1. `git status --porcelain` debe estar vacío. Si no, detenerse y pedir commit o stash.
+2. Detectar la rama por defecto:
+
+   ```bash
+   BASE=$(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's#^origin/##')
+   ```
+
+3. Elegir la rama:
+
+   | Situación | Rama |
+   |---|---|
+   | Greenfield sin historial de producto | La rama por defecto (o `chore/bootstrap` si el repo ya existe) |
+   | Brownfield | `chore/bootstrap` (o un worktree `.worktrees/bootstrap`) |
+   | Repo compartido o duda | `chore/bootstrap` siempre |
+
+4. Crear la rama si aplica:
+
+   ```bash
+   git checkout -b chore/bootstrap
+   ```
+
+5. Un commit por fase. **Sin push ni PR** salvo petición explícita del usuario.
+6. Al terminar: indicar la rama usada y pedir revisión; **el merge lo hace el usuario**.
+
+> **Excepción declarada:** el bootstrap es la única tarea que no sigue la regla “un worktree por cambio”.
+> Usa su propia rama de configuración para no contaminar el trabajo del proyecto.
+
+---
+
 # Fase −1 — Modo de adopción
 
 ## −1.1 Detectar

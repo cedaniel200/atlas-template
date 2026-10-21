@@ -7,7 +7,7 @@
 
 - Configuración, instrucciones y skills para agentes.
 - **Ningún dato de negocio, credencial, token, clave ni conexión a base de datos.**
-- `.env.example` con nombres de variables, nunca valores.
+- El bootstrap puede generar un `.env.example` con nombres de variables, nunca con valores.
 
 ## Qué ocurre cuando lo usas
 

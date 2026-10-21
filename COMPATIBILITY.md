@@ -50,7 +50,7 @@ Los comandos `opsx-*` **no** se mantienen a mano: `openspec update --tools <host
 | C‑4 | `openspec init` puede reescribir `AGENTS.md` | Pérdida del contrato del proyecto | Backup + `diff` + fusión manual (BOOTSTRAP § 0.4) |
 | C‑5 | Los wrappers de comandos dependen de la versión de OpenSpec | Wrappers obsoletos tras un upgrade | Regenerar con `openspec update --tools <host>` |
 | C‑6 | Claude Code y Codex cargan `AGENTS.md` anidados de forma distinta | Reglas de subdirectorio no uniformes | Núcleo solo en la raíz; anidar se documenta por proyecto |
-| C‑7 | MCP no es portable | Cada host tiene su formato | `.env.example` + bloque por host en `.template/hosts/` |
+| C‑7 | MCP no es portable | Cada host tiene su formato | `.env.example` generado por el bootstrap + bloque por host en `.template/hosts/` |
 | C‑8 | Hooks de ciclo de vida del agente no existen en Codex | Automatizaciones que dependen de ellos no funcionan | Los hooks de agente son opcionales; el flujo vive en skills e instrucciones |
 | C‑9 | Dos fuentes de instrucciones (`CLAUDE.md` y `AGENTS.md`) | Reglas contradictorias | `CLAUDE.md` contiene **solo** `@AGENTS.md`; nunca duplicar |
 

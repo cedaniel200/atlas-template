@@ -75,6 +75,12 @@ When the default branch must stay stable, use an integration branch:
 
 Partial PRs target the integration branch; the merge to the default branch happens once at the end.
 
+## Bootstrap exception
+
+The initial setup (`BOOTSTRAP.md`) is the **only** task that does not use a change worktree. It runs on
+its own `chore/bootstrap` branch, with one commit per phase and no push unless the user asks. The user
+reviews and merges that branch.
+
 ## Rules
 
 - The default branch is always clean and up to date.
