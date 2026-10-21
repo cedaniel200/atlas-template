@@ -31,7 +31,7 @@ Abre el proyecto y escribe:
 
 > **“Configura este proyecto”**
 
-El agente lee `AGENTS.md`, ve que `.template/state.json` está `pending` y ejecuta `BOOTSTRAP.md`.
+El agente lee `AGENTS.md`, ve que `.template/state.json` está `pending` y ejecuta `.template/BOOTSTRAP.md`.
 
 | Herramienta | Qué ocurre |
 |---|---|

@@ -31,7 +31,7 @@ Open the project and say:
 
 > **“Set up this project”**
 
-The agent reads `AGENTS.md`, sees `.template/state.json` is `pending`, and runs `BOOTSTRAP.md`.
+The agent reads `AGENTS.md`, sees `.template/state.json` is `pending`, and runs `.template/BOOTSTRAP.md`.
 
 | Host | What happens |
 |---|---|

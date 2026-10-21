@@ -58,7 +58,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 │   └── skills/          # 16 skills portables
 ├── .template/
 │   ├── BOOTSTRAP.md     # ritual de primera sesión
-│   ├── PROJECT-README.md# plantilla del README del proyecto
+│   ├── PROJECT-README.md # plantilla del README del proyecto
 │   ├── agents/          # 5 prompts canónicos
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
