@@ -40,7 +40,7 @@ commands:                      # strings ejecutables; usar "" si no aplica
   crap: ""
 
 quality:
-  crap_threshold: 6            # umbral por método (ver docs/QUALITY.md)
+  crap_threshold: 6            # umbral por método (ver docs/harness/<lang>/QUALITY.md)
   coverage_min: null
   tools: []
   suggested: []

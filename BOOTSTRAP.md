@@ -66,7 +66,7 @@ Confirma con el usuario antes de seguir.
 
 ## −1.2 Inventario (solo lectura, brownfield)
 
-Inspecciona y registra en `docs/template-adoption.md` (guía: `docs/ADOPTION.md`):
+Inspecciona y registra en `docs/template-adoption.md` (guía: `docs/harness/<lang>/ADOPTION.md`):
 
 | Se detecta | Acción |
 |---|---|
@@ -175,7 +175,7 @@ Carga la skill `grilling` si está disponible y conduce **3 rondas como máximo*
 | Lint y análisis estático | Checkstyle/ESLint/ruff/… |
 | Cobertura | JaCoCo/c8/pytest-cov/… |
 | Mutación | PIT/Stryker/mutmut/… |
-| **CRAP** | Umbral por método; default **6** (ver `docs/QUALITY.md`) |
+| **CRAP** | Umbral por método; default **6** (ver `docs/harness/<lang>/QUALITY.md`) |
 | Secretos | gitleaks (tool‑agnóstico) |
 | Entorno de QA | Docker sí/no, servicio, puerto, health, métricas |
 
@@ -218,7 +218,7 @@ Reglas:
 - Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
   `grep -r "{{" AGENTS.md openspec/config.yaml PROJECT-README.md` debe devolver **vacío**.
 - **Idioma**: `AGENTS.md` y `PROJECT-README.md` se escriben en `language.user`. Si el usuario eligió un
-  idioma distinto del template (español), tradúcelos. Las guías del template (`README.md`, `BOOTSTRAP.md`,
+  idioma distinto del template (español), tradúcelos. Las guías del template (`docs/README.md`, `BOOTSTRAP.md`,
   `COMPATIBILITY.md`) pueden quedarse en español salvo que el usuario pida traducirlas.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adaptadores, comandos, CLAUDE.md).
