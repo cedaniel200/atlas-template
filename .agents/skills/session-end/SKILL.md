@@ -20,7 +20,7 @@ license: MIT
 - [ ] Incremental commits (not one giant commit)
 - [ ] Role byline on agent commits
 - [ ] No open QA or review findings
-- [ ] `main` clean; work lives in its branch/worktree
+- [ ] Default branch clean; work lives in its branch/worktree
 - [ ] Summary written for the next session
 
 ## Persistent memory (if configured)

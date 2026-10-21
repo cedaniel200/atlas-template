@@ -15,27 +15,32 @@ the history navigable and allow selective reverts.
 
 **Always.** Every commit follows this convention, from the first change to the end of the session.
 
+## Language
+
+Write the message in the **project language** (`language.user`). The examples below use English for
+readability: translate the message, never the prefix.
+
 ## Golden rule: one logical change = one commit
 
 Commit immediately after completing ONE atomic change:
 
-- ✅ Spec written → `docs: especificación de registro de <entidad>`
-- ✅ Test implemented → `test: rechazar identificador duplicado`
-- ✅ Code implemented → `feat: registrar <entidad>`
-- ✅ ADR created → `docs: ADR 0001 - decisiones de persistencia`
-- ✅ Refactor → `refactor: extrae validación de identificador a método`
+- ✅ Spec written → `docs: spec for <entity> registration`
+- ✅ Test implemented → `test: reject duplicate identifier`
+- ✅ Code implemented → `feat: register <entity>`
+- ✅ ADR created → `docs: ADR 0001 - persistence decisions`
+- ✅ Refactor → `refactor: extract identifier validation into a method`
 - ❌ Do NOT accumulate: "add spec, test, code, ADR and fix bug" in a single commit
 
 ## Prefixes
 
 | Prefix | When to use | Example |
 |---|---|---|
-| `feat:` | New domain feature (code) | `feat: registrar <evento> con múltiples elementos` |
-| `test:` | New or modified tests | `test: rechazar transición en estado inválido` |
-| `docs:` | Specs, ADRs, documentation (no code) | `docs: especificación de estados del ciclo de vida` |
-| `refactor:` | Structural change without functional change | `refactor: extrae máquina de estados a método privado` |
-| `fix:` | Bug fix | `fix: validar identificador nulo antes de comparar` |
-| `chore:` | Config, build, project files | `chore: actualiza configuración del linter` |
+| `feat:` | New domain feature (code) | `feat: register <event> with multiple items` |
+| `test:` | New or modified tests | `test: reject transition from invalid state` |
+| `docs:` | Specs, ADRs, documentation (no code) | `docs: spec for lifecycle states` |
+| `refactor:` | Structural change without functional change | `refactor: extract state machine into a private method` |
+| `fix:` | Bug fix | `fix: validate null identifier before comparing` |
+| `chore:` | Config, build, project files | `chore: update linter configuration` |
 
 ## Workflow
 
@@ -52,7 +57,7 @@ changes without affecting the rest.
 Commits executed by an agent carry the role as a byline at the end of the body:
 
 ```text
-git commit -m "feat: registrar <evento> con múltiples elementos
+git commit -m "feat: register <event> with multiple items
 
 By <role>."
 ```
