@@ -92,7 +92,8 @@ Lo consume `BOOTSTRAP.md` en la primera sesión.
 5. Reporte: actualizados / conflictos / omitidos
 ```
 
-v1 **nunca destruye** trabajo del usuario. El merge a 3 bandas para conflictos es una mejora posterior.
+La actualización por hash **nunca destruye** trabajo del usuario: los archivos modificados se
+reportan como conflicto en lugar de sobrescribirse.
 
 ## Reglas
 

@@ -4,9 +4,6 @@ Un pack agrupa **conocimiento procedimental** —skills y agentes— que no se p
 comando o una ruta. **No se descubre automáticamente**: vive fuera de `.agents/skills/` y `agents/`,
 así que no consume contexto en sesiones donde no aplica.
 
-> ⚠️ **Catálogo provisional.** Solo se listan los packs agnósticos de tecnología. Los packs de stack
-> se definen al final del template (ver "Por definir al final").
-
 ## Regla de admisión
 
 Antes de crear un pack, clasifica el conocimiento:
@@ -59,9 +56,10 @@ license: MIT
 Desactivar un pack = borrar sus archivos copiados (o restaurarlos desde este directorio).
 En una actualización, **solo se actualizan los packs activados**.
 
-## Catálogo (candidatos agnósticos)
+## Catálogo
 
-Estos packs no prometen soporte de ninguna tecnología concreta, por eso pueden quedar definidos:
+Packs agnósticos de tecnología: no dependen de un stack concreto, por eso pueden describirse sin
+condicionar la elección del proyecto.
 
 | Pack | Qué aporta | Requiere |
 |---|---|---|
@@ -69,23 +67,7 @@ Estos packs no prometen soporte de ninguna tecnología concreta, por eso pueden 
 | `business-modeling` | Modelo de negocio y propuesta de valor (agente `business`) | — |
 | `integrations` | Memoria persistente (Engram) y grafo de conocimiento (Graphify) | — |
 
-**v1: el mecanismo existe, sin packs.** Se materializan en cambios posteriores.
-
-## Por definir al final
-
-Packs que dependen de una tecnología y que **no** forman parte del catálogo soportado todavía:
-
-| Pack previsto | Depende de |
-|---|---|
-| `java-quality` | Perfil JVM |
-| `node-ts` | Perfil Node/TS |
-| `react-frontend` | Perfil Node/TS |
-| `kmp-mobile` | Perfil Kotlin |
-| `qa-http` | Herramientas HTTP/SQL |
-| `design-system` | Sistema de diseño del proyecto |
-
-La decisión de cuáles se soportan, con qué alcance y con qué perfiles se toma al final, junto con la
-definición definitiva de los perfiles.
+Se incorporan de forma incremental; el mecanismo de activación está disponible desde esta versión.
 
 ## Lo que un pack NO es
 

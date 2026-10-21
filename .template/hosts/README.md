@@ -6,7 +6,7 @@ El bootstrap (Fase 0) detecta el host y **copia desde aquí** lo necesario.
 | Host | Plantilla | Genera en la raíz |
 |---|---|---|
 | OpenCode | `opencode/opencode.json` | `opencode.json` |
-| Claude Code | *(pendiente en PR de bootstrap)* | `CLAUDE.md`, `.claude/agents/`, `.claude/skills` (symlink) |
+| Claude Code | *(sin plantilla: lo genera el bootstrap)* | `CLAUDE.md`, `.claude/agents/`, `.claude/skills` (symlink) |
 | Codex | *(no requiere plantilla)* | Nada: lee `AGENTS.md` y `.agents/skills/` de forma nativa |
 
 ## Reglas
