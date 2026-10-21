@@ -19,6 +19,19 @@
   },
   "profile": null,
   "packs": [],
+  "preferences": {
+    "openspec_commands": "ask",
+    "orchestration": "orchestrated"
+  },
+  "quality": {
+    "crap_threshold": 6
+  },
+  "docs": {
+    "functional": "docs/functional",
+    "architecture": "docs/architecture",
+    "api": "docs/api",
+    "guides": "docs/guides"
+  },
   "phase": 0,
   "displaced": [],
   "override_reason": null,
