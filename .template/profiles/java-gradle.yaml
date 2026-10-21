@@ -1,0 +1,43 @@
+name: java-gradle
+description: Proyecto Java + Gradle
+
+stack:
+  language: Java
+  runtime: JVM
+  package_manager: Gradle
+
+structure:
+  source: src/main/java/
+  tests: src/test/java/
+
+commands:
+  install: "./gradlew dependencies"
+  build: "./gradlew build"
+  run: "./gradlew bootRun"
+  test: "./gradlew test"
+  test_unit: "./gradlew test --tests '*UnitTest'"
+  lint: "./gradlew checkstyleMain"
+  lint_tests: "./gradlew checkstyleTest"
+  typecheck: ""
+  static_analysis: "./gradlew spotbugsMain"
+  quality: "./gradlew checkstyleMain checkstyleTest spotbugsMain test"
+  coverage: "./gradlew jacocoTestReport"
+  mutation: "./gradlew pitest"
+  crap: "./gradlew crapAnalysis"
+
+quality:
+  crap_threshold: 6
+  coverage_min: null
+  tools: [checkstyle, spotbugs, junit5, jacoco, gitleaks]
+  suggested: [errorprone, archunit, pit, owasp-dependency-check]
+
+qa:
+  docker: true
+  service_name: api
+  app_port: 8080
+  health_path: /actuator/health
+  metrics_path: /actuator/prometheus
+
+notes: |
+  Perfil de ejemplo. Ajusta los nombres de tareas a los plugins reales del proyecto.
+  Un gate que no existe en el build debe quitarse del perfil, no dejarse como comando roto.
