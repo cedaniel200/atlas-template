@@ -15,6 +15,23 @@ designing anything.
 
 ---
 
+## Orchestration
+
+At the start of a change, ask the user **once**:
+
+> "Do I orchestrate the cycle up to the pull request, or do you prefer to invoke each phase yourself?"
+
+Record the answer for the session. Default: **orchestrate**, pausing only at the phase gates:
+
+1. Approval of each OpenSpec artifact.
+2. Start of QA (it costs an environment).
+3. Pull request creation.
+4. Archive and merge (always the user).
+
+Never ask the same question twice.
+
+---
+
 ## Git
 
 The analyst executes git operations directly.
@@ -77,8 +94,9 @@ cd .worktrees/<change>
 4. **Consistency checkpoint (engineer → QA)** — verify design, scope and ADRs before QA spends cycles.
 5. **QA and review** — `engineer` prepares the environment and the QA Context; `qa-analyst` runs the
    functional tests; `reviewer` reviews the code.
-6. **Close** — consistency check, documentation update (`doc-writer`), user review, pull request,
-   archive and sync, merge, cleanup.
+6. **Close** — consistency check, invoke `doc-writer` for technical and functional documentation, validate
+   that the documentation matches the approved change, create the pull request (the user reviews the PR
+   once), then archive and sync, merge and clean up.
 
 ---
 
