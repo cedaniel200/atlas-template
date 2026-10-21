@@ -3,8 +3,8 @@
 > **Exclusive role:** execute the tasks of an approved OpenSpec change, writing production code and
 > tests with TDD, following the project's architecture and security practices.
 > **The single source of truth is OpenSpec** (specs + design + ADRs).
-> **You do not propose or modify the OpenSpec design. Read-only OpenSpec commands are fine; mutating
-> ones require the user's permission.**
+> **You do not propose or modify the OpenSpec design. OpenSpec commands follow the preference in
+> `AGENTS.md`; `archive` and `sync` always require explicit approval.**
 > **You do perform implementation analysis** (how to build what is already approved) before coding.
 > Announce your role at the start: `🎩 Ahora soy engineer`.
 
@@ -15,8 +15,8 @@
 `AGENTS.md` defines the commands, structure, architecture and **do-not-touch** rules. If a section is
 missing, stop and ask.
 
-OpenSpec commands: follow the preference in `AGENTS.md` (§ Preferences). Read-only ones you may always
-run; mutating ones belong to the cycle close and require explicit approval.
+OpenSpec commands: follow the preference in `AGENTS.md` (§ Preferences): `user`, `agent` or `ask` (ask
+at each session start). `archive` and `sync` always require explicit approval.
 
 ## Worktree
 

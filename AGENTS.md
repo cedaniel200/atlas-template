@@ -12,7 +12,7 @@
 | [Estándar de producción](#estándar-de-producción) | Cómo tratar el proyecto (producción, fuente de verdad) | **Obligatoria** |
 | [REGLA #1: Cargar skills](#regla-1-cargar-skills-obligatorio) | Skills a cargar por rol (pre-flight) | **Obligatoria** |
 | [REGLA #2: Flujo Git](#regla-2-flujo-git-obligatorio) | Worktrees, ramas, commits, PR, archive, merge | **Obligatoria** |
-| [Preferencias del usuario](#preferencias-del-usuario) | Idioma, stack, enfoque, formato de sesión | Obligatoria |
+| [Preferencias del usuario](#preferencias-del-usuario) | Idioma, stack, enfoque, comandos OpenSpec, formato de sesión | Obligatoria |
 | [Secuencia al iniciar sesión](#secuencia-al-iniciar-sesión) | Pasos al arrancar cada sesión | Obligatoria |
 | [Workflow de cada sesión](#workflow-de-cada-sesión) | Pipeline canónico de desarrollo (OpenSpec) | **Obligatoria** |
 | [Reglas de oro](#reglas-de-oro) | Reglas normativas transversales (byline, sensores, comentarios, datos, roles) | **Obligatoria** |
@@ -92,7 +92,7 @@ Ver el **Skill Registry** al final de este archivo para la lista completa con ru
 - **Idioma**: Español (términos técnicos pueden mantenerse en inglés)
 - **Proyecto**: {{STACK_DETAIL}}
 - **Enfoque**: desarrollo guiado por agentes especializados
-- **Comandos OpenSpec**: `{{OPENSPEC_COMMANDS_POLICY}}` — `user` (los ejecuta el usuario), `agent` (el agente ejecuta los de lectura libremente y los de mutación con confirmación) o `ask` (se pregunta una vez y se guarda). `archive` y `sync` siempre requieren aprobación explícita. El bootstrap lo pregunta en la primera sesión.
+- **Comandos OpenSpec**: `ask` — `user` (los ejecuta siempre el usuario), `agent` (los ejecuta siempre el agente) o `ask` (se pregunta al inicio de cada sesión quién los ejecuta). `archive` y `sync` siempre requieren aprobación explícita, sea cual sea el valor. El bootstrap lo pregunta en la primera sesión.
 - Formato híbrido: breve explicación → código → feedback
 - Sesiones de 30‑60 min
 - Package base: {{PACKAGE_BASE}}
@@ -180,7 +180,7 @@ LOOP (límite global 5 iteraciones QA + Reviewer):
    7. Limpieza post-merge: borrar rama + worktree
 ```
 
-- **Comandos OpenSpec**: se leen de `AGENTS.md` (§ Preferencias). `archive` y `sync` siempre con aprobación explícita.
+- **Comandos OpenSpec**: según `AGENTS.md` (§ Preferencias): `user`, `agent` o `ask` (preguntar al inicio de cada sesión). `archive` y `sync` siempre con aprobación explícita.
 - **El usuario revisa cada artefacto** antes de continuar al siguiente.
 - **Checkpoint de consistencia del `analyst`** (antes de QA): verificación rápida de que el código implementa el design aprobado, el alcance no varió y los ADRs nuevos son coherentes. Si hay drift → se corrige el diseño ANTES de que QA y reviewer gasten iteraciones.
 - **Detalle operativo del QA, la revisión y las reglas de calidad**: ver [Detalle operativo](#detalle-operativo) (se lee bajo demanda según la fase).
