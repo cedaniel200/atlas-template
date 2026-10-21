@@ -92,7 +92,7 @@ Ver el **Skill Registry** al final de este archivo para la lista completa con ru
 - **Idioma**: Español (términos técnicos pueden mantenerse en inglés)
 - **Proyecto**: {{STACK_DETAIL}}
 - **Enfoque**: desarrollo guiado por agentes especializados
-- **Comandos OpenSpec**: los de solo lectura (`list`, `show`, `status`, `instructions`, `context`, `validate`, `doctor`) puede ejecutarlos el agente. Los de mutación (`new change`, `archive`, `sync`) los ejecuta el usuario o el agente con permiso explícito; `archive` y `sync` nunca sin aprobación. Al inicio se pregunta una vez quién los ejecuta.
+- **Comandos OpenSpec**: `{{OPENSPEC_COMMANDS_POLICY}}` — `user` (los ejecuta el usuario), `agent` (el agente ejecuta los de lectura libremente y los de mutación con confirmación) o `ask` (se pregunta una vez y se guarda). `archive` y `sync` siempre requieren aprobación explícita. El bootstrap lo pregunta en la primera sesión.
 - Formato híbrido: breve explicación → código → feedback
 - Sesiones de 30‑60 min
 - Package base: {{PACKAGE_BASE}}
@@ -180,7 +180,7 @@ LOOP (límite global 5 iteraciones QA + Reviewer):
    7. Limpieza post-merge: borrar rama + worktree
 ```
 
-- **Comandos OpenSpec**: lectura → el agente; mutación → el usuario o el agente con permiso. Al inicio se pregunta una vez. `archive` y `sync` siempre con aprobación explícita.
+- **Comandos OpenSpec**: se leen de `AGENTS.md` (§ Preferencias). `archive` y `sync` siempre con aprobación explícita.
 - **El usuario revisa cada artefacto** antes de continuar al siguiente.
 - **Checkpoint de consistencia del `analyst`** (antes de QA): verificación rápida de que el código implementa el design aprobado, el alcance no varió y los ADRs nuevos son coherentes. Si hay drift → se corrige el diseño ANTES de que QA y reviewer gasten iteraciones.
 - **Detalle operativo del QA, la revisión y las reglas de calidad**: ver [Detalle operativo](#detalle-operativo) (se lee bajo demanda según la fase).

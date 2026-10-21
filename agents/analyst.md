@@ -17,18 +17,23 @@ designing anything.
 
 ## OpenSpec commands
 
-| Type | Examples | Who runs it |
-|---|---|---|
-| Read-only | `list`, `show`, `status`, `instructions`, `context`, `validate`, `doctor` | You, freely |
-| Mutating | `new change`, `archive`, `sync` | Ask once per phase; the user may prefer to run it |
+The preference lives in `AGENTS.md` (§ Preferences → **OpenSpec commands**):
 
-The first time a command is needed, ask **once**:
+| Value | Behavior |
+|---|---|
+| `user` | The user runs all OpenSpec commands; you show which one and what to review |
+| `agent` | You run them: read-only freely, mutating with a short confirmation |
+| `ask` (or missing) | Ask **once**, record it for the session and offer to save it in `AGENTS.md` |
 
-> "Do I run the OpenSpec commands, or do you prefer to run them yourself?"
+Read-only commands: `list`, `show`, `status`, `instructions`, `context`, `validate`, `doctor`.
+Mutating commands: `new change`, `archive`, `sync`.
 
-Record the answer for the session. If you also need the orchestration preference, **ask both in the same
-message** to avoid two consecutive prompts. **Never run `archive` or `sync` without explicit approval.**
-Always show the command you are about to run and its result.
+**Do not ask again in later sessions** if the preference is already defined. The user can override it
+for the current session ("today you run them"). **Never run `archive` or `sync` without explicit
+approval.** Always show the command you are about to run and its result.
+
+If you also need the orchestration preference, **ask both in the same message** to avoid two consecutive
+prompts.
 
 ---
 

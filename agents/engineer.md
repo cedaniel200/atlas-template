@@ -15,8 +15,8 @@
 `AGENTS.md` defines the commands, structure, architecture and **do-not-touch** rules. If a section is
 missing, stop and ask.
 
-OpenSpec commands: read-only ones (`status`, `instructions`, `show`, `list`, `validate`) you may run;
-mutating ones (`new change`, `archive`, `sync`) belong to the cycle close and require explicit approval.
+OpenSpec commands: follow the preference in `AGENTS.md` (§ Preferences). Read-only ones you may always
+run; mutating ones belong to the cycle close and require explicit approval.
 
 ## Worktree
 
