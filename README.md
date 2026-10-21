@@ -37,7 +37,7 @@ cd mi-proyecto
 rm -rf .git && git init
 
 # 2. Abre tu herramienta y pide el ritual
-#    "Ejecuta BOOTSTRAP.md"
+#    "Configura este proyecto" o "Haz el setup inicial"
 ```
 
 ### Según la herramienta
@@ -45,17 +45,17 @@ rm -rf .git && git init
 **OpenCode**
 1. Abre el proyecto.
 2. El agente detecta `OPENCODE` y crea `opencode.json` desde `.template/hosts/opencode/`.
-3. Pide: *"Ejecuta `BOOTSTRAP.md`"*.
+3. Pide: *"Configura este proyecto"*. El agente leerá `BOOTSTRAP.md` y empezará el ritual.
 
 **Claude Code**
 1. Abre el proyecto.
 2. El bootstrap crea `.claude/agents/` y el symlink `.claude/skills`; `CLAUDE.md` ya contiene `@AGENTS.md`.
-3. Pide: *"Ejecuta `BOOTSTRAP.md`"*.
+3. Pide: *"Configura este proyecto"*. El agente leerá `BOOTSTRAP.md` y empezará el ritual.
 
 **Codex**
 1. Abre el proyecto.
 2. Codex lee `AGENTS.md` y `.agents/skills/` de forma nativa; no hay subagentes.
-3. Pide: *"Ejecuta `BOOTSTRAP.md`"*.
+3. Pide: *"Configura este proyecto"*. El agente leerá `BOOTSTRAP.md` y empezará el ritual.
 
 > En las tres herramientas, el ritual se ejecuta **una vez**. El estado queda en `.template/state.json`.
 

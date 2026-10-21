@@ -3,6 +3,8 @@
 > **Punto de entrada para cualquier agente.**
 > **Primera sesión:** si `.template/state.json` no existe o su `status` es `pending`, lee y ejecuta
 > `BOOTSTRAP.md` **antes de cualquier otra acción**.
+> Si el usuario dice **"configura este proyecto"** o **"haz el setup inicial"**, esto es lo que debe
+> ejecutar.
 >
 > La fuente de verdad del comportamiento son `openspec/specs/` y `adr/`.
 
