@@ -88,7 +88,7 @@ Opcional y específico de OpenCode. Indexa el código y permite consultas de arq
 
 ## Confidencialidad
 
-Antes de conectar cualquier herramienta externa, revisa [`SECURITY.md`](../SECURITY.md):
+Antes de conectar cualquier herramienta externa, revisa [`SECURITY.md`](../../../SECURITY.md):
 
 - Qué datos salen del repositorio.
 - Qué se persiste.
