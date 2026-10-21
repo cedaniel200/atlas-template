@@ -15,6 +15,7 @@
 | Ya tienes un proyecto | [`harness/es/ADOPTION.md`](harness/es/ADOPTION.md) |
 | Quieres configurar MCP o memoria | [`harness/es/TOOLS.md`](harness/es/TOOLS.md) |
 | Te interesan los gates y CRAP | [`harness/es/QUALITY.md`](harness/es/QUALITY.md) |
+| No entiendes un término | [`harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
 
 Para arrancar, abre el proyecto con tu herramienta y di:
 

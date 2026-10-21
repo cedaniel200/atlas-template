@@ -106,3 +106,4 @@ El `analyst` te pregunta al inicio si orquesta el ciclo o prefieres invocar cada
 - Herramientas y MCP → [`TOOLS.md`](TOOLS.md)
 - Calidad y CRAP → [`QUALITY.md`](QUALITY.md)
 - Compatibilidad por herramienta → [`COMPATIBILITY.md`](COMPATIBILITY.md)
+- Glosario → [`GLOSSARY.md`](GLOSSARY.md)
