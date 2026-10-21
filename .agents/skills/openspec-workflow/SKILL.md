@@ -56,9 +56,16 @@ coherent? If there is drift, fix the design **before** spending QA and review it
 Code review against the declared architecture and security, plus quantitative gates. No critical
 findings and highs resolved → `-FINAL`.
 
-### 7. Archive
+### 7. Close the cycle
 
-`openspec archive <change>` and sync the specs. Commit `chore: archive <change>`.
+1. **Consistency check** (design → code): does the implementation match the approved design? Did the
+   scope change? Are the new ADRs coherent?
+2. **Documentation**: invoke `doc-writer`. It updates technical and functional documentation and returns
+   a summary; if the code diverges from the specs, it flags the divergence instead of documenting it.
+3. **Analyst validates** that the documentation matches the approved change and the specs.
+4. **Pull request**: open it with the documentation included. The user reviews the PR **once**.
+5. **Archive**: `openspec archive <change>` and sync the specs.
+6. **Merge** (the user) and **cleanup** (branch + worktree).
 
 ## Limits
 

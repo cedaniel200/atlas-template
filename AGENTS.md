@@ -57,7 +57,7 @@ Quien inicie la sesión (analyst o engineer) debe:
 
 2. Los agentes ejecutan git directamente (add, commit, push) tras cada cambio aprobado.
 
-3. **analyst** en el cierre de ciclo (ver pipeline): valida consistencia → invoca doc-writer (pre-merge, dentro del worktree) → valida consistencia de la documentación → el usuario revisa los cambios documentales → **crea el PR**:
+3. **analyst** en el cierre de ciclo (ver pipeline): valida consistencia → invoca doc-writer (pre-merge, dentro del worktree) → valida consistencia de la documentación (técnica y funcional) → **crea el PR** (el usuario revisa el PR una vez):
      `gh pr create --base main --head feature/<feature> --title "<tipo>: <feature>"`
    Notifica al usuario: "✅ PR listo en <url> — revísalo y, cuando apruebes, mergea"
 
@@ -173,8 +173,8 @@ LOOP (límite global 5 iteraciones QA + Reviewer):
 [analyst: CIERRE DE CICLO]
    1. Revisión de consistencia diseño→código
    2. Invoca doc-writer (pre-merge, dentro del worktree)
-   3. Analyst valida consistencia de documentación → el usuario revisa
-   4. Crea el PR → el usuario REVISA el PR
+   3. Analyst valida consistencia de documentación (técnica y funcional)
+   4. Crea el PR → el usuario REVISA el PR una vez
    5. /opsx:archive + /opsx:sync
    6. El usuario MERGEA el PR
    7. Limpieza post-merge: borrar rama + worktree
@@ -187,6 +187,16 @@ LOOP (límite global 5 iteraciones QA + Reviewer):
 - Durante `propose`: cargar ADRs y Gherkin specs.
 - Durante `apply`: cargar TDD y worktrees.
 - **Nunca avanzar sin esperar revisión explícita del usuario** tras proposal, design, adr y tasks.
+
+### Orquestación
+
+Al inicio de un cambio, el `analyst` pregunta **una sola vez**:
+*"¿Orquesto el ciclo hasta el PR o prefieres invocar cada fase tú mismo?"*
+
+- **Orquestado (default):** el `analyst` encadena las fases y se detiene solo en los gates: aprobación de cada artefacto, inicio de QA, creación del PR y archive/merge.
+- **Manual:** el usuario invoca cada agente; el `analyst` indica el orden y verifica que no se salte ningún gate.
+
+Nunca se pregunta dos veces lo mismo.
 
 ---
 
@@ -303,7 +313,7 @@ H2 sigue siendo válido en `@IntegrationTest` cuando el comportamiento es equiva
 
 ### Documentación (pre-merge, cierre de ciclo)
 
-En el cierre de ciclo el `analyst` invoca a `doc-writer` como sub‑agente **dentro del worktree, ANTES del merge**, para que analice el cambio y actualice la documentación; el analyst valida la consistencia de la documentación con el cambio y el usuario aprueba los cambios documentales antes de crear el PR. Si el cambio afecta reglas de negocio, el `doc-writer` debe actualizar los Use Cases correspondientes en `docs/funcional/`.
+En el cierre de ciclo el `analyst` invoca a `doc-writer` como sub‑agente **dentro del worktree, ANTES del merge**, para que analice el cambio y actualice la documentación **técnica y funcional**. El `analyst` valida la consistencia de la documentación con el cambio y los specs, y **crea el PR**; el usuario revisa el PR una vez (documentación incluida). Si el cambio afecta reglas de negocio, el `doc-writer` debe actualizar los Use Cases correspondientes en `docs/funcional/`. Si el código diverge de los specs, el `doc-writer` **no documenta la divergencia**: la reporta al `analyst`.
 
 ---
 

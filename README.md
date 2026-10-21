@@ -203,7 +203,7 @@ Define las que necesite tu proyecto (no solo DB):
 | `engineer` | Implementación TDD + DDD | Tras aprobar proposal: `/opsx:apply` |
 | `reviewer` | Revisión código (SOLO LECTURA) | Tras QA aprobado |
 | `qa-analyst` | Pruebas funcionales E2E | Sub-agente, invocado por engineer/usuario |
-| `doc-writer` | Documentación pre-merge | Invocado por analyst en cierre de ciclo |
+| `doc-writer` | Documentación técnica y funcional pre-merge | Invocado por analyst en cierre de ciclo |
 
 > **Placeholders en agentes:** Algunos agentes (`engineer`, `qa-analyst`, etc.) tienen placeholders `{{APP_PORT}}`, `{{HEALTH_URL}}`, `{{SERVICE_NAME}}`, `{{QUALITY_COMMAND}}`, etc. en sus prompts. **Edítalos en AGENTS.md** y los agentes los heredarán vía los placeholders compartidos.
 
