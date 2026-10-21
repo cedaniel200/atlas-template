@@ -43,13 +43,13 @@ y las decisiones arquitectónicas como si estuvieran en un entorno real.
 Skills asociadas: `using-git-worktrees`, `conventional-commits`, `openspec-archive-change`.
 
 ### Arranque de sesión
-Quien inicie la sesión (ddd-analyst o ddd-engineer) debe:
+Quien inicie la sesión (analyst o engineer) debe:
   1. `git checkout main`
   2. `git pull origin main`
   (Sobre main actualizado se crean ramas y worktrees)
 
 ### Ciclo completo de feature
-1. **ddd-analyst** crea el worktree + rama:
+1. **analyst** crea el worktree + rama:
      `git worktree add .worktrees/<feature> -b feature/<feature>`
      `cd .worktrees/<feature>`
    Todo el ciclo (explore, propose, specs, qa-scenarios, ADR, doc-writer, archive) y los reportes
@@ -57,7 +57,7 @@ Quien inicie la sesión (ddd-analyst o ddd-engineer) debe:
 
 2. Los agentes ejecutan git directamente (add, commit, push) tras cada cambio aprobado.
 
-3. **ddd-analyst** en el cierre de ciclo (ver pipeline): valida consistencia → invoca doc-writer (pre-merge, dentro del worktree) → valida consistencia de la documentación → el usuario revisa los cambios documentales → **crea el PR**:
+3. **analyst** en el cierre de ciclo (ver pipeline): valida consistencia → invoca doc-writer (pre-merge, dentro del worktree) → valida consistencia de la documentación → el usuario revisa los cambios documentales → **crea el PR**:
      `gh pr create --base main --head feature/<feature> --title "<tipo>: <feature>"`
    Notifica al usuario: "✅ PR listo en <url> — revísalo y, cuando apruebes, mergea"
 
@@ -76,12 +76,12 @@ Antes de cualquier acción, ejecutar `skill` para cargar las skills aplicables s
 | Fase / Rol | Skills a cargar |
 |------------|-----------------|
 | **Pre‑flight** (siempre) | `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs` |
-| **Análisis / Planificación** (`ddd-analyst`) | `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs` (genera `qa-scenarios.md`) |
-| **Implementación** (`ddd-engineer`) | `openspec-apply-change`, `test-driven-development`, `using-git-worktrees`, `conventional-commits` |
-| **Revisión** (`ddd-reviewer`) | (No aplica - solo lectura de código y generación de reportes) |
-| **Documentación (pre-merge, cierre de ciclo)** (`doc-writer`, invocado por `ddd-analyst`) | `architectural-decision-records`, `gherkin-specs`, `conventional-commits` |
-| **Pruebas funcionales** (`qa-analyst`, sub-agente del `ddd-engineer`) | `gherkin-specs` |
-| **Cierre** (`ddd-analyst` / `ddd-engineer`) | `openspec-archive-change`, `openspec-sync-specs` |
+| **Análisis / Planificación** (`analyst`) | `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs` (genera `qa-scenarios.md`) |
+| **Implementación** (`engineer`) | `openspec-apply-change`, `test-driven-development`, `using-git-worktrees`, `conventional-commits` |
+| **Revisión** (`reviewer`) | (No aplica - solo lectura de código y generación de reportes) |
+| **Documentación (pre-merge, cierre de ciclo)** (`doc-writer`, invocado por `analyst`) | `architectural-decision-records`, `gherkin-specs`, `conventional-commits` |
+| **Pruebas funcionales** (`qa-analyst`, sub-agente del `engineer`) | `gherkin-specs` |
+| **Cierre** (`analyst` / `engineer`) | `openspec-archive-change`, `openspec-sync-specs` |
 
 Ver el **Skill Registry** al final de este archivo para la lista completa con rutas y descripciones.
 
@@ -102,7 +102,7 @@ Ver el **Skill Registry** al final de este archivo para la lista completa con ru
 
 ## Placeholders del proyecto (configuración en AGENTS.md)
 
-Los agentes usan placeholders genéricos en sus prompts. **Este archivo (AGENTS.md) es el único lugar** donde se definen los valores concretos para tu stack. Los prompts de los agentes (`.opencode/agent/*.md`) referencian estos placeholders.
+Los agentes usan placeholders genéricos en sus prompts. **Este archivo (AGENTS.md) es el único lugar** donde se definen los valores concretos para tu stack. Los prompts de los agentes (`agents/*.md`) referencian estos placeholders.
 
 ### Observabilidad / Health Endpoint
 
@@ -141,7 +141,7 @@ Los agentes usan placeholders genéricos en sus prompts. **Este archivo (AGENTS.
 | `{{SERVICE_NAME}}` | Nombre servicio en docker-compose | | `api`, `backend` |
 | `{{HEALTH_AUTH}}` | Credenciales para health endpoint protegido | | `monitor:password` / `Bearer token` |
 
-> **Nota:** Los prompts de los agentes (`.opencode/agent/*.md`) usan placeholders genéricos como `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}`, `{{HEALTH_PATH}}`. Los valores reales se definen **aquí en AGENTS.md**. Si tu stack no usa un concepto (ej. puerto separado para health), deja el valor igual a `{{APP_PORT}}` o `N/A`.
+> **Nota:** Los prompts de los agentes (`agents/*.md`) usan placeholders genéricos como `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}`, `{{HEALTH_PATH}}`. Los valores reales se definen **aquí en AGENTS.md**. Si tu stack no usa un concepto (ej. puerto separado para health), deja el valor igual a `{{APP_PORT}}` o `N/A`.
 
 ---
 
@@ -161,16 +161,16 @@ Los agentes usan placeholders genéricos en sus prompts. **Este archivo (AGENTS.
 **Pipeline canónico:**
 
 ```
-[humano + ddd-analyst] → explore → propose (proposal, design + qa-scenarios, specs, tasks, ADR)
+[humano + analyst] → explore → propose (proposal, design + qa-scenarios, specs, tasks, ADR)
         ↓ aprobado por el humano
-[ddd-engineer] → TDD por tasks → gates de calidad → Docker + QA Context
+[engineer] → TDD por tasks → gates de calidad → Docker + QA Context
         ↓
-[ddd-analyst: CHECKPOINT DE CONSISTENCIA]  ← verifica drift de diseño/alcance/ADRs ANTES de QA
+[analyst: CHECKPOINT DE CONSISTENCIA]  ← verifica drift de diseño/alcance/ADRs ANTES de QA
         ↓
 LOOP (límite global 5 iteraciones QA + Reviewer):
-   [ddd-engineer ↔ qa-analyst ↔ ddd-reviewer]  ← corrige TODO de cada reporte
+   [engineer ↔ qa-analyst ↔ reviewer]  ← corrige TODO de cada reporte
         ↓  (qa -FINAL y reviewer -FINAL: todo resuelto o documentado)
-[ddd-analyst: CIERRE DE CICLO]
+[analyst: CIERRE DE CICLO]
    1. Revisión de consistencia diseño→código
    2. Invoca doc-writer (pre-merge, dentro del worktree)
    3. Analyst valida consistencia de documentación → el usuario revisa
@@ -182,7 +182,7 @@ LOOP (límite global 5 iteraciones QA + Reviewer):
 
 - **El usuario ejecuta los comandos OpenSpec** en su terminal; los agentes indican qué comando ejecutar y qué revisar.
 - **El usuario revisa cada artefacto** antes de continuar al siguiente.
-- **Checkpoint de consistencia del `ddd-analyst`** (antes de QA): verificación rápida de que el código implementa el design aprobado, el alcance no varió y los ADRs nuevos son coherentes. Si hay drift → se corrige el diseño ANTES de que QA y reviewer gasten iteraciones.
+- **Checkpoint de consistencia del `analyst`** (antes de QA): verificación rápida de que el código implementa el design aprobado, el alcance no varió y los ADRs nuevos son coherentes. Si hay drift → se corrige el diseño ANTES de que QA y reviewer gasten iteraciones.
 - **Detalle operativo del QA, la revisión y las reglas de calidad**: ver [Detalle operativo](#detalle-operativo) (se lee bajo demanda según la fase).
 - Durante `propose`: cargar ADRs y Gherkin specs.
 - Durante `apply`: cargar TDD y worktrees.
@@ -195,11 +195,11 @@ LOOP (límite global 5 iteraciones QA + Reviewer):
 Reglas normativas transversales que aplican a **todos los agentes en todas las fases**:
 
 - **Commits incrementales**: commitear tras cada cambio lógico usando conventional commits. No acumular cambios.
-- **Byline de rol en commits**: cuando un agente ejecuta un commit, añade `By <rol>.` al final del body (ej. `feat: mensaje\n\nBy ddd-engineer.`). Los commits del usuario no llevan byline.
+- **Byline de rol en commits**: cuando un agente ejecuta un commit, añade `By <rol>.` al final del body (ej. `feat: mensaje\n\nBy engineer.`). Los commits del usuario no llevan byline.
 - **Sensores de calidad**: antes de commitear ejecutar `{{QUALITY_COMMAND}}`. **Regla de 0 hallazgos Checkstyle**: no se dejan pasar violaciones en los archivos que se tocan; si el archivo tiene violaciones preexistentes, se resuelven (no se deja deuda "porque no era mía").
 - **Comentarios en código**: referencian **ADRs** (`adr/00NN-...`) o documentación funcional (`docs/funcional/`), **nunca** specs de `openspec/` (son delta que se archiva/muta).
 - **Datos de prueba directos en BD**: los datos creados por SQL directo (seed QA) deben respetar las invariantes de negocio (validaciones de VO, estados válidos, hashes, auditoría, columnas NOT NULL, `debe_cambiar_password=false`). Preferir crear datos por la API. Si se usa SQL directo, declarar en el QA Context qué invariantes se respetaron y cuáles no.
-- **Regla de anuncio de rol:** Cada vez que un agente cambie de rol (ddd-analyst → ddd-engineer → ddd-reviewer), debe anunciarlo explícitamente con el formato `"🎩 Ahora soy ddd-{rol}"` antes de ejecutar cualquier acción del nuevo rol. Esto aplica incluso si el mismo agente está desempeñando múltiples roles en la misma sesión.
+- **Regla de anuncio de rol:** Cada vez que un agente cambie de rol (analyst → engineer → reviewer), debe anunciarlo explícitamente con el formato `"🎩 Ahora soy {rol}"` antes de ejecutar cualquier acción del nuevo rol. Esto aplica incluso si el mismo agente está desempeñando múltiples roles en la misma sesión.
 
 ---
 
@@ -233,7 +233,7 @@ Comandos disponibles en el chat: `/opsx:{propose,explore,apply,archive,sync}`.
 
 ## Decisiones arquitectónicas (ADRs)
 
-Documentadas en `adr/`. Los agentes `ddd-analyst` e `ddd-engineer` deben consultarlas al proponer o implementar cambios.
+Documentadas en `adr/`. Los agentes `analyst` e `engineer` deben consultarlas al proponer o implementar cambios.
 
 ---
 
@@ -271,7 +271,7 @@ Detalle largo de los procesos de QA, revisión y calidad. **Se lee bajo demanda*
 
 ### Pruebas funcionales (QA)
 
-- El `ddd-engineer` prepara el entorno con **Docker Compose** (API en `{{APP_PORT}}`). **Health endpoint (`{{HEALTH_URL}}`) solo dentro de Docker** — no desde el host.
+- El `engineer` prepara el entorno con **Docker Compose** (API en `{{APP_PORT}}`). **Health endpoint (`{{HEALTH_URL}}`) solo dentro de Docker** — no desde el host.
   - Readiness: `docker compose ps {{SERVICE_NAME}} --format json | grep -q "healthy"`; inspección manual: `docker exec {{SERVICE_NAME}} curl -sf {{HEALTH_URL}}`.
   - **No uses `{{RUN_APP_COMMAND}}`** como entorno oficial de QA.
 - Entrega **QA Context** (incluye inventario preliminar de escenarios de `qa-scenarios.md` si existe, URL base, usuario+password, tokens vigentes [access y refresh], datos precargados y qué invariantes se respetaron). **Invocan a `@qa-analyst` el engineer o el usuario** (ambos válidos).
@@ -280,14 +280,14 @@ Detalle largo de los procesos de QA, revisión y calidad. **Se lee bajo demanda*
 - Al cerrar cada iteración, QA deja **KPIs** en el reporte y en el chat (escenarios endpoint/multi pass-fail, hallazgos por severidad).
 - QA genera `qa-report-X.md` (plantilla con listado de escenarios) en `openspec/changes/<feature>/`.
 - Iteraciones intermedias: regresión **focalizada**. Iteración **FINAL**: regresión **total**.
-- **`-FINAL` exige que **todos** los hallazgos (Alta/Media/Baja/💡/deuda) estén **resueltos o documentados**. No basta con 0 Altos — no se deja ningún hallazgo abierto ni se pasa al reviewer con deuda pendiente. Ciclo de análisis: 2 iteraciones; si quedan 1–2 Altos tras la 2ª, el engineer corrige y QA hace **una verificación extra** focalizada. Si en la 2ª hay **3+ Altos** → `BLOQUEADO` y deriva a `ddd-analyst`.
+- **`-FINAL` exige que **todos** los hallazgos (Alta/Media/Baja/💡/deuda) estén **resueltos o documentados**. No basta con 0 Altos — no se deja ningún hallazgo abierto ni se pasa al reviewer con deuda pendiente. Ciclo de análisis: 2 iteraciones; si quedan 1–2 Altos tras la 2ª, el engineer corrige y QA hace **una verificación extra** focalizada. Si en la 2ª hay **3+ Altos** → `BLOQUEADO` y deriva a `analyst`.
 - Tras correcciones, el engineer **redespliega** (`docker compose up -d --build`) antes de re-invitar a QA.
 - El engineer **debe resolver TODOS** los hallazgos (Alta/Media/Baja/💡/deuda). Ningún hallazgo se cierra en silencio: si uno es inviable o fuera de alcance, se documenta el porqué y se consulta al usuario. Los **Altos son obligatorios** de cerrar.
 - Si QA aprueba (`-FINAL`), se pasa a **Revisión de código**.
 
 ### Revisión (post‑implementación)
 
-- El usuario invoca al agente `ddd-reviewer` tras QA aprobado.
+- El usuario invoca al agente `reviewer` tras QA aprobado.
 - El reviewer genera `reviewer-report-X.md` en `openspec/changes/<feature>/` e incluye **gates cuantitativos** (Checkstyle, CRAP, cobertura, reporte PIT del feature).
 - El engineer **debe resolver TODOS** los hallazgos (críticos → bajos, atajos, deuda). Los criterios de aprobación del reviewer **no cambian**: sin críticos y altos resueltos → `-FINAL`; en la iteración final el reviewer verifica que hallazgos previos (incluidos Bajos/💡) estén resueltos o documentados.
 - Si hay críticos o altos abiertos: se repite el ciclo (máximo 3 iteraciones de reviewer).
@@ -303,7 +303,7 @@ H2 sigue siendo válido en `@IntegrationTest` cuando el comportamiento es equiva
 
 ### Documentación (pre-merge, cierre de ciclo)
 
-En el cierre de ciclo el `ddd-analyst` invoca a `doc-writer` como sub‑agente **dentro del worktree, ANTES del merge**, para que analice el cambio y actualice la documentación; el analyst valida la consistencia de la documentación con el cambio y el usuario aprueba los cambios documentales antes de crear el PR. Si el cambio afecta reglas de negocio, el `doc-writer` debe actualizar los Use Cases correspondientes en `docs/funcional/`.
+En el cierre de ciclo el `analyst` invoca a `doc-writer` como sub‑agente **dentro del worktree, ANTES del merge**, para que analice el cambio y actualice la documentación; el analyst valida la consistencia de la documentación con el cambio y el usuario aprueba los cambios documentales antes de crear el PR. Si el cambio afecta reglas de negocio, el `doc-writer` debe actualizar los Use Cases correspondientes en `docs/funcional/`.
 
 ---
 
@@ -331,4 +331,4 @@ En el cierre de ciclo el `ddd-analyst` invoca a `doc-writer` como sub‑agente *
 
 ---
 
-**Nota:** Los agentes `ddd-analyst`, `ddd-engineer`, `ddd-reviewer`, `qa-analyst` y `doc-writer` tienen sus propias instrucciones en sus respectivos archivos `.md` en `.opencode/agent/`.
+**Nota:** Los agentes `analyst`, `engineer`, `reviewer`, `qa-analyst` y `doc-writer` tienen sus propias instrucciones en sus respectivos archivos `.md` en `agents/`.

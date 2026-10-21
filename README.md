@@ -38,7 +38,7 @@ cp .env.example .env 2>/dev/null || true
 # docker compose up -d   # solo si tu proyecto usa Docker
 
 # 8. Primera feature: explorar + proponer
-#    En opencode: cambiar a agente ddd-analyst
+#    En opencode: cambiar a agente analyst
 #    Ejecutar: /opsx:explore
 ```
 
@@ -94,7 +94,7 @@ git push -u origin main
 
 ## 🤖 Los agentes te ayudan a personalizar
 
-> **Tip:** Pídele al agente `ddd-analyst` (o cualquiera) que te guíe en la customización.
+> **Tip:** Pídele al agente `analyst` (o cualquiera) que te guíe en la customización.
 > Ejemplo: *"Ayúdame a adaptar AGENTS.md y opencode.json para un proyecto React Native con Expo"*
 >
 > Los agentes conocen la plantilla y pueden:
@@ -107,13 +107,13 @@ git push -u origin main
 
 ## 🔧 Patrón de configuración: Prompts genéricos + AGENTS.md concreto
 
-**Principio:** Los prompts de los agentes (`.opencode/agent/*.md`) son **genéricos y reutilizables** — usan placeholders como `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}`, `{{HEALTH_PATH}}`. **AGENTS.md es el único lugar** donde defines los valores reales para tu stack.
+**Principio:** Los prompts de los agentes (`agents/*.md`) son **genéricos y reutilizables** — usan placeholders como `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}`, `{{HEALTH_PATH}}`. **AGENTS.md es el único lugar** donde defines los valores reales para tu stack.
 
 ### Cómo funciona
 
 | Capa | Qué hace | Ejemplo |
 |------|----------|---------|
-| **Prompts (`.opencode/agent/*.md`)** | Lógica genérica, referencian placeholders | `"Valida health en {{HEALTH_URL}}"` |
+| **Prompts (`agents/*.md`)** | Lógica genérica, referencian placeholders | `"Valida health en {{HEALTH_URL}}"` |
 | **AGENTS.md** | Valores concretos por proyecto | `{{HEALTH_URL}} = "http://localhost:8080/healthz"` |
 | **README.md (este archivo)** | Documenta el patrón y da ejemplos | Tabla de placeholders con ejemplos por stack |
 
@@ -199,21 +199,21 @@ Define las que necesite tu proyecto (no solo DB):
 
 | Agente | Rol | Cuándo usarlo |
 |--------|-----|---------------|
-| `ddd-analyst` | Análisis y planificación OpenSpec | Inicio de feature: `/opsx:explore` → `/opsx:propose` |
-| `ddd-engineer` | Implementación TDD + DDD | Tras aprobar proposal: `/opsx:apply` |
-| `ddd-reviewer` | Revisión código (SOLO LECTURA) | Tras QA aprobado |
+| `analyst` | Análisis y planificación OpenSpec | Inicio de feature: `/opsx:explore` → `/opsx:propose` |
+| `engineer` | Implementación TDD + DDD | Tras aprobar proposal: `/opsx:apply` |
+| `reviewer` | Revisión código (SOLO LECTURA) | Tras QA aprobado |
 | `qa-analyst` | Pruebas funcionales E2E | Sub-agente, invocado por engineer/usuario |
 | `doc-writer` | Documentación pre-merge | Invocado por analyst en cierre de ciclo |
 
-> **Placeholders en agentes:** Algunos agentes (`ddd-engineer`, `qa-analyst`, etc.) tienen placeholders `{{APP_PORT}}`, `{{HEALTH_URL}}`, `{{SERVICE_NAME}}`, `{{QUALITY_COMMAND}}`, etc. en sus prompts. **Edítalos en AGENTS.md** y los agentes los heredarán vía los placeholders compartidos.
+> **Placeholders en agentes:** Algunos agentes (`engineer`, `qa-analyst`, etc.) tienen placeholders `{{APP_PORT}}`, `{{HEALTH_URL}}`, `{{SERVICE_NAME}}`, `{{QUALITY_COMMAND}}`, etc. en sus prompts. **Edítalos en AGENTS.md** y los agentes los heredarán vía los placeholders compartidos.
 
 > **⚠️ Agentes que asumen Docker (QA/E2E):**
 > Los siguientes agentes tienen prompts que asumen Docker Compose para el entorno de QA y pruebas E2E con PostgreSQL real:
-> - `ddd-analyst` — menciona Docker Compose en el handoff a QA
-> - `ddd-engineer` — levanta entorno QA con `docker compose up -d --build`, valida health dentro de Docker, usa PostgreSQL en Docker para E2E
+> - `analyst` — menciona Docker Compose en el handoff a QA
+> - `engineer` — levanta entorno QA con `docker compose up -d --build`, valida health dentro de Docker, usa PostgreSQL en Docker para E2E
 > - `qa-analyst` — requiere Docker Compose listo, ejecuta tests contra API en Docker, valida health via `docker exec`
 >
-> **Si tu proyecto NO usa Docker:** Debes editar los prompts de estos agentes (archivos en `.opencode/agent/*.md`) para adaptar la estrategia de QA/E2E a tu entorno (dev server local, emulador, Testcontainers, base de datos local, etc.). Los placeholders `{{SERVICE_NAME}}`, `{{APP_PORT}}`, `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}` en AGENTS.md también deberán ajustarse o eliminarse.
+> **Si tu proyecto NO usa Docker:** Debes editar los prompts de estos agentes (archivos en `agents/*.md`) para adaptar la estrategia de QA/E2E a tu entorno (dev server local, emulador, Testcontainers, base de datos local, etc.). Los placeholders `{{SERVICE_NAME}}`, `{{APP_PORT}}`, `{{HEALTH_URL}}`, `{{RUN_APP_COMMAND}}` en AGENTS.md también deberán ajustarse o eliminarse.
 
 ---
 
