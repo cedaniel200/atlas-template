@@ -38,6 +38,7 @@ rm -rf .git && git init
 
 # 2. Abre tu herramienta y pide el ritual
 #    "Configura este proyecto" o "Haz el setup inicial"
+#    (la frase exacta no importa: expresa la intención)
 ```
 
 ### Según la herramienta
