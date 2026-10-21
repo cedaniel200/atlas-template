@@ -221,8 +221,17 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 - **Agentes**: por cada rol de `.template/agents/<rol>.md`:
   - OpenCode: `.opencode/agent/<rol>.md` con frontmatter `description` y `mode: all` + cuerpo canónico.
   - Claude Code: `.claude/agents/<rol>.md` con frontmatter `name` y `description` + cuerpo canónico.
-- **Manifiesto**: `sha256` con `shasum -a 256` (macOS) o `sha256sum` (Linux); escribe
+- **Manifiesto**: calcula el `sha256` de cada archivo generado con el helper portable del template:
+  `sh .template/scripts/sha256.sh <archivo>` (macOS, Linux, Git Bash, WSL) o
+  `powershell -NoProfile -File .template/scripts/sha256.ps1 <archivo>` (Windows/PowerShell 5.1+).
+  **Contrato: 64 hex en minúsculas, solo el hash, sin nombre de archivo.** No uses
+  `certutil` ni `Get-FileHash` directamente: emiten mayúsculas y otro formato, y el
+  manifiesto deja de ser comparable (falso drift al actualizar). Escribe
   `.template/manifest.json` con `origin`, `sha256` y `ownership`.
+- **Shell**: el ritual usa comandos POSIX (`sh`, `grep`, `diff`, `mkdir`). En Windows ejecútalo
+  desde **Git Bash o WSL** (recomendado). Si el host ejecuta PowerShell, al menos el hash debe
+  salir del helper `.ps1`; si no hay shell POSIX ni PowerShell, **detente** y pídelo al usuario —
+  no inventes el hash con otra herramienta.
 - **Placeholders**: el perfil y las respuestas son la fuente de valores; sustituye en `AGENTS.md`,
   `openspec/config.yaml` y `README.md`. No dejes `{{...}}`.
 

@@ -20,6 +20,11 @@
 | `.template/state.json` | **Entradas**: host, idioma, arquitectura, perfil, packs, preferencias |
 | `.template/manifest.json` | **Salidas**: por archivo, `origin`, `sha256` y `ownership` |
 
+> **Formato del hash:** 64 hex en **minúsculas**, sin nombre de archivo, calculado con
+> `.template/scripts/sha256.sh` (POSIX) o `sha256.ps1` (PowerShell). Al comparar, normaliza a
+> minúsculas. Si el proyecto se generó en otro sistema operativo, el hash solo coincide si el
+> archivo está normalizado a LF (el `.gitattributes` generado usa `* text=auto eol=lf`).
+
 ---
 
 ## Propiedad
@@ -41,7 +46,7 @@
 4. Por cada archivo del manifiesto:
      owned     -> omitir
      generated -> sobrescribir
-     managed   -> hash(actual) == hash(base) ? sobrescribir : escribir .new + conflicto
+     managed   -> hash(actual) == hash(base) (en minúsculas) ? sobrescribir : escribir .new + conflicto
 5. Reporte: actualizados / conflictos / omitidos
 ```
 

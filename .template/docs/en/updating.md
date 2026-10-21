@@ -19,6 +19,11 @@
 | `.template/state.json` | **Inputs**: host, language, architecture, profile, packs, preferences |
 | `.template/manifest.json` | **Outputs**: per file, `origin`, `sha256` and `ownership` |
 
+> **Hash format:** 64 lowercase hex chars, no filename, computed with
+> `.template/scripts/sha256.sh` (POSIX) or `sha256.ps1` (PowerShell). Normalize to lowercase when
+> comparing. If the project was generated on another OS, the hash only matches when the file is
+> normalized to LF (the generated `.gitattributes` uses `* text=auto eol=lf`).
+
 ---
 
 ## Ownership
@@ -40,7 +45,7 @@
 4. For each manifest entry:
      owned     -> skip
      generated -> overwrite
-     managed   -> hash(current) == hash(base) ? overwrite : write .new + conflict
+     managed   -> hash(current) == hash(base) (lowercase) ? overwrite : write .new + conflict
 5. Report: updated / conflicts / skipped
 ```
 
