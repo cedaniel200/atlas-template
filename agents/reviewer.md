@@ -143,7 +143,7 @@ What tools cannot see:
 ```markdown
 # Code Review Report
 
-**Project:** {{PROJECT_NAME}}
+**Project:** <project name>
 **Reviewer:** Architecture, security and API design reviewer
 **Date:** [current date]
 

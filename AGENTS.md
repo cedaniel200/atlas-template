@@ -40,7 +40,7 @@ y las decisiones arquitectónicas como si estuvieran en un entorno real.
 
 ## REGLA #2: Flujo Git obligatorio
 
-Skills asociadas: `using-git-worktrees`, `conventional-commits`, `openspec-archive-change`.
+Skills asociadas: `git-workflow`, `using-git-worktrees`, `conventional-commits`, `openspec-archive-change`.
 
 ### Arranque de sesión
 Quien inicie la sesión (analyst o engineer) debe:
@@ -75,13 +75,13 @@ Antes de cualquier acción, ejecutar `skill` para cargar las skills aplicables s
 
 | Fase / Rol | Skills a cargar |
 |------------|-----------------|
-| **Pre‑flight** (siempre) | `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs` |
-| **Análisis / Planificación** (`analyst`) | `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs` (genera `qa-scenarios.md`) |
-| **Implementación** (`engineer`) | `openspec-apply-change`, `test-driven-development`, `using-git-worktrees`, `conventional-commits` |
+| **Pre‑flight** (siempre) | `session-startup`, `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs` |
+| **Análisis / Planificación** (`analyst`) | `openspec-explore`, `openspec-propose`, `openspec-workflow`, `architectural-decision-records`, `gherkin-specs` (genera `qa-scenarios.md`) |
+| **Implementación** (`engineer`) | `openspec-apply-change`, `test-driven-development`, `git-workflow`, `using-git-worktrees`, `conventional-commits` |
 | **Revisión** (`reviewer`) | (No aplica - solo lectura de código y generación de reportes) |
 | **Documentación (pre-merge, cierre de ciclo)** (`doc-writer`, invocado por `analyst`) | `architectural-decision-records`, `gherkin-specs`, `conventional-commits` |
 | **Pruebas funcionales** (`qa-analyst`, sub-agente del `engineer`) | `gherkin-specs` |
-| **Cierre** (`analyst` / `engineer`) | `openspec-archive-change`, `openspec-sync-specs` |
+| **Cierre** (`analyst` / `engineer`) | `session-end`, `openspec-archive-change`, `openspec-sync-specs` |
 
 Ver el **Skill Registry** al final de este archivo para la lista completa con rutas y descripciones.
 
@@ -92,7 +92,7 @@ Ver el **Skill Registry** al final de este archivo para la lista completa con ru
 - **Idioma**: Español (términos técnicos pueden mantenerse en inglés)
 - **Proyecto**: {{STACK_DETAIL}}
 - **Enfoque**: desarrollo guiado por agentes especializados
-- **Comandos OpenSpec**: `ask` — `user` (los ejecuta siempre el usuario), `agent` (los ejecuta siempre el agente) o `ask` (se pregunta al inicio de cada sesión quién los ejecuta). `archive` y `sync` siempre requieren aprobación explícita, sea cual sea el valor. El bootstrap lo pregunta en la primera sesión.
+- **Comandos OpenSpec**: `ask` — `user` (los ejecuta siempre el usuario), `agent` (los ejecuta siempre el agente: lectura libre, mutación con confirmación breve) o `ask` (se pregunta al inicio de cada sesión quién los ejecuta). `archive` y `sync` siempre requieren aprobación explícita, sea cual sea el valor. El bootstrap lo pregunta en la primera sesión.
 - Formato híbrido: breve explicación → código → feedback
 - Sesiones de 30‑60 min
 - Package base: {{PACKAGE_BASE}}
@@ -319,6 +319,7 @@ En el cierre de ciclo el `analyst` invoca a `doc-writer` como sub‑agente **den
 
 ## Al finalizar la sesión
 
+- Cargar `session-end` y seguir su checklist.
 - `{{TEST_COMMAND}}` debe pasar
 - Commit final si no se ha hecho ya: `git add -A && git commit -m "<prefijo>: mensaje descriptivo"`
 
@@ -338,6 +339,10 @@ En el cierre de ciclo el `analyst` invoca a `doc-writer` como sub‑agente **den
 | `architectural-decision-records` | `.agents/skills/architectural-decision-records/` | Documentar una decisión arquitectónica significativa | Desarrollo (análisis) |
 | `gherkin-specs` | `.agents/skills/gherkin-specs/` | Escribir escenarios Given/When/Then | Desarrollo (análisis) |
 | `conventional-commits` | `.agents/skills/conventional-commits/` | En cada commit: un cambio lógico = un commit con prefijo | Todas |
+| `session-startup` | `.agents/skills/session-startup/` | Inicio de sesión: preferencia de comandos, skills, tests, plan | Todas |
+| `session-end` | `.agents/skills/session-end/` | Cierre de sesión: tests, commit final, resumen | Todas |
+| `git-workflow` | `.agents/skills/git-workflow/` | Worktrees, ramas, PR y limpieza post-merge | Desarrollo (implementación) |
+| `openspec-workflow` | `.agents/skills/openspec-workflow/` | Pipeline explore → propose → apply → QA → review → archive | Desarrollo (análisis/implementación) |
 
 ---
 

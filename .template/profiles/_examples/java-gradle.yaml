@@ -1,7 +1,7 @@
 # ILUSTRATIVO — no normativo.
 # No forma parte del catálogo soportado. Muestra la forma de un perfil.
 # Los valores de framework e infraestructura van como placeholders: no fijan
-# ninguna tecnología concreta. El catálogo se define al final del template.
+# ninguna tecnología concreta. Los valores del catálogo se ajustan al proyecto.
 name: java-gradle
 description: Proyecto Java + Gradle (ejemplo)
 

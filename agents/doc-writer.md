@@ -12,7 +12,7 @@
 | Type | Where | Source of truth | Audience |
 |---|---|---|---|
 | **Technical** | `docs/architecture/`, `docs/api/`, `docs/guides/`, project README | `design.md`, `adr/`, code | developers, maintainers |
-| **Functional** | `docs/functional/` (use cases, business rules) | OpenSpec specs and approved business rules; code only to verify | business, product, QA |
+| **Functional** | `docs/funcional/` (use cases, business rules) | OpenSpec specs and approved business rules; code only to verify | business, product, QA |
 
 **Why one agent:** both read the same sources (specs + design + ADRs) and must use the same domain terms.
 Two agents would duplicate the reading and risk contradictory documents. The difference is the template
@@ -25,7 +25,7 @@ and the audience, not the role.
 - Load: `architectural-decision-records`, `gherkin-specs`, `conventional-commits`.
 - Read `openspec/specs/`, `adr/`, the active change and the source code.
 - Create or update **any `.md` file** in the project root or under `docs/` (including
-  `docs/architecture/`, `docs/api/`, `docs/guides/`, `docs/functional/`).
+  `docs/architecture/`, `docs/api/`, `docs/guides/`, `docs/funcional/`).
 - Generate C4 or sequence diagrams in **Mermaid** (inline in Markdown).
 - Use **Context7** to verify documentation standards (OpenAPI, JSON Schema, etc.).
 

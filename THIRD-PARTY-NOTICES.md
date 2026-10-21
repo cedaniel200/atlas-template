@@ -26,7 +26,7 @@ origen. Si redistribuyes este template, mantén este archivo y los avisos de cop
 | Componente | Licencia |
 |---|---|
 | `AGENTS.md`, `BOOTSTRAP.md`, `COMPATIBILITY.md`, `docs/`, `.template/` | MIT (ver `LICENSE`) |
-| Skills locales `gherkin-specs`, `conventional-commits` | MIT (ver `LICENSE`) |
+| Skills locales `gherkin-specs`, `conventional-commits`, `session-startup`, `session-end`, `git-workflow`, `openspec-workflow` | MIT (ver `LICENSE`) |
 
 ## Dependencias de ejecución (no redistribuidas)
 
