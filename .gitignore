@@ -1,72 +1,46 @@
-# Build artifacts
+# ─── Build artifacts ────────────────────────────────────────────────
 build/
 dist/
 target/
+out/
 *.jar
 *.war
 *.ear
 
-# Gradle
+# ─── Dependencias ───────────────────────────────────────────────────
+node_modules/
 .gradle/
-gradlew
-gradlew.bat
-
-# Maven
 .mvn/
 
-# IDE
+# ─── IDE / SO ───────────────────────────────────────────────────────
 .idea/
 *.iml
 *.ipr
 *.iws
 .vscode/
-*.swp
-*.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Environment
+# ─── Entorno y secretos ─────────────────────────────────────────────
 .env
-.env.local
-.env.*.local
-
-# Logs
-*.log
-logs/
-
-# Test reports
-test-results/
-coverage/
-jacoco/
-pitest/
-
-# Docker
-docker-compose.override.yml
-
-# Engram (memoria persistente - no versionar la DB local)
-.engram/engram.db*
-.engram/*.wal
-.engram/*.shm
-
-# Node modules (si hay frontend o tooling)
-node_modules/
-package-lock.json
-yarn.lock
-
-# OpenSpec changes (archivados van a main, worktrees son temporales)
-.opencode/worktrees/
-
-# Temporary files
-*.tmp
-*.temp
-tmp/
-temp/
-
-# Secrets (nunca commitear)
-*secret*
-*credential*
+.env.*
+!.env.example
 *.pem
 *.key
-*.cert
+*.p12
+
+# ─── Estado local del template (no versionar) ───────────────────────
+.template/adapters/
+.template/backups/
+
+# ─── Memoria persistente (opt-in; nunca versionar por defecto) ──────
+.engram/
+
+# ─── Worktrees ──────────────────────────────────────────────────────
+.worktrees/
+
+# ─── Reportes y logs ────────────────────────────────────────────────
+*.log
+logs/
+coverage/
+test-results/
