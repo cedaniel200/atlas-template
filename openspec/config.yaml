@@ -2,21 +2,30 @@ schema: spec-driven-with-adr
 
 context: |
   Proyecto: {{PROJECT_NAME}}
+  Descripción: {{ONE_LINE_DESCRIPTION}}
   Stack: {{STACK_SUMMARY}}
-  Domain: {{DOMAIN_SUMMARY}}
-  Arquitectura: DDD táctico + Clean Architecture
+  Dominio: {{DOMAIN_SUMMARY}}
+  Arquitectura: {{ARCHITECTURE_SUMMARY}}
   Package base: {{PACKAGE_BASE}}
+  Idioma de la documentación: {{LANGUAGE_USER}}
 
+# IMPORTANTE: cada regla debe ser un string entre comillas.
+# Un ": " sin comillas convierte el ítem en un mapa y OpenSpec descarta TODA la regla
+# del artefacto ("must be an array of strings"). Validar con: openspec context
 rules:
   proposal:
-    - Máximo 250 palabras
-    - Incluir sección de Capacidades mapeadas al dominio DDD (agregados, VOs, eventos)
+    - "Máximo 250 palabras"
+    - "Incluir una sección de capacidades mapeadas al dominio (agregados, value objects, eventos)"
   specs:
-    - Usar lenguaje ubicuo del dominio
-    - Escenarios GIVEN/WHEN/THEN en lenguaje de negocio
+    - "Usar el lenguaje ubicuo definido en AGENTS.md; no introducir sinónimos"
+    - "Escenarios GIVEN/WHEN/THEN en lenguaje de negocio, no técnico"
   design:
-    - Alinear con la arquitectura DDD existente (capas domain/application/infrastructure)
-    - Respetar reglas: AppService recibe DTOs con primitivos, no objetos de dominio
-    - Incluir diagramas C4 en Mermaid syntax para visualizar arquitectura cuando sea relevante (Context → Container → Component)
+    - "Alinear con la arquitectura declarada en AGENTS.md"
+    - "Respetar las fronteras entre capas: el dominio no depende de la infraestructura"
+    - "Incluir diagramas C4 en Mermaid cuando sea relevante (Context → Container → Component)"
+  adr:
+    - "Registrar solo decisiones durables; no inventar ADRs para detalles tácticos"
+    - "Un ADR aceptado es inmutable: para cambiarlo se crea uno nuevo que lo supersede"
   tasks:
-    - Desglosar por capa DDD: domain → application → infrastructure → tests
+    - "Desglosar por capas o módulos según la arquitectura declarada"
+    - "Cada tarea debe ser verificable de forma independiente"
