@@ -67,4 +67,4 @@ Copia de vuelta los archivos desde `.template/backups/<timestamp>/`.
 
 ## Para agentes
 
-La skill **`actualizar-arnes`** describe el mismo flujo. Usa el script; no improvises hashes ni sobrescribas `owned`.
+La skill **`update-harness`** describe el mismo flujo. Usa el script; no improvises hashes ni sobrescribas `owned`.

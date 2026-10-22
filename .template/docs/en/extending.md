@@ -92,6 +92,10 @@ A profile is **data**, not procedure. See `.template/profiles/README.md` for the
 
 ## Skill governance
 
+- **Language:** body and `description` in **English** (`language.agent`). The `description` includes
+  trigger examples in **several languages** (`update the template`, `actualiza el arnés`), because the
+  user may ask in any language: the agent must match the **intent**, not the exact wording.
+
 - Every skill is registered in `AGENTS.md` § Skill Registry; an unregistered skill is orphaned.
 - Validate discovery with `ls .agents/skills/*/SKILL.md` and, if the host allows it, restart and check
   that it appears.
