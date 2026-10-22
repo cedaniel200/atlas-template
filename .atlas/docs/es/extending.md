@@ -44,7 +44,9 @@ metadata: <opcional, mapa de strings>
    - Claude Code: `.claude/agents/<rol>.md` (`name`, `description`).
    - Codex: sin subagentes; el rol se emula desde `AGENTS.md`.
    - Multi-stack: `engineer-<stack>` por stack con `STACK_CONTEXT`; `state.stacks` es la fuente.
-4. Registrar el rol en `AGENTS.md` § Roles.
+4. Si el rol es **opcional**, empieza el prompt con `<!-- optional-role -->` y regístralo en
+   `state.optional_agents` (el bootstrap lo pregunta en la Ronda 4). Sin ese id no se genera su adaptador.
+5. Registrar el rol en `AGENTS.md` § Roles.
 
 ---
 

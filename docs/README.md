@@ -48,7 +48,7 @@ Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el hum
 
 ## Empieza aquí
 
-### 1. Crea el proyecto desde el template
+### 1. Crea el proyecto desde ATLAS
 
 - **GitHub:** usa **Use this template** (recomendado).
 - **Manual:** descarga o clona este repositorio y coloca su contenido en la **raíz del proyecto**
@@ -83,8 +83,8 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 
 | Capa | Dónde | Para quién |
 |---|---|---|
-| **Arnés interno** | [`.atlas/docs/es/`](../.atlas/docs/es/README.md) | Quien mantiene o extiende el template |
-| **Uso** | [`docs/harness/es/`](harness/es/QUICKSTART.md) | Quien adopta el template en su proyecto |
+| **Arnés interno** | [`.atlas/docs/es/`](../.atlas/docs/es/README.md) | Quien mantiene o extiende ATLAS |
+| **Uso** | [`docs/harness/es/`](harness/es/QUICKSTART.md) | Quien adopta ATLAS en su proyecto |
 | **Proyecto** | `docs/architecture/`, `docs/api/`, `docs/functional/`, `docs/guides/` | El equipo del proyecto |
 | **Contexto del proyecto** | `docs/project-context.md` | El equipo del proyecto |
 
@@ -120,9 +120,9 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
 │   ├── scripts/         # sha256 + validadores + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
-│   └── state.json (stacks, packs) manifest.json
+│   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/
-│   ├── README.md        # este índice (portada del template)
+│   ├── README.md        # este índice (portada de ATLAS)
 │   ├── project-context.md # contexto propio del proyecto
 │   ├── harness/es|en/   # guías de uso + COMPATIBILITY
 │   ├── architecture/ api/ functional/ guides/   # documentación del proyecto

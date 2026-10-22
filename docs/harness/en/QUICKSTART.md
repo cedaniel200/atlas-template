@@ -14,17 +14,17 @@
 
 ---
 
-## 1. Copy the template
+## 1. Create the project from ATLAS
 
 ```bash
-npx degit <user>/<repo> my-project
+npx degit <user>/atlas-template my-project
 cd my-project
 rm -rf .git && git init
 ```
 
-If you cloned instead of using `degit`, remove the template history and start a new one.
+If you cloned instead of using `degit`, remove ATLAS history and start a new one.
 
-> The project `README.md` is generated from `.atlas/PROJECT-README.md`; the template has no root README.
+> The project `README.md` is generated from `.atlas/PROJECT-README.md`; ATLAS has no root README.
 
 ---
 
@@ -121,4 +121,4 @@ Delete only the duplicate IDs if you want to keep your own skills. The project o
 - Host compatibility → [`COMPATIBILITY.md`](COMPATIBILITY.md)
 - Glossary → [`GLOSSARY.md`](GLOSSARY.md)
 - Extend the harness (skills/agents/packs) → [`../../../.atlas/docs/en/extending.md`](../../../.atlas/docs/en/extending.md) · [`../../../.atlas/packs/README.md`](../../../.atlas/packs/README.md)
-- Project README → generated from `.atlas/PROJECT-README.md`; the template has no root README (the landing is `docs/README.md`).
+- Project README → generated from `.atlas/PROJECT-README.md`; ATLAS has no root README (the landing is `docs/README.md`).

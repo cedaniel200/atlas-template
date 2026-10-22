@@ -19,6 +19,7 @@ Lo consume `.atlas/BOOTSTRAP.md` en la primera sesión.
 | `packs/<pack>/` | ✅ sí | **Procedimiento** opcional (skills/agentes), fuera de discovery |
 | `scripts/` | ✅ sí | Helpers portables (solo Node/shell): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `medir-contexto.mjs` (diagnóstico de mantenimiento) y `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
 | `adapters/<host>/` | ❌ no (gitignored) | Artefactos desplazados por `prune` (estado local) |
+| `archive/` | ❌ no (gitignored) | Documentación interna archivada cuando el proyecto no contribuye (`.atlas/docs/`) |
 | `backups/<timestamp>/` | ❌ no (gitignored) | Copia previa a una fusión en modo brownfield |
 
 ### La diferencia importa
@@ -45,6 +46,9 @@ Lo consume `.atlas/BOOTSTRAP.md` en la primera sesión.
 | `architecture.notes` | texto \| `null` | Reglas de frontera que declara el proyecto |
 | `profile` | id de perfil \| `null` | Perfil de stack aplicado |
 | `packs` | lista | Packs activados |
+| `stacks` | lista | Stacks del proyecto: `id`, `profile`, `paths`, comandos y `packs` |
+| `readme` | `generated` \| `preserved` \| `appended` \| `null` | Política aplicada al `README.md` del proyecto |
+| `optional_agents` | lista | Roles opcionales activados (`mentor`, `business-strategist`) |
 | `preferences.openspec_commands` | `user` \| `agent` \| `ask` | Quién ejecuta los comandos OpenSpec |
 | `preferences.orchestration` | `orchestrated` \| `manual` | Si el analyst encadena las fases o el usuario las invoca |
 | `quality.crap_threshold` | entero | Umbral CRAP por método (default `6`) |

@@ -1,6 +1,6 @@
 # Harness documentation (internal)
 
-> This folder is for **maintainers and contributors** of the template, not for projects that adopt it.
+> This folder is for **maintainers and contributors** of ATLAS, not for projects that adopt it.
 > If you only use the harness, you can remove `.atlas/docs/` (the bootstrap asks).
 
 ---

@@ -51,7 +51,7 @@ The bootstrap detects **brownfield** and inventories before touching anything.
 | Project agents and skills | What to keep and what to adapt |
 | `.env`, secrets | Names only; **never values** |
 
-The result is written to `.atlas/adoption-report.md` (and summarized in `docs/template-adoption.md` if the project uses it):
+The result is written to `.atlas/adoption-report.md`:
 
 ```markdown
 # Harness adoption

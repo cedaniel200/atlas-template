@@ -1,6 +1,6 @@
 # Documentación del arnés (interna)
 
-> Esta carpeta es para **mantenedores y contribuidores** del template, no para los proyectos que lo usan.
+> Esta carpeta es para **mantenedores y contribuidores** de ATLAS, no para los proyectos que lo usan.
 > Si solo usas el arnés, puedes eliminar `.atlas/docs/` (el bootstrap lo pregunta).
 
 ---

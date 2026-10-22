@@ -69,7 +69,7 @@ Confirma con el usuario antes de seguir.
 
 ## −1.2 Inventario (solo lectura, brownfield)
 
-Inspecciona y registra en `docs/template-adoption.md` (guía: `docs/harness/<lang>/ADOPTION.md`):
+Inspecciona y registra el inventario en `.atlas/adoption-report.md` (guía: `docs/harness/<lang>/ADOPTION.md`):
 
 | Se detecta | Acción |
 |---|---|

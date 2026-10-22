@@ -173,7 +173,7 @@ log('Coste de contexto del arnés (estimación estática)');
 log('Proxy: ~4 caracteres/token (en español puede llegar a ~3,5 → hasta +15%).');
 log('No incluye conversación ni tool outputs.');
 imprimir('Arranque mínimo del ritual (sin leer prompts de agente)', arranqueMinimo);
-imprimir('Arranque completo (si además lee los 5 prompts)', arranque);
+imprimir('Arranque completo (si además lee los prompts: 5 core + 2 opcionales)', arranque);
 const tokensBase = imprimir('Contexto base de sesión (siempre)', baseConSkills);
 
 const adaptadores = [

@@ -11,7 +11,7 @@
 |---|---|---|---|
 | Instrucciones | `AGENTS.md` + `opencode.json` | `CLAUDE.md` → `@AGENTS.md` | `AGENTS.md` |
 | Skills | `.agents/skills/` (canónico) y `.opencode/skills/` (nativo, con prioridad) | `.claude/skills` (symlink) | `.agents/skills/` |
-| Agentes | `.opencode/agent/` | `.claude/agents/` | *(sin subagentes)* |
+| Agentes | `.opencode/agent/` (+ opcionales si se activan) | `.claude/agents/` (+ opcionales si se activan) | *(sin subagentes)* |
 | Comandos OpenSpec | `.opencode/commands/` | `.claude/commands/opsx/` | `.codex/prompts/` |
 | MCP | `opencode.json` → `mcp` | Configuración de Claude | Configuración de Codex |
 | Modelo | `model` / `small_model` | `model` | `model` |

@@ -51,7 +51,7 @@ El bootstrap detecta **brownfield** y hace inventario antes de tocar nada.
 | Agentes y skills propios | Qué se conserva y qué se adapta |
 | `.env`, secretos | Solo nombres; **nunca valores** |
 
-El resultado se escribe en `.atlas/adoption-report.md` (y se resume en `docs/template-adoption.md` si el proyecto lo usa):
+El resultado se escribe en `.atlas/adoption-report.md`:
 
 ```markdown
 # Adopción del arnés
