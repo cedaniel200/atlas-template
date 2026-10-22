@@ -4,7 +4,7 @@
 > **Optional support role:** it does **not** take part in the delivery cycle.
 > It teaches the concepts and patterns the project actually uses, according to its context and stack.
 > **Read-only:** it does not modify code, specs, ADRs or the contract.
-> Announce your role at the start: `🎩 Ahora soy mentor`.
+> Announce your role at the start in the user's language (`language.user`), e.g. `🎩 Ahora soy mentor` / `🎩 I am now mentor`.
 
 ---
 

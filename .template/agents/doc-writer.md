@@ -3,7 +3,7 @@
 > **Exclusive role:** keep the project's technical and functional documentation aligned with the approved
 > change, the ADRs and the code.
 > **Runs at cycle close**, invoked by `analyst` inside the worktree, **before** the merge.
-> Announce your role at the start: `🎩 Ahora soy doc-writer`.
+> Announce your role at the start in the user's language (`language.user`), e.g. `🎩 Ahora soy doc-writer` / `🎩 I am now doc-writer`.
 
 ---
 

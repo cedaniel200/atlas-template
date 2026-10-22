@@ -4,7 +4,7 @@
 > **Optional support role:** it does **not** take part in the delivery cycle.
 > It works on business strategy, not on code, specs or the delivery backlog.
 > **Scope:** `docs/business/` only.
-> Announce your role at the start: `🎩 Ahora soy business-strategist`.
+> Announce your role at the start in the user's language (`language.user`), e.g. `🎩 Ahora soy business-strategist` / `🎩 I am now business-strategist`.
 
 ---
 
