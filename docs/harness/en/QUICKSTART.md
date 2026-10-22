@@ -98,8 +98,17 @@ The `analyst` asks at the start whether to orchestrate the cycle or let you invo
 | `Schema not found` | Missing `openspec/schemas/` | Restore the vendored schema |
 | Skills do not appear | Wrong path or host not restarted | Check `.agents/skills/*/SKILL.md` and restart |
 | `AGENTS.md` changed after `openspec init` | The CLI rewrote it | Restore the backup and merge manually |
-| `openspec init` writes skills to `.opencode/skills` | OpenCode's native path, with precedence over `.agents/skills` | Do not delete it: it can host team skills. Keep shared skills in `.agents/skills/` and avoid duplicate IDs |
+| `openspec init` writes skills to `.opencode/skills` | OpenCode's native path, with precedence over `.agents/skills` | Do not delete the directory: it can host team skills. If IDs collide, you decide (see below) |
 | The gate fails | Commands or sections still `TBD` | Complete them in `AGENTS.md` |
+
+If `openspec init` leaves duplicate IDs between `.opencode/skills/` and `.agents/skills/`, you decide:
+
+- **Keep the CLI copy**: the host's native space, but it shadows the canonical skills and they will not
+  receive their improvements.
+- **Delete only those IDs**: the canonical one wins and behaviour matches every host, but you must
+  repeat it after each `openspec init`.
+
+Delete only the duplicate IDs if you want to keep your own skills. The project owns the tradeoff.
 
 ---
 

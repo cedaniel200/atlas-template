@@ -149,9 +149,7 @@ openspec init --tools <opencode|claude|codex>
 diff /tmp/agents.bootstrap.bak AGENTS.md && echo "AGENTS.md intacto" || echo "⚠️ revisar y fusionar"
 
 # .opencode/skills/ es la ruta nativa de OpenCode y tiene prioridad sobre
-# .agents/skills/. No la borres: puede alojar skills propias del equipo.
-# Recomendación: las skills compartidas viven en .agents/skills/ (canónico);
-# evita IDs duplicados entre ambas rutas porque gana la de .opencode/skills/.
+# .agents/skills/. No borres el directorio: puede alojar skills propias del equipo.
 ls .agents/skills | sort > /tmp/skills-agents.txt
 ls .opencode/skills 2>/dev/null | sort > /tmp/skills-opencode.txt
 comm -12 /tmp/skills-agents.txt /tmp/skills-opencode.txt  # IDs duplicados, si hay
@@ -160,6 +158,17 @@ comm -12 /tmp/skills-agents.txt /tmp/skills-opencode.txt  # IDs duplicados, si h
 Salida esperada: `.opencode/commands/opsx-*` · `.claude/commands/opsx/*` · `.codex/prompts/*`.
 `openspec update` no acepta `--tools`: úsalo solo para actualizar instrucciones ya generadas.
 Si `openspec init` reescribe `AGENTS.md`, restáuralo desde el backup y fusiona solo lo nuevo.
+
+**Si hay IDs duplicados, decides tú.** La copia de `.opencode/skills/` gana sobre `.agents/skills/`.
+Dos salidas válidas:
+
+| Opción | Ventaja | Coste |
+|---|---|---|
+| Conservar `.opencode/skills/` | Espacio nativo del host; el equipo puede dejar ahí sus skills | Las skills canónicas del template quedan sombreadas y no reciben sus mejoras |
+| Eliminar solo los IDs duplicados (o el directorio completo) | Gana el canónico; mismo comportamiento en OpenCode, Claude y Codex | Hay que repetirlo tras cada `openspec init`; borrar el directorio se lleva también las skills del equipo |
+
+Borra solo los IDs que liste `comm` si quieres conservar las skills propias. No hay opción
+"correcta": el proyecto asume el tradeoff.
 
 **Commit:** `chore(bootstrap): adaptar el entorno a <host>`
 

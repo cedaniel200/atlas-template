@@ -97,8 +97,17 @@ El `analyst` te pregunta al inicio si orquesta el ciclo o prefieres invocar cada
 | `Schema not found` | Falta `openspec/schemas/` | Restaura el schema vendorizado |
 | Las skills no aparecen | Ruta incorrecta o falta reiniciar | Verifica `.agents/skills/*/SKILL.md` y reinicia la herramienta |
 | `AGENTS.md` cambió tras `openspec init` | El CLI lo reescribió | Restaura el backup y fusiona a mano |
-| `openspec init` escribe skills en `.opencode/skills` | Ruta nativa de OpenCode, con prioridad sobre `.agents/skills` | No la borres: puede alojar skills del equipo. Mantén las compartidas en `.agents/skills/` y evita IDs duplicados |
+| `openspec init` escribe skills en `.opencode/skills` | Ruta nativa de OpenCode, con prioridad sobre `.agents/skills` | No borres el directorio: puede alojar skills del equipo. Si hay IDs duplicados, decides tú (ver abajo) |
 | El gate no pasa | Comandos o secciones en `TBD` | Complétalos en `AGENTS.md` |
+
+Si `openspec init` deja IDs duplicados entre `.opencode/skills/` y `.agents/skills/`, decides tú:
+
+- **Conservar la copia del CLI**: espacio nativo del host, pero sombrea las skills canónicas y no
+  recibirán sus mejoras.
+- **Eliminar solo esos IDs**: manda el canónico y el comportamiento es igual en todos los hosts, pero
+  hay que repetirlo tras cada `openspec init`.
+
+Borra solo los IDs duplicados si quieres conservar skills propias. El proyecto asume el tradeoff.
 
 ---
 
