@@ -36,10 +36,11 @@ metadata: <opcional, mapa de strings>
 
 1. Crear `.template/agents/<rol>.md` con el cuerpo del prompt y **sin frontmatter de host**.
 2. Nombrarlo por rol, no por arquitectura (`analyst`, no `ddd-analyst`).
-3. El bootstrap genera los adaptadores:
+3. El renderer (`renderizar-adaptadores.mjs`) genera los adaptadores:
    - OpenCode: `.opencode/agent/<rol>.md` (`description`, `mode: all`).
    - Claude Code: `.claude/agents/<rol>.md` (`name`, `description`).
    - Codex: sin subagentes; el rol se emula desde `AGENTS.md`.
+   - Multi-stack: `engineer-<stack>` por stack con `STACK_CONTEXT`; `state.stacks` es la fuente.
 4. Registrar el rol en `AGENTS.md` § Roles.
 
 ---
@@ -69,6 +70,8 @@ license: MIT
 - **No** se descubre automáticamente; el bootstrap lo copia a `.agents/skills/` y `.template/agents/`.
 - Nunca es requisito para que el núcleo funcione.
 - Registrarlo en el catálogo de packs y en `THIRD-PARTY-NOTICES.md` si vendoriza contenido de terceros.
+- Actívalo en `state.stacks[].packs` (la unión va a `state.packs`); el bootstrap copia solo los packs activos y registra sus skills en `AGENTS.md § Skill Registry`.
+- Versión: `pack.yaml`; en una actualización solo se actualizan los packs activos.
 
 ---
 
@@ -89,6 +92,13 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles
 2. Documentarlo en `.template/hosts/README.md`.
 3. Actualizar `docs/harness/es/COMPATIBILITY.md` con la matriz y cualquier degradación.
 4. El bootstrap debe poder crear el adaptador sin destruir los de otras herramientas.
+
+---
+
+## Adopción y README
+
+- `adoptar-agents.mjs` migra un `AGENTS.md` existente a la base + `docs/project-context.md`.
+- `combinar-readme.mjs` añade al README existente solo las secciones que falten de `PROJECT-README.md`.
 
 ---
 

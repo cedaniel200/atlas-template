@@ -17,6 +17,7 @@
 | Quieres configurar MCP o memoria | [`harness/es/TOOLS.md`](harness/es/TOOLS.md) |
 | Te interesan los gates y CRAP | [`harness/es/QUALITY.md`](harness/es/QUALITY.md) |
 | No entiendes un término | [`harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
+| Extender el arnés (skills/agentes/packs) | [`.template/docs/es/extending.md`](../.template/docs/es/extending.md) · [`.template/packs/README.md`](../.template/packs/README.md) |
 
 Para arrancar, abre el proyecto con tu herramienta y di:
 
@@ -24,6 +25,8 @@ Para arrancar, abre el proyecto con tu herramienta y di:
 
 El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` está `pending` y ejecuta
 [`../.template/BOOTSTRAP.md`](../.template/BOOTSTRAP.md).
+
+> El `README.md` del proyecto se genera desde `.template/PROJECT-README.md`; este `docs/README.md` es la portada del template (no hay README raíz por decisión).
 
 ---
 
@@ -43,11 +46,12 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 | Componente | Detalle |
 |---|---|
 | **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
-| **Agentes** | `analyst`, `engineer`, `reviewer`, `qa-analyst`, `doc-writer` en `.template/agents/` |
-| **Skills** | 17 skills portables en `.agents/skills/` |
+| **Agentes** | `analyst`, `engineer` (single-stack; multi-stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.template/agents/` |
+| **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.template/packs/` |
 | **Ritual** | [`../.template/BOOTSTRAP.md`](../.template/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
 | **Compatibilidad** | [`harness/es/COMPATIBILITY.md`](harness/es/COMPATIBILITY.md): matriz por host |
-| **Estado** | [`.template/`](../.template/README.md): hosts, perfiles, packs, manifiesto y estado |
+| **Estado** | [`.template/`](../.template/README.md): hosts, perfiles, packs, `state.stacks`, manifiesto y estado |
+| **Contexto del proyecto** | [`docs/project-context.md`](project-context.md): capa propia que complementa `AGENTS.md` |
 
 ---
 
@@ -58,18 +62,19 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 ├── AGENTS.md            # contrato del proyecto
 ├── CLAUDE.md            # stub para Claude Code
 ├── .agents/
-│   └── skills/          # 17 skills portables
+│   └── skills/          # 17 skills core portables
 ├── .template/
 │   ├── BOOTSTRAP.md     # ritual de primera sesión
 │   ├── PLACEHOLDERS.md  # contrato de placeholders (perfil/proyecto, N/A)
 │   ├── PROJECT-README.md # plantilla del README del proyecto
-│   ├── agents/          # 5 prompts canónicos
+│   ├── agents/          # 5 prompts canónicos (+ engineer-<stack> generado)
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
-│   ├── scripts/         # helpers portables (sha256 + validadores + medición)
-│   └── state.json manifest.json
+│   ├── scripts/         # sha256 + validadores + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   └── state.json (stacks, packs) manifest.json
 ├── docs/
-│   ├── README.md        # este índice
+│   ├── README.md        # este índice (portada del template)
+│   ├── project-context.md # contexto propio del proyecto
 │   ├── harness/es|en/   # guías de uso + COMPATIBILITY
 │   ├── architecture/ api/ functional/ guides/   # documentación del proyecto
 ├── openspec/            # config, specs, changes, schemas

@@ -24,6 +24,8 @@ rm -rf .git && git init
 
 Si clonaste en vez de usar `degit`, elimina el historial del template y empieza uno nuevo.
 
+> El `README.md` del proyecto se genera desde `.template/PROJECT-README.md`; el template no trae README raíz.
+
 ---
 
 ## 2. Abre la herramienta y pide el ritual
@@ -48,11 +50,10 @@ El ritual pregunta, por rondas:
 
 | Ronda | Qué |
 |---|---|
-| Idioma | Documentación (`language.user`) e idioma de skills/prompts |
-| Identidad | Nombre, descripción, stack, estructura, package base |
-| Comandos y calidad | Build, run, test, lint, cobertura, mutación, CRAP, entorno de QA |
-| Arquitectura y límites | Postura declarada, dominio, reglas de no tocar |
-| Preferencias | Memoria persistente, comandos OpenSpec (`user`/`agent`/`ask`), orquestación |
+| **0 — Idioma** | Documentación (`language.user`) e idioma de skills/prompts |
+| **1 — Identidad y stacks** | Nombre, descripción, stack(s), estructura, package base; una fila por stack (multi-stack) |
+| **2 — Comandos y calidad** | Build, run, test, lint, cobertura, mutación, CRAP, entorno de QA |
+| **3 — Arquitectura, dominio y límites** | Postura, dominio, no tocar, git, documentación, memoria, OpenSpec, orquestación, contribución y README |
 
 Si no sabes un comando, responde `TBD`: el agente lo anota en `AGENTS.md` § Pendientes. **Nunca se inventa uno.**
 
@@ -96,6 +97,7 @@ El `analyst` te pregunta al inicio si orquesta el ciclo o prefieres invocar cada
 | `Schema not found` | Falta `openspec/schemas/` | Restaura el schema vendorizado |
 | Las skills no aparecen | Ruta incorrecta o falta reiniciar | Verifica `.agents/skills/*/SKILL.md` y reinicia la herramienta |
 | `AGENTS.md` cambió tras `openspec init` | El CLI lo reescribió | Restaura el backup y fusiona a mano |
+| `openspec init` duplica skills | El CLI copia skills a `.opencode/skills` | El ritual las elimina; el canónico es `.agents/skills/` |
 | El gate no pasa | Comandos o secciones en `TBD` | Complétalos en `AGENTS.md` |
 
 ---
@@ -107,3 +109,5 @@ El `analyst` te pregunta al inicio si orquesta el ciclo o prefieres invocar cada
 - Calidad y CRAP → [`QUALITY.md`](QUALITY.md)
 - Compatibilidad por herramienta → [`COMPATIBILITY.md`](COMPATIBILITY.md)
 - Glosario → [`GLOSSARY.md`](GLOSSARY.md)
+- Extender el arnés (skills/agentes/packs) → [`../../../.template/docs/es/extending.md`](../../../.template/docs/es/extending.md) · [`../../../.template/packs/README.md`](../../../.template/packs/README.md)
+- README del proyecto → se genera desde `.template/PROJECT-README.md`; el template no trae README raíz (la portada es `docs/README.md`).

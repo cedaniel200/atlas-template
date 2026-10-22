@@ -48,18 +48,19 @@ license: MIT
 
 ## Activación
 
-1. El bootstrap lee los `pack.yaml` y propone los que encajan con el perfil detectado.
+1. El bootstrap lee los `pack.yaml` y propone los que encajan con los perfiles de `state.stacks`.
 2. El usuario elige.
 3. El bootstrap copia el contenido a `.agents/skills/` y `.template/agents/`, registra `{name, version}` en
-   `state.json.packs` y las skills en `AGENTS.md` § Skill Registry. Solo los packs activos consumen contexto.
+   `state.stacks[].packs` (y en la unión `state.packs`) y las skills en `AGENTS.md` § Skill Registry.
+   Solo los packs activos consumen contexto.
 
 Desactivar un pack = borrar sus archivos copiados (o restaurarlos desde este directorio).
 En una actualización, **solo se actualizan los packs activados**.
 
 ## Catálogo
 
-Packs agnósticos de tecnología: no dependen de un stack concreto, por eso pueden describirse sin
-condicionar la elección del proyecto.
+El catálogo base es agnóstico de tecnología. Un pack de proyecto puede declarar `stack_hints`/`requires`
+(un pack de Java no se activa con un perfil de Python).
 
 | Pack | Qué aporta | Requiere |
 |---|---|---|

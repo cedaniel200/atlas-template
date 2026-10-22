@@ -19,6 +19,7 @@ Copia del template solo lo que falte:
 | Archivo | Si ya existe |
 |---|---|
 | `AGENTS.md` | **Base del template**: backup, reemplazar por el `AGENTS.md` del template y migrar el contenido propio a `docs/project-context.md` |
+| `docs/project-context.md` | Crear desde la base; migrar el contenido propio del `AGENTS.md` existente |
 | `openspec/config.yaml` | Fusionar `context:` y `rules:` |
 | `openspec/specs/`, `adr/` | Conservar los del proyecto |
 | `.agents/skills/`, `.template/agents/` | Conservar las propias; añadir las del template con prefijo o como pack |
@@ -74,6 +75,8 @@ node .template/scripts/adoptar-agents.mjs --template <ruta-template-pristino> --
 El segundo hace backup del `AGENTS.md` existente, copia la base del template y mueve el contenido
 anterior a `docs/project-context.md`. Después el bootstrap rellena los placeholders de la base.
 
+- `state.stacks` (multi-stack) y `state.packs` se conservan; el `README` se genera/conserva según la política.
+
 Clasifica cada archivo del template en `nuevo` / `igual` / `distinto`, copia los `distinto` a
 `.template/backups/adopcion-<timestamp>/` y escribe `.template/adoption-report.md` con la tabla.
 El agente decide la política de conflicto; el script **no fusiona**.
@@ -105,6 +108,9 @@ openspec schema which spec-driven-with-adr
 openspec context
 git status
 ```
+
+El `validar-contrato` comprueba además `state.stacks`, los adaptadores `engineer-<stack>` y que toda skill
+instalada esté en `AGENTS.md § Skill Registry`.
 
 Revisa el diff completo de `chore/bootstrap`. El merge lo haces tú; el agente no hace push ni PR salvo
 que se lo pidas.

@@ -36,10 +36,11 @@ metadata: <optional string map>
 
 1. Create `.template/agents/<role>.md` with the prompt body and **no host frontmatter**.
 2. Name it by role, not by architecture (`analyst`, not `ddd-analyst`).
-3. The bootstrap generates the adapters:
+3. The renderer (`renderizar-adaptadores.mjs`) generates the adapters:
    - OpenCode: `.opencode/agent/<role>.md` (`description`, `mode: all`).
    - Claude Code: `.claude/agents/<role>.md` (`name`, `description`).
    - Codex: no subagents; the role is emulated through `AGENTS.md`.
+   - Multi-stack: `engineer-<stack>` per stack with `STACK_CONTEXT`; `state.stacks` is the source.
 4. Register the role in `AGENTS.md` § Roles.
 
 ---
@@ -69,6 +70,8 @@ license: MIT
 - It is **not** discovered automatically; the bootstrap copies it into `.agents/skills/` and `.template/agents/`.
 - It is never required for the core to work.
 - Register it in the pack catalog and in `THIRD-PARTY-NOTICES.md` if it vendors third-party content.
+- Activate it in `state.stacks[].packs` (the union goes to `state.packs`); the bootstrap copies only active packs and registers their skills in `AGENTS.md § Skill Registry`.
+- Version: `pack.yaml`; an update only refreshes active packs.
 
 ---
 
@@ -89,6 +92,13 @@ A profile is **data**, not procedure. See `.template/profiles/README.md` for the
 2. Document the adapter in `.template/hosts/README.md`.
 3. Update `docs/harness/en/COMPATIBILITY.md` with the capability matrix and any degradation.
 4. The bootstrap must be able to create the adapter without destroying other hosts' files.
+
+---
+
+## Adoption and README
+
+- `adoptar-agents.mjs` migrates an existing `AGENTS.md` to the base + `docs/project-context.md`.
+- `combinar-readme.mjs` appends to the existing README only the sections missing from `PROJECT-README.md`.
 
 ---
 

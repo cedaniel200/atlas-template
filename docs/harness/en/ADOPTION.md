@@ -19,6 +19,7 @@ Copy only what is missing from the template:
 | File | If it already exists |
 |---|---|
 | `AGENTS.md` | **Template base**: backup, replace with the template's `AGENTS.md`, migrate project content to `docs/project-context.md` |
+| `docs/project-context.md` | Create from the base; migrate the existing `AGENTS.md` project content |
 | `openspec/config.yaml` | Merge `context:` and `rules:` |
 | `openspec/specs/`, `adr/` | Keep the project's |
 | `.agents/skills/`, `.template/agents/` | Keep the project's; add the template's with a prefix or as a pack |
@@ -74,6 +75,8 @@ node .template/scripts/adoptar-agents.mjs --template <pristine-template-path> --
 The second one backs up the existing `AGENTS.md`, copies the template base and moves the previous
 content to `docs/project-context.md`. The bootstrap then fills the base placeholders.
 
+- `state.stacks` (multi-stack) and `state.packs` are preserved; the `README` is generated/preserved per the policy.
+
 Classifies each template file as `nuevo` / `igual` / `distinto`, copies the `distinto` ones to
 `.template/backups/adopcion-<timestamp>/` and writes `.template/adoption-report.md`.
 The agent decides the conflict policy; the script **does not merge**.
@@ -105,6 +108,9 @@ openspec schema which spec-driven-with-adr
 openspec context
 git status
 ```
+
+`validar-contrato` also checks `state.stacks`, the `engineer-<stack>` adapters and that every installed
+skill is in `AGENTS.md § Skill Registry`.
 
 Review the full `chore/bootstrap` diff. You merge it; the agent does not push or open a PR unless you ask.
 
