@@ -1,4 +1,4 @@
-# Agentes del pack
+# Pack agents
 
-Cada agente vive en `agents/<rol>.md` y sigue las reglas de `.atlas/agents/README.md`:
-sin frontmatter de host, sin comandos hardcodeados y con el anuncio de rol en el idioma del usuario.
+Each agent lives in `agents/<role>.md` and follows the rules in `.atlas/agents/README.md`:
+no host frontmatter, no hardcoded commands and the role announcement in the user's language.

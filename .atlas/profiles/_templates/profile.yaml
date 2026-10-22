@@ -1,8 +1,8 @@
-# Plantilla de perfil de stack.
-# Copia este archivo con:
-#   node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>
-# Después completa los comandos con valores reales y valida ejecutándolos.
-# Un perfil es DATOS: comandos y rutas. No incluyas procedimientos ni prompts.
+# Stack profile template.
+# Copy this file with:
+#   node .atlas/scripts/crear-perfil.mjs --id <id> --language <language>
+# Then fill in the commands with real values and validate them by running them.
+# A profile is DATA: commands and paths. Do not include procedures or prompts.
 name: {{ID}}
 description: "{{DESCRIPTION}}"
 
@@ -44,5 +44,5 @@ qa:
   metrics_path: ""
 
 notes: |
-  Comandos pendientes de completar y validar ejecutándolos.
-  Si un comando no aplica, déjalo como "" y explícalo aquí.
+  Commands pending completion and validation by running them.
+  If a command does not apply, leave it as "" and explain it here.
