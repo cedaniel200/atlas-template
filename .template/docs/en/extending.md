@@ -111,6 +111,8 @@ grep -rn "ddd-\|opencode\|claude" .template/agents/ .agents/skills/ || true
 node .template/scripts/validar-perfiles.mjs
 # placeholder contract (gate)
 node .template/scripts/validar-contrato.mjs
+# context cost (informational: flags files that bloat the harness)
+node .template/scripts/medir-contexto.mjs
 # contract
 openspec doctor && openspec context
 ```
@@ -118,3 +120,28 @@ openspec doctor && openspec context
 > **Declared dependencies only.** Every harness check uses Git, Node 20+, OpenSpec CLI and a POSIX
 > shell. If it needs another tool, it must **detect it and warn**; never assume it.
 > A check that cannot run must not pretend it passed.
+
+## Context cost (maintenance diagnostic)
+
+`medir-contexto.mjs` is **not a gate** and does not run in the bootstrap: it is a **maintenance**
+tool to check that the harness does not bloat and to compare before/after a change. A team may use it
+if it adds its own skills, agents or packs.
+
+```bash
+node .template/scripts/medir-contexto.mjs          # readable report
+node .template/scripts/medir-contexto.mjs --json   # comparable baseline
+```
+
+What it measures (**static** estimate, no conversation or tool outputs):
+
+| Group | What it includes |
+|---|---|
+| Session base | AGENTS.md + skill descriptions + host config |
+| Minimum bootstrap | BOOTSTRAP + AGENTS + PLACEHOLDERS + profiles + host |
+| Full bootstrap | the above + the 5 agent prompts |
+| Per agent | base + prompt + skills it mentions |
+| Ceiling | the whole harness loaded at once |
+
+**How to read it:** `~4 chars/token` proxy (Spanish may reach ~3.5 → +15%). Target budget:
+**base ≤ 4k**, **per agent ≤ 12k**. If it grows, attack the biggest contributor first: long skills →
+progressive disclosure; `AGENTS.md` → move reference material to linked docs.

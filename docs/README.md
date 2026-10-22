@@ -65,7 +65,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 │   ├── agents/          # 5 prompts canónicos
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
-│   ├── scripts/         # helpers portables (sha256 + validadores)
+│   ├── scripts/         # helpers portables (sha256 + validadores + medición)
 │   └── state.json manifest.json
 ├── docs/
 │   ├── README.md        # este índice
