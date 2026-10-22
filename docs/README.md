@@ -91,7 +91,18 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 
 > El `README.md` del proyecto se genera desde `.atlas/PROJECT-README.md`; este `docs/README.md` es la portada de ATLAS (no hay README raíz por decisión).
 
-### 3️⃣ Elige tu guía
+### 3️⃣ Lo que puedes pedir al agente
+
+Cuando termine el ritual, pídeselo con tus palabras; si el agente deduce la acción de la intención,
+**te pedirá confirmación antes de actuar**.
+
+- Añadir un stack o perfil, un implementador o un pack.
+- Dejar ATLAS mínimo (`minimizar.mjs`).
+- Actualizar ATLAS o medir el contexto.
+
+Detalle: [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md).
+
+### 4️⃣ Elige tu guía
 
 | Si… | Ve a |
 |---|---|

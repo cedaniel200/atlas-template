@@ -82,7 +82,25 @@ should reflect your answers.
 
 ---
 
-## 5. First change
+## 5. What you can ask the agent
+
+Once the ritual is done, ask in your own words. If the agent infers the action from intent, **it will
+ask for explicit confirmation before acting**.
+
+| Ask… | What it does |
+|---|---|
+| “Add a stack or profile for X” | Creates the profile, updates `state.stacks`/`AGENTS.md` and regenerates the adapter |
+| “Add an implementer for X” | Creates the stack and `engineer-<id>` |
+| “Create a pack for X” | Creates the skeleton and activates it |
+| “Minimize ATLAS” | Archives what is not used with `minimizar.mjs` |
+| “Update ATLAS” | Runs `update-harness` |
+| “Measure context” | Runs `medir-contexto.mjs` |
+
+Detail: [`.atlas/docs/en/extending.md`](../../../.atlas/docs/en/extending.md).
+
+---
+
+## 6. First change
 
 1. **Explore** — describe the idea; the `analyst` asks and clarifies.
 2. **Propose** — `proposal`, `specs`, `design`, `adr` and `tasks` are produced one by one with your approval.
@@ -126,5 +144,4 @@ Delete only the duplicate IDs if you want to keep your own skills. The project o
 - Host compatibility → [`COMPATIBILITY.md`](COMPATIBILITY.md)
 - Glossary → [`GLOSSARY.md`](GLOSSARY.md)
 - Extend the harness (skills/agents/packs) → [`../../../.atlas/docs/en/extending.md`](../../../.atlas/docs/en/extending.md) · [`../../../.atlas/packs/README.md`](../../../.atlas/packs/README.md)
-- You can also ask in your own words: “minimize ATLAS”, “add a profile for Go”, “create a pack for KMP”. If the agent infers it from intent, it confirms before acting.
 - Project README → generated from `.atlas/PROJECT-README.md`; ATLAS has no root README (the landing is `docs/README.md`).
