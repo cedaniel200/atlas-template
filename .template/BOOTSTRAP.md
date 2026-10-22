@@ -228,8 +228,8 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 | `openspec/config.yaml` | Bloque `context:` y `rules:` (reglas de diseño según la arquitectura elegida) |
 | `.template/PROJECT-README.md` → `README.md` del proyecto | Greenfield/sin README: generar. Brownfield con README: conservar y preguntar append |
 | `docs/project-context.md` | Contexto propio del proyecto (brownfield: migrar el `AGENTS.md` existente) |
-| `.env.example` | Variables detectadas, sin valores reales |
-| `.gitignore` / `.gitattributes` / `.editorconfig` | Stack, secretos, estado local, EOL, indentación |
+| `.env.example` / `.gitattributes` / `.editorconfig` | **Solo si no existen**: créalos con las convenciones del stack (variables detectadas, EOL, indentación). Si existen, consérvalos. No vienen del template. |
+| `.gitignore` | Stack, secretos, estado local (si no existe, créalo) |
 | `docs/` | Renombrar carpetas si el usuario eligió otros nombres y actualizar `AGENTS.md` |
 | `CLAUDE.md` | Verificar el stub de una línea: `@AGENTS.md` |
 | Adaptadores | Agentes y comandos del host detectado |
