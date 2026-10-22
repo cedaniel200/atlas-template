@@ -159,7 +159,6 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 ├── openspec/            # config, specs, changes, schemas
 ├── adr/
 ├── .githooks/           # hooks de git (gitleaks)
-├── .github/assets/      # imagen social del repositorio (no es parte del arnés)
 ├── SECURITY.md          # confidencialidad y responsabilidad
 └── LICENSE              # MIT
 ```

@@ -363,9 +363,6 @@ Al cerrar:
 
 **Commit:** `chore(bootstrap): validar el contexto del proyecto`
 
-**Imagen social (opcional):** si existe `.github/assets/atlas-social-preview.png`, pregunta si se
-conserva como imagen del repositorio o se elimina; no afecta al arnés.
-
 Anuncia: **"Bootstrap completo. Ya puedes proponer un cambio."**
 
 ---
