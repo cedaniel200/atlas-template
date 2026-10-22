@@ -34,7 +34,7 @@ Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el hum
 
 | Rol | Para qué sirve |
 |---|---|
-| `mentor` | Enseñar DDD y arquitectura, explicar el código y generar material didáctico |
+| `mentor` | Enseñar, de forma agnóstica, los conceptos y patrones que use el proyecto (DDD, arquitectura, diseño) según su contexto y stack; explicar el código y generar material didáctico |
 | `business-strategist` | Modelo de negocio, propuesta de valor, segmentos, pricing y canales (`docs/business/`) |
 
 > No forman parte del ciclo de entrega: se añaden como agentes o packs propios del proyecto.
