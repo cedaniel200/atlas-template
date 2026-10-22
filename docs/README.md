@@ -1,4 +1,11 @@
-# ATLAS — OpenSpec + Agentes
+# 🧭 ATLAS — OpenSpec + Agentes
+
+**Plantilla para desarrollo de software impulsado por IA con SDD.**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](../LICENSE)
+[![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-339933?style=flat-square&logo=node.js&logoColor=white)](harness/es/QUICKSTART.md)
+[![OpenSpec](https://img.shields.io/badge/OpenSpec-spec--driven-6E56CF?style=flat-square)](../.atlas/BOOTSTRAP.md)
+[![Hosts](https://img.shields.io/badge/hosts-OpenCode%20%7C%20Claude%20Code%20%7C%20Codex-111827?style=flat-square)](harness/es/COMPATIBILITY.md)
 
 > **ATLAS** (*Agnostic Template for LLM Agent Systems*) es una plantilla para **desarrollo de software
 > impulsado por IA con SDD (Spec-Driven Development)**: el agente trabaja sobre especificaciones,
@@ -13,9 +20,9 @@
 > antes de cada merge.
 >
 > **En la práctica:**
-> - **SDD**: primero `proposal → specs → design → ADR → tasks`; después código.
-> - **Roles con gates**: analyst → engineer → QA → reviewer → doc-writer.
-> - **Multi-stack y multi-host**: un perfil por stack; el mismo arnés en tres herramientas.
+> - 🧭 **SDD**: primero `proposal → specs → design → ADR → tasks`; después código.
+> - ⚙️ **Roles con gates**: analyst → engineer → QA → reviewer → doc-writer.
+> - 🧩 **Multi-stack y multi-host**: un perfil por stack; el mismo arnés en tres herramientas.
 >
 > **Idioma:** Español · [English](harness/en/QUICKSTART.md)
 >
@@ -24,24 +31,30 @@
 
 ---
 
-## Flujo de ATLAS
+## 🗺️ Flujo de ATLAS
 
-```text
-Humano + analyst — explore → propose (proposal, design, specs, ADR, tasks)
-        ↓
-engineer — implementación (uno por stack si es multi-stack)
-        ↓
-qa-analyst — QA funcional (entorno Docker + QA Context)
-        ↓
-reviewer — revisión de código (máx. 3 iteraciones con hallazgos críticos)
-        ↓
-analyst — cierre de ciclo y consistencia diseño → código
-        ↓
-doc-writer — documentación técnica y funcional
-        ↓
-analyst — consistencia documental
-        ↓
-PR — el humano revisa, hace merge y archiva la spec
+```mermaid
+flowchart TD
+    H["🧑‍💻 Humano + analyst<br/>explore → propose"]:::human
+    E["⚙️ engineer<br/>implementación"]:::impl
+    Q["🧪 qa-analyst<br/>QA funcional"]:::qa
+    R["🔍 reviewer<br/>revisión de código"]:::review
+    C["📋 analyst<br/>cierre y consistencia"]:::doc
+    D["📝 doc-writer<br/>documentación"]:::doc
+    V["✅ analyst<br/>consistencia documental"]:::doc
+    P["🔀 PR<br/>humano revisa, merge y archiva"]:::pr
+
+    H --> E --> Q --> R
+    Q -->|hallazgos| E
+    R -->|hallazgos| E
+    R --> C --> D --> V --> P
+
+    classDef human fill:#E8F0FE,stroke:#4285F4,stroke-width:2px,color:#0B3D91
+    classDef impl fill:#E6F4EA,stroke:#34A853,stroke-width:2px,color:#0B5D1E
+    classDef qa fill:#FFF4E5,stroke:#FB8C00,stroke-width:2px,color:#7A4100
+    classDef review fill:#FCE8E6,stroke:#EA4335,stroke-width:2px,color:#7A1A12
+    classDef doc fill:#F3E8FD,stroke:#A142F4,stroke-width:2px,color:#4B1D80
+    classDef pr fill:#E0F7FA,stroke:#00ACC1,stroke-width:2px,color:#004D54
 ```
 
 Las correcciones de QA y reviewer vuelven a `engineer` (tope global: **5 iteraciones** entre ambos).
@@ -60,15 +73,15 @@ Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el hum
 
 ---
 
-## Empieza aquí
+## 🚀 Empieza aquí
 
-### 1. Crea el proyecto desde ATLAS
+### 1️⃣ Crea el proyecto desde ATLAS
 
 - **GitHub:** usa **Use this template** (recomendado).
 - **Manual:** descarga o clona este repositorio y coloca su contenido en la **raíz del proyecto**
   (donde vivirá `AGENTS.md`).
 
-### 2. Arranca el ritual
+### 2️⃣ Arranca el ritual
 
 Abre el proyecto con tu herramienta y di:
 
@@ -79,7 +92,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 
 > El `README.md` del proyecto se genera desde `.atlas/PROJECT-README.md`; este `docs/README.md` es la portada de ATLAS (no hay README raíz por decisión).
 
-### 3. Elige tu guía
+### 3️⃣ Elige tu guía
 
 | Si… | Ve a |
 |---|---|
@@ -93,32 +106,32 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 
 ---
 
-## Capas de documentación
+## 📚 Capas de documentación
 
 | Capa | Dónde | Para quién |
 |---|---|---|
-| **Arnés interno** | [`.atlas/docs/es/`](../.atlas/docs/es/README.md) | Quien mantiene o extiende ATLAS |
-| **Uso** | [`docs/harness/es/`](harness/es/QUICKSTART.md) | Quien adopta ATLAS en su proyecto |
-| **Proyecto** | `docs/architecture/`, `docs/api/`, `docs/functional/`, `docs/guides/` | El equipo del proyecto |
-| **Contexto del proyecto** | `docs/project-context.md` | El equipo del proyecto |
+| 🏗️ **Arnés interno** | [`.atlas/docs/es/`](../.atlas/docs/es/README.md) | Quien mantiene o extiende ATLAS |
+| 📘 **Uso** | [`docs/harness/es/`](harness/es/QUICKSTART.md) | Quien adopta ATLAS en su proyecto |
+| 📦 **Proyecto** | `docs/architecture/`, `docs/api/`, `docs/functional/`, `docs/guides/` | El equipo del proyecto |
+| 🧠 **Contexto del proyecto** | `docs/project-context.md` | El equipo del proyecto |
 
 ---
 
-## Qué incluye
+## 📦 Qué incluye
 
 | Componente | Detalle |
 |---|---|
-| **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
-| **Agentes** | `analyst`, `engineer` (single-stack; multi-stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.atlas/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
-| **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.atlas/packs/` |
-| **Ritual** | [`../.atlas/BOOTSTRAP.md`](../.atlas/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
-| **Compatibilidad** | [`harness/es/COMPATIBILITY.md`](harness/es/COMPATIBILITY.md): matriz por host |
-| **Estado** | [`.atlas/`](../.atlas/README.md): hosts, perfiles, packs, `state.stacks`, manifiesto y estado |
-| **Contexto del proyecto** | [`docs/project-context.md`](project-context.md): capa propia que complementa `AGENTS.md` |
+| 🧭 **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
+| 🤖 **Agentes** | `analyst`, `engineer` (single-stack; multi-stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.atlas/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
+| 🧩 **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.atlas/packs/` |
+| 🚀 **Ritual** | [`../.atlas/BOOTSTRAP.md`](../.atlas/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
+| 🧪 **Compatibilidad** | [`harness/es/COMPATIBILITY.md`](harness/es/COMPATIBILITY.md): matriz por host |
+| 🗂️ **Estado** | [`.atlas/`](../.atlas/README.md): hosts, perfiles, packs, `state.stacks`, manifiesto y estado |
+| 🧠 **Contexto del proyecto** | [`docs/project-context.md`](project-context.md): capa propia que complementa `AGENTS.md` |
 
 ---
 
-## Estructura
+## 🗂️ Estructura
 
 ```
 .
@@ -149,19 +162,19 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 
 ---
 
-## Requisitos
+## ✅ Requisitos
 
-- **Git**
-- **Node.js** + **OpenSpec CLI** (`npm i -g @fission-ai/openspec`)
-- **Shell POSIX** (`sh`, `grep`, `diff`). En **Windows**: Git Bash o WSL (no `cmd.exe`)
-- Opcional: Docker, MCP (`Context7`), memoria persistente (`Engram`)
+- ✅ **Git**
+- ✅ **Node.js** + **OpenSpec CLI** (`npm i -g @fission-ai/openspec`)
+- ✅ **Shell POSIX** (`sh`, `grep`, `diff`). En **Windows**: Git Bash o WSL (no `cmd.exe`)
+- ➕ Opcional: Docker, MCP (`Context7`), memoria persistente (`Engram`)
 
 ---
 
-## Seguridad, confidencialidad y licencia
+## 🔒 Seguridad, confidencialidad y licencia
 
-- El repositorio **no incluye credenciales ni datos de negocio**.
-- Las integraciones opcionales pueden sacar datos del repo: la configuración y el cumplimiento son
+- 🔒 El repositorio **no incluye credenciales ni datos de negocio**.
+- ⚠️ Las integraciones opcionales pueden sacar datos del repo: la configuración y el cumplimiento son
   responsabilidad del usuario.
-- Software entregado **“AS IS”**, sin garantía. Ver [`../SECURITY.md`](../SECURITY.md) y
+- 📄 Software entregado **“AS IS”**, sin garantía. Ver [`../SECURITY.md`](../SECURITY.md) y
   [`../LICENSE`](../LICENSE).
