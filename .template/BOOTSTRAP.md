@@ -270,6 +270,9 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `AGENTS.md` tiene `## Preferencias` con `language`, comandos OpenSpec y orquestación
 - [ ] `AGENTS.md` tiene `## Arquitectura`
 - [ ] No quedan `{{...}}` en `AGENTS.md`, `openspec/config.yaml` y `README.md`
+- [ ] Contrato de placeholders consistente: `node .template/scripts/validar-contrato.mjs`
+- [ ] Perfiles válidos: `node .template/scripts/validar-perfiles.mjs`
+- [ ] Hooks de git activos: `git config core.hooksPath .githooks` (si falta gitleaks, el hook avisa y no bloquea)
 - [ ] `openspec doctor` → root ok
 - [ ] `openspec schema which spec-driven-with-adr` → `Source: project`
 - [ ] `openspec context` → sin warnings
