@@ -1,247 +1,249 @@
-# AGENTS.md — Contrato del proyecto
+# AGENTS.md — Project contract
 
-> **Punto de entrada para cualquier agente.**
-> **Primera sesión:** si `.atlas/state.json` no existe o su `status` es `pending`, lee y ejecuta
-> `.atlas/BOOTSTRAP.md` **antes de cualquier otra acción**.
-> Si el usuario dice **"configura este proyecto"**, **"haz el setup inicial"** o cualquier equivalente,
-> esto es lo que debe ejecutar.
+> **Entry point for any agent.**
+> **First session:** if `.atlas/state.json` does not exist or its `status` is `pending`, read and run
+> `.atlas/BOOTSTRAP.md` **before any other action**.
+> If the user says **"configure this project"**, **"run the initial setup"** or any equivalent,
+> this is what must be executed.
 >
-> La fuente de verdad del comportamiento son `openspec/specs/` y `adr/`.
+> The source of truth for behavior is `openspec/specs/` and `adr/`.
 
 ---
 
-## Índice
+## Index
 
-| Sección | Contenido |
+| Section | Content |
 |---|---|
-| [Resumen](#resumen) | Proyecto, stack, idioma |
-| [Arquitectura](#arquitectura) | Postura y fronteras declaradas |
-| [Comandos](#comandos) | Build, test, calidad, entorno |
-| [Estructura](#estructura) | Dónde vive cada cosa |
-| [Reglas de No Tocar](#reglas-de-no-tocar) | Lo que ningún agente modifica |
-| [Preferencias](#preferencias) | Comandos OpenSpec, orquestación, calidad |
-| [Roles](#roles) | Agentes disponibles |
-| [Workflow](#workflow) | Pipeline y gates |
-| [Reglas de oro](#reglas-de-oro) | Normas transversales |
-| [Skill Registry](#skill-registry) | Skills con ruta y trigger |
-| [Stacks](#stacks) | Stacks del proyecto (single/multi) |
-| [Extending](#extending) | Cómo extender skills, agentes y packs |
-| [Placeholders](#placeholders) | Valores que leen los prompts |
-| [Mapa de documentos](#mapa-de-documentos) | Dónde encontrar cada cosa |
-| [Pendientes](#pendientes) | `TBD` del bootstrap |
+| [Summary](#summary) | Project, stack, language |
+| [Architecture](#architecture) | Declared stance and boundaries |
+| [Commands](#commands) | Build, test, quality, environment |
+| [Structure](#structure) | Where everything lives |
+| [Do Not Touch Rules](#do-not-touch-rules) | What no agent modifies |
+| [Preferences](#preferences) | OpenSpec commands, orchestration, quality |
+| [Roles](#roles) | Available agents |
+| [Workflow](#workflow) | Pipeline and gates |
+| [Golden rules](#golden-rules) | Cross-cutting rules |
+| [Skill Registry](#skill-registry) | Skills with path and trigger |
+| [Stacks](#stacks) | Project stacks (single/multi) |
+| [Extending](#extending) | How to extend skills, agents and packs |
+| [Placeholders](#placeholders) | Values read by the prompts |
+| [Document map](#document-map) | Where to find each thing |
+| [Pending](#pending) | `TBD` from the bootstrap |
 
 ---
 
-## Resumen
+## Summary
 
-- **Proyecto:** {{PROJECT_NAME}}
-- **Descripción:** {{ONE_LINE_DESCRIPTION}}
+- **Project:** {{PROJECT_NAME}}
+- **Description:** {{ONE_LINE_DESCRIPTION}}
 - **Stack:** {{STACK_SUMMARY}}
-- **Dominio:** {{DOMAIN_SUMMARY}}
-- **Package base:** {{PACKAGE_BASE}}
-- **Idioma de documentación:** {{LANGUAGE_USER}}
-- **Idioma de skills y prompts:** {{LANGUAGE_AGENT}}
+- **Domain:** {{DOMAIN_SUMMARY}}
+- **Base package:** {{PACKAGE_BASE}}
+- **Documentation language:** {{LANGUAGE_USER}}
+- **Skills and prompts language:** {{LANGUAGE_AGENT}}
 
 ---
 
-## Arquitectura
+## Architecture
 
 {{ARCHITECTURE_SUMMARY}}
 
-**Fronteras y dirección de dependencias:** {{ARCHITECTURE_NOTES}}
+**Boundaries and dependency direction:** {{ARCHITECTURE_NOTES}}
 
-- Ningún agente impone una arquitectura distinta a la declarada aquí.
-- Las decisiones durables se registran en `adr/` y son inmutables una vez aceptadas.
-- Si una implementación contradice un ADR vigente, el agente se detiene y consulta.
+- No agent imposes an architecture different from the one declared here.
+- Durable decisions are recorded in `adr/` and are immutable once accepted.
+- If an implementation contradicts a current ADR, the agent stops and asks.
 
 ---
 
-## Comandos
+## Commands
 
-| Propósito | Comando |
+| Purpose | Command |
 |---|---|
-| Instalar dependencias | `{{INSTALL_COMMAND}}` |
+| Install dependencies | `{{INSTALL_COMMAND}}` |
 | Build | `{{BUILD_COMMAND}}` |
-| Ejecutar en local | `{{RUN_APP_COMMAND}}` |
+| Run locally | `{{RUN_APP_COMMAND}}` |
 | Tests | `{{TEST_COMMAND}}` |
-| Lint (producción) | `{{LINT_MAIN_COMMAND}}` |
+| Lint (production) | `{{LINT_MAIN_COMMAND}}` |
 | Lint (tests) | `{{LINT_TEST_COMMAND}}` |
-| Análisis estático | `{{STATIC_ANALYSIS_COMMAND}}` |
-| Gate de calidad | `{{QUALITY_COMMAND}}` |
-| Cobertura | `{{COVERAGE_COMMAND}}` |
-| Mutación | `{{MUTATION_COMMAND}}` |
+| Static analysis | `{{STATIC_ANALYSIS_COMMAND}}` |
+| Quality gate | `{{QUALITY_COMMAND}}` |
+| Coverage | `{{COVERAGE_COMMAND}}` |
+| Mutation | `{{MUTATION_COMMAND}}` |
 | CRAP | `{{CRAP_COMMAND}}` |
 
-**Entorno de QA:** {{QA_ENVIRONMENT}}
+**QA environment:** {{QA_ENVIRONMENT}}
 
 ---
 
-> Multi-stack: estos comandos son del **stack por defecto** (primera fila de § Stacks); cada
-> `engineer-<stack>` usa su fila.
+> Multi-stack: these commands belong to the **default stack** (first row of § Stacks); each
+> `engineer-<stack>` uses its row.
 
 ## Stacks
 
-> Un stack = perfil + ruta + comandos + packs. Cada stack genera `engineer-<stack>` (también con uno).
-> Añadir después: `crear-perfil.mjs` → `state.stacks` + esta tabla → `renderizar-adaptadores.mjs`.
+> A stack = profile + path + commands + packs. Each stack generates `engineer-<stack>` (even with one).
+> Add later: `crear-perfil.mjs` → `state.stacks` + this table → `renderizar-adaptadores.mjs`.
 
 {{STACKS_TABLE}}
 
-## Estructura
+## Structure
 
 ```
 {{PROJECT_STRUCTURE}}
 ```
 
-Cada cambio vive en `openspec/changes/<cambio>/` y se trabaja en su rama o worktree.
+Each change lives in `openspec/changes/<change>/` and is worked on in its branch or worktree.
 
 ---
 
-## Reglas de No Tocar
+## Do Not Touch Rules
 
 {{DO_NOT_TOUCH}}
 
-Además:
+In addition:
 
-- No se modifican `openspec/specs/` ni `adr/` desde la implementación.
-- No se commitean secretos, credenciales ni datos reales.
-- No se añaden dependencias externas sin justificación en `design.md` o en un ADR aprobado.
+- `openspec/specs/` and `adr/` are not modified from implementation.
+- Secrets, credentials and real data are never committed.
+- External dependencies are not added without justification in `design.md` or an approved ADR.
 
 ---
 
-## Preferencias
+## Preferences
 
-| Preferencia | Valor | Valores posibles |
+| Preference | Value | Possible values |
 |---|---|---|
-| Comandos OpenSpec | `{{OPENSPEC_COMMANDS_POLICY}}` | `user` (siempre el humano), `agent` (siempre el agente, mutación con confirmación), `ask` (preguntar al inicio de cada sesión) |
-| Orquestación | `{{ORCHESTRATION_POLICY}}` | `orchestrated` (default) o `manual` |
-| Umbral CRAP | `{{CRAP_THRESHOLD}}` | entero por método (default `6`) |
-| Memoria persistente | `{{MEMORY}}` | `engram`, otra, o `none` |
-| Documentación | `docs/functional`, `docs/architecture`, `docs/api`, `docs/guides` | nombres de carpeta en inglés; contenido en `language.user` |
+| OpenSpec commands | `{{OPENSPEC_COMMANDS_POLICY}}` | `user` (always the human), `agent` (always the agent, mutation with confirmation), `ask` (ask at the start of each session) |
+| Orchestration | `{{ORCHESTRATION_POLICY}}` | `orchestrated` (default) or `manual` |
+| CRAP threshold | `{{CRAP_THRESHOLD}}` | integer per method (default `6`) |
+| Persistent memory | `{{MEMORY}}` | `engram`, another, or `none` |
+| Documentation | `docs/functional`, `docs/architecture`, `docs/api`, `docs/guides` | English folder names; content in `language.user` |
 
-**Invariante:** `archive` y `sync` siempre requieren aprobación explícita, sea cual sea la preferencia.
+**Invariant:** `archive` and `sync` always require explicit approval, whatever the preference.
 
 ---
 
 ## Roles
 
-| Rol | Prompt canónico | Función |
+| Role | Canonical prompt | Purpose |
 |---|---|---|
-| `analyst` | `.atlas/agents/analyst.md` | Análisis y planificación |
-| `engineer` | `.atlas/agents/engineer.md` | Implementación con TDD; cada stack genera `engineer-<stack>` |
-| `reviewer` | `.atlas/agents/reviewer.md` | Revisión de código (solo lectura) |
-| `qa-analyst` | `.atlas/agents/qa-analyst.md` | Pruebas funcionales |
-| `doc-writer` | `.atlas/agents/doc-writer.md` | Documentación técnica y funcional |
+| `analyst` | `.atlas/agents/analyst.md` | Analysis and planning |
+| `engineer` | `.atlas/agents/engineer.md` | Implementation with TDD; each stack generates `engineer-<stack>` |
+| `reviewer` | `.atlas/agents/reviewer.md` | Code review (read-only) |
+| `qa-analyst` | `.atlas/agents/qa-analyst.md` | Functional testing |
+| `doc-writer` | `.atlas/agents/doc-writer.md` | Technical and functional documentation |
 
-Los adaptadores los genera `renderizar-adaptadores.mjs` desde `.atlas/agents/` + `AGENTS.md`.
-Cada stack genera `engineer-<stack>`; sin stacks se genera `engineer.md` y se elimina al configurar.
-Codex no tiene subagentes: los roles se emulan con este archivo y el anuncio de rol.
+Adapters are generated by `renderizar-adaptadores.mjs` from `.atlas/agents/` + `AGENTS.md`.
+Each stack generates `engineer-<stack>`; without stacks, `engineer.md` is generated and removed on setup.
+Codex has no subagents: roles are emulated with this file and the role announcement.
 
-**Roles opcionales** (solo si el bootstrap los activa; ver `state.optional_agents`): `mentor`
-(enseñanza agnóstica de los conceptos y patrones del proyecto, explicación del código y material
-didáctico) y `business-strategist` (modelo de negocio, propuesta de valor, segmentos, pricing y
-canales en `docs/business/`). No forman parte del ciclo de desarrollo: se invocan cuando se necesiten.
+**Optional roles** (only if the bootstrap activates them; see `state.optional_agents`): `mentor`
+(agnostic teaching of the project's concepts and patterns, code explanation and learning material) and
+`business-strategist` (business model, value proposition, segments, pricing and channels in
+`docs/business/`). They are not part of the delivery cycle: they are invoked when needed.
 
 ---
 
 ## Workflow
 
 ```text
-explore → propose → apply → QA → review → cierre
+explore → propose → apply → QA → review → close
          (proposal → specs → design → adr → tasks)
 ```
 
-> **Excepción — bootstrap:** la configuración inicial (`.atlas/BOOTSTRAP.md`) corre en su propia rama
-> (`chore/bootstrap`), no en un worktree de cambio. Un commit por fase y el merge lo hace el usuario.
+> **Exception — bootstrap:** the initial setup (`.atlas/BOOTSTRAP.md`) runs on its own branch
+> (`chore/bootstrap`), not in a change worktree. One commit per phase and the user merges.
 >
-> **Stacks:** `state.stacks` es la fuente; cada stack genera `engineer-<stack>` y los `packs` se activan por stack.
+> **Stacks:** `state.stacks` is the source; each stack generates `engineer-<stack>` and `packs` are
+> activated per stack.
 
 ### Gates
 
-El `analyst` orquesta por defecto y se detiene en:
+The `analyst` orchestrates by default and stops at:
 
-1. Aprobación de cada artefacto OpenSpec.
-2. **Inicio de implementación** (puede retomarse en otra sesión).
-3. Inicio de QA (consume un entorno).
-4. Creación del PR.
-5. Archive y merge (siempre el usuario).
+1. Approval of each OpenSpec artifact.
+2. **Start of implementation** (can be resumed in another session).
+3. Start of QA (consumes an environment).
+4. Pull request creation.
+5. Archive and merge (always the user).
 
-En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se salte ningún gate.
+In `manual` mode, the user invokes each phase; the `analyst` checks that no gate is skipped.
 
-### Cierre
+### Close
 
-1. Consistencia diseño → código.
-2. `doc-writer` actualiza documentación técnica y funcional y devuelve un resumen.
-3. El `analyst` valida la consistencia documental.
-4. Se crea el PR; **el usuario revisa una vez**.
-5. `openspec archive` + sync, merge y limpieza.
+1. Design → code consistency.
+2. `doc-writer` updates technical and functional documentation and returns a summary.
+3. The `analyst` validates documentation consistency.
+4. The PR is created; **the user reviews once**.
+5. `openspec archive` + sync, merge and cleanup.
 
 ---
 
-## Reglas de oro
+## Golden rules
 
-- **Commits incrementales**: un cambio lógico = un commit (ver `conventional-commits`).
-- **Byline de rol** en commits de agente: `By <rol>.` al final del body.
-- **Comentarios en código**: referencian ADRs (`adr/NNNN-...`) o documentación funcional, **nunca**
-  specs de `openspec/`, roadmaps ni otros proyectos. Si no hay ADR que ancle la decisión, el comentario
-  es autocontenido: decisión y razón.
-- **Calidad**: 0 violaciones de lint en los archivos tocados (si había preexistentes, se resuelven);
-  CRAP ≤ `{{CRAP_THRESHOLD}}` por método.
-- **Los controles de calidad son señales, no objetivos**: no se manipulan métricas; no se borran líneas,
-  no se dividen métodos sin cohesión, no se añaden tests triviales, no se sube el umbral ni se excluyen
-  archivos con lógica para pasar un gate.
-- **Ningún hallazgo se cierra en silencio**: se corrige o se documenta y se consulta al usuario.
-- **Disciplina de contexto**: búsquedas puntuales; evita barridos masivos (`grep -r`, `ls -R`,
-  `find` + `cat`). Si el proyecto tiene un índice o grafo, úsalo.
-- **No inventar librerías, APIs ni comportamiento**: verificar con **Context7** o preguntar.
-- **Datos de prueba**: si se crean por SQL directo, respetan las invariantes de negocio y se declaran.
-- **Anuncio de rol**: `🎩 Ahora soy <rol>` / `🎩 I am now <role>`, en el idioma del usuario (`language.user`), al cambiar de rol.
-- **Nunca avanzar** sin la aprobación explícita del usuario en cada gate.
+- **Incremental commits**: one logical change = one commit (see `conventional-commits`).
+- **Role byline** in agent commits: `By <role>.` at the end of the body.
+- **Code comments**: reference ADRs (`adr/NNNN-...`) or functional documentation, **never**
+  `openspec/` specs, roadmaps or other projects. If no ADR anchors the decision, the comment is
+  self-contained: decision and reason.
+- **Quality**: 0 lint violations in the touched files (pre-existing ones are fixed);
+  CRAP ≤ `{{CRAP_THRESHOLD}}` per method.
+- **Quality gates are signals, not targets**: metrics are not manipulated; lines are not deleted,
+  methods are not split without cohesion, trivial tests are not added, the threshold is not raised and
+  files with logic are not excluded to pass a gate.
+- **No finding is closed silently**: it is fixed or documented and the user is consulted.
+- **Context discipline**: targeted searches; avoid massive sweeps (`grep -r`, `ls -R`, `find` + `cat`).
+  If the project has an index or graph, use it.
+- **Do not invent libraries, APIs or behavior**: verify with **Context7** or ask.
+- **Test data**: if created via direct SQL, it respects business invariants and is declared.
+- **Role announcement**: `🎩 Ahora soy <rol>` / `🎩 I am now <role>`, in the user's language
+  (`language.user`), when changing roles.
+- **Never advance** without explicit user approval at each gate.
 
 ---
 
 ## Skill Registry
 
-> Los **triggers** pueden expresarse en cualquier idioma; cada skill declara ejemplos de disparo
-> en su `description` (cuerpo y descripción en inglés, `language.agent`).
-> **17 core + packs opcionales**; las skills de packs se registran al activarse.
+> **Triggers** can be expressed in any language; each skill declares trigger examples in its
+> `description` (body and description in English, `language.agent`).
+> **17 core + optional packs**; pack skills are registered when the pack is activated.
 
-| Skill | Ruta | Trigger |
+| Skill | Path | Trigger |
 |---|---|---|
-| `openspec-explore` | `.agents/skills/openspec-explore/` | Explorar una idea antes de proponer |
-| `openspec-propose` | `.agents/skills/openspec-propose/` | Planificar un cambio |
-| `openspec-apply-change` | `.agents/skills/openspec-apply-change/` | Implementar los tasks |
-| `openspec-archive-change` | `.agents/skills/openspec-archive-change/` | Archivar un cambio |
-| `openspec-sync-specs` | `.agents/skills/openspec-sync-specs/` | Sincronizar specs |
-| `openspec-workflow` | `.agents/skills/openspec-workflow/` | Pipeline completo y gates |
-| `grilling` | `.agents/skills/grilling/` | Estresar un plan o diseño antes de construir |
-| `test-driven-development` | `.agents/skills/test-driven-development/` | Rojo → verde → refactor |
-| `implementation-standards` | `.agents/skills/implementation-standards/` | Criterio de ingeniería: SOLID, Clean Code, refactors |
-| `using-git-worktrees` | `.agents/skills/using-git-worktrees/` | Aislar el cambio |
-| `git-workflow` | `.agents/skills/git-workflow/` | Ramas, worktrees, PR, limpieza |
-| `architectural-decision-records` | `.agents/skills/architectural-decision-records/` | Documentar una decisión durable |
-| `gherkin-specs` | `.agents/skills/gherkin-specs/` | Escribir escenarios |
-| `conventional-commits` | `.agents/skills/conventional-commits/` | Cada commit |
-| `session-startup` | `.agents/skills/session-startup/` | Inicio de sesión |
-| `session-end` | `.agents/skills/session-end/` | Cierre de sesión |
-| `update-harness` | `.agents/skills/update-harness/` | Actualizar el template/arnés a una versión nueva (cualquier idioma) |
+| `openspec-explore` | `.agents/skills/openspec-explore/` | Explore an idea before proposing |
+| `openspec-propose` | `.agents/skills/openspec-propose/` | Plan a change |
+| `openspec-apply-change` | `.agents/skills/openspec-apply-change/` | Implement the tasks |
+| `openspec-archive-change` | `.agents/skills/openspec-archive-change/` | Archive a change |
+| `openspec-sync-specs` | `.agents/skills/openspec-sync-specs/` | Sync specs |
+| `openspec-workflow` | `.agents/skills/openspec-workflow/` | Full pipeline and gates |
+| `grilling` | `.agents/skills/grilling/` | Stress-test a plan or design before building |
+| `test-driven-development` | `.agents/skills/test-driven-development/` | Red → green → refactor |
+| `implementation-standards` | `.agents/skills/implementation-standards/` | Engineering criteria: SOLID, Clean Code, refactors |
+| `using-git-worktrees` | `.agents/skills/using-git-worktrees/` | Isolate the change |
+| `git-workflow` | `.agents/skills/git-workflow/` | Branches, worktrees, PR, cleanup |
+| `architectural-decision-records` | `.agents/skills/architectural-decision-records/` | Record a durable decision |
+| `gherkin-specs` | `.agents/skills/gherkin-specs/` | Write scenarios |
+| `conventional-commits` | `.agents/skills/conventional-commits/` | Every commit |
+| `session-startup` | `.agents/skills/session-startup/` | Session start |
+| `session-end` | `.agents/skills/session-end/` | Session close |
+| `update-harness` | `.agents/skills/update-harness/` | Update the template/harness to a new version (any language) |
 
-Las skills de packs (`.atlas/packs/`) solo existen cuando el pack está activado.
+Pack skills (`.atlas/packs/`) only exist when the pack is activated.
 
 ---
 
 ## Extending
 
-- **Procedimiento del agente** (skills, agentes, stacks, perfiles): [`.atlas/docs/en/extending.md`](.atlas/docs/en/extending.md). Síguelo cuando el usuario lo pida.
-- Contexto específico del proyecto: [`docs/project-context.md`](docs/project-context.md).
+- **Agent procedure** (skills, agents, stacks, profiles): [`.atlas/docs/en/extending.md`](.atlas/docs/en/extending.md). Follow it when the user asks.
+- Project-specific context: [`docs/project-context.md`](docs/project-context.md).
 
 ## Placeholders
 
-Los prompts de `.atlas/agents/` usan **placeholders de proyecto**; esta tabla les da el valor.
-El contrato completo —lista cerrada, capa de perfil y de proyecto, y los tres estados— está en
-[`.atlas/PLACEHOLDERS.md`](.atlas/PLACEHOLDERS.md). **Un placeholder que no esté en el contrato
-no existe y no puede usarse.**
+The prompts in `.atlas/agents/` use **project placeholders**; this table gives them their values.
+The full contract — closed list, profile and project layers, and the three states — is in
+[`.atlas/PLACEHOLDERS.md`](.atlas/PLACEHOLDERS.md). **A placeholder that is not in the contract
+does not exist and cannot be used.**
 
-| Placeholder | Valor |
+| Placeholder | Value |
 |---|---|
 | `TEST_COMMAND` | {{TEST_COMMAND}} |
 | `QUALITY_COMMAND` | {{QUALITY_COMMAND}} |
@@ -253,35 +255,35 @@ no existe y no puede usarse.**
 | `HEALTH_URL` | {{HEALTH_URL}} |
 | `METRICS_PATH` | {{METRICS_PATH}} |
 
-**`N/A` significa "existe pero no aplica":** el agente **omite el paso y lo declara**; nunca ejecuta
-`N/A`. Si el stack no usa un concepto (mutación, health…), el valor es `N/A` — nunca se deja el
-placeholder sin resolver.
+**`N/A` means "it exists but does not apply":** the agent **skips the step and declares it**; it never
+runs `N/A`. If the stack does not use a concept (mutation, health…), the value is `N/A` — the
+placeholder is never left unresolved.
 
 ---
 
-## Mapa de documentos
+## Document map
 
-| Para qué | Dónde |
+| For | Where |
 |---|---|
-| Especificaciones del comportamiento | `openspec/specs/` |
-| Cambio activo | `openspec/changes/<cambio>/` |
-| Decisiones arquitectónicas | `adr/` |
-| Documentación funcional (Use Cases) | `docs/functional/` |
-| Arquitectura y C4 | `docs/architecture/` |
-| Contratos de API | `docs/api/` |
-| Guías de desarrollo | `docs/guides/` |
-| Inventario preliminar de QA | `openspec/changes/<cambio>/qa-scenarios.md` |
-| Reportes de QA | `openspec/changes/<cambio>/qa-report-*.md` |
-| Reportes de revisión | `openspec/changes/<cambio>/reviewer-report-*.md` |
-| Guías del arnés | `docs/README.md` (índice) · `docs/harness/es/` · `docs/harness/en/` |
-| Contexto específico del proyecto | `docs/project-context.md` |
-| Portada de ATLAS | `docs/README.md` (el proyecto no tiene README raíz; el suyo se genera desde `.atlas/PROJECT-README.md`) |
-| Packs opcionales | `.atlas/packs/README.md` (EN) |
-| Scripts del arnés | `.atlas/scripts/` |
-| Estado del proyecto | `.atlas/state.json` (`stacks`, `packs`, `optional_agents`, `readme`) |
+| Behavior specifications | `openspec/specs/` |
+| Active change | `openspec/changes/<change>/` |
+| Architectural decisions | `adr/` |
+| Functional documentation (Use Cases) | `docs/functional/` |
+| Architecture and C4 | `docs/architecture/` |
+| API contracts | `docs/api/` |
+| Development guides | `docs/guides/` |
+| Preliminary QA inventory | `openspec/changes/<change>/qa-scenarios.md` |
+| QA reports | `openspec/changes/<change>/qa-report-*.md` |
+| Review reports | `openspec/changes/<change>/reviewer-report-*.md` |
+| Harness guides | `docs/README.md` (index) · `docs/harness/es/` · `docs/harness/en/` |
+| Project-specific context | `docs/project-context.md` |
+| ATLAS landing page | `docs/README.md` (the project has no root README; its own is generated from `.atlas/PROJECT-README.md`) |
+| Optional packs | `.atlas/packs/README.md` (EN) |
+| Harness scripts | `.atlas/scripts/` |
+| Project state | `.atlas/state.json` (`stacks`, `packs`, `optional_agents`, `readme`) |
 
 ---
 
-## Pendientes
+## Pending
 
 {{TBD_ITEMS}}
