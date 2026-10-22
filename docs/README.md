@@ -21,7 +21,7 @@
 >
 > **En la práctica:**
 > - 🧭 **SDD**: primero `proposal → specs → design → ADR → tasks`; después código.
-> - ⚙️ **Roles con gates**: analyst → engineer → QA → reviewer → doc-writer.
+> - ⚙️ **Roles con gates**: analyst → **implementador(es)** (`engineer` o un `engineer-<stack>` por stack) → QA → reviewer → doc-writer.
 > - 🧩 **Multi-stack y multi-host**: un perfil por stack; el mismo arnés en tres herramientas.
 >
 > **Idioma:** Español · [English](harness/en/QUICKSTART.md)
@@ -36,7 +36,7 @@
 ```mermaid
 flowchart TD
     H["🧑‍💻 Humano + analyst<br/>explore → propose"]:::human
-    E["⚙️ engineer<br/>implementación"]:::impl
+    E["⚙️ engineer(s)<br/>implementación (uno por stack)"]:::impl
     Q["🧪 qa-analyst<br/>QA funcional"]:::qa
     R["🔍 reviewer<br/>revisión de código"]:::review
     C["📋 analyst<br/>cierre y consistencia"]:::doc
@@ -57,7 +57,7 @@ flowchart TD
     classDef pr fill:#E0F7FA,stroke:#00ACC1,stroke-width:2px,color:#004D54
 ```
 
-Las correcciones de QA y reviewer vuelven a `engineer` (tope global: **5 iteraciones** entre ambos).
+Las correcciones de QA y reviewer vuelven al implementador correspondiente (tope global: **5 iteraciones** entre ambos).
 Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el humano aprueba cada artefacto.
 
 **Roles de soporte (opcionales, fuera del ciclo de entrega):**
