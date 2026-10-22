@@ -24,7 +24,7 @@
 > - ⚙️ **Roles con gates**: analyst → **implementador(es)** (cada stack genera su `engineer-<stack>`) → QA → reviewer → doc-writer.
 > - 🧩 **Multi-stack y multi-host**: un perfil por stack; el mismo arnés en tres herramientas.
 >
-> **Idioma:** Español · [English](harness/en/QUICKSTART.md)
+> **Idioma:** Español · [English](README.en.md)
 >
 > **Glosario:** ATLAS es el producto; “template/plantilla” se usa como sustantivo común.
 
@@ -148,19 +148,23 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 │   ├── profiles/        # perfiles bajo demanda (_templates/ + _examples/)
 │   ├── packs/           # packs opcionales bajo demanda (_templates/ + activos)
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
-│   ├── hosts/ profiles/ packs/
+│   ├── hosts/           # plantillas de adaptador por host
 │   ├── scripts/         # sha256 + validadores + crear-perfil + crear-pack + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
 │   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/
 │   ├── README.md        # este índice (portada de ATLAS)
+│   ├── README.en.md     # portada en inglés
 │   ├── project-context.md # contexto propio del proyecto
 │   ├── harness/es|en/   # guías de uso + COMPATIBILITY
 │   ├── architecture/ api/ functional/ guides/   # documentación del proyecto
 ├── openspec/            # config, specs, changes, schemas
 ├── adr/
 ├── .githooks/           # hooks de git (gitleaks)
-├── SECURITY.md          # confidencialidad y responsabilidad
-└── LICENSE              # MIT
+├── SECURITY.md          # política de seguridad (EN)
+├── SECURITY.es.md       # política de seguridad (ES)
+├── THIRD-PARTY-NOTICES.md    # avisos de terceros (EN)
+├── THIRD-PARTY-NOTICES.es.md # avisos de terceros (ES)
+└── LICENSE              # MIT (texto oficial en inglés)
 ```
 
 ---
@@ -179,5 +183,5 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 - 🔒 El repositorio **no incluye credenciales ni datos de negocio**.
 - ⚠️ Las integraciones opcionales pueden sacar datos del repo: la configuración y el cumplimiento son
   responsabilidad del usuario.
-- 📄 Software entregado **“AS IS”**, sin garantía. Ver [`../SECURITY.md`](../SECURITY.md) y
-  [`../LICENSE`](../LICENSE).
+- 📄 Software entregado **“AS IS”**, sin garantía. Ver [`../SECURITY.es.md`](../SECURITY.es.md),
+  [`../LICENSE`](../LICENSE) y [`../THIRD-PARTY-NOTICES.es.md`](../THIRD-PARTY-NOTICES.es.md).
