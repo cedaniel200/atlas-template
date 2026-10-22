@@ -1,6 +1,9 @@
 # Extending the harness
 
 > Everything here is **canonical**: change it once, and the bootstrap propagates it to new projects.
+>
+> **These instructions are for the agent.** The human requests the change and approves; the agent runs
+> the scripts, edits the state and validates. Manual mode is at the end as an alternative.
 
 ---
 
@@ -9,7 +12,7 @@
 After the bootstrap there is no need to repeat the ritual. Validate at the end with
 `validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs` and `medir-contexto.mjs`.
 
-| I want to… | Procedure |
+| You ask… | The agent does… |
 |---|---|
 | Add a stack or profile | `crear-perfil.mjs` → fill in the commands → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
 | Add an implementer agent | It is the same `engineer` with a new stack: `state.stacks` + `engineer-<id>` |
@@ -98,7 +101,8 @@ notes: |
 
 ## Add a profile
 
-A profile is **data**, not procedure. See `.atlas/profiles/README.md` for the schema.
+A profile is **data**, not procedure. Start from `_templates/profile.yaml` with `crear-perfil.mjs`;
+the schema keys are `name`, `description`, `stack`, `structure`, `commands`, `quality` and `qa`.
 
 - Create it with `node .atlas/scripts/crear-perfil.mjs --id <id> --language <language>`; the script starts from `_templates/profile.yaml`.
 - Only commands, paths, tool names and thresholds.
@@ -203,18 +207,13 @@ What it measures (**static** estimate, no conversation or tool outputs):
 **base ≤ 4k**, **per agent ≤ 14k** (the 5 external OpenSpec skills are a fixed cost: they are not optimized without forking them). If it grows, attack the biggest contributor first: long skills →
 progressive disclosure; `AGENTS.md` → move reference material to linked docs.
 
-## Add a stack
-
-1. Add a row to `state.stacks` (`id`, `profile`, `paths`, commands, `packs`).
-2. Fill `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); include `Install`, `Build`, `Run`, `Test`, `Lint` and `Quality`.
-3. Run `renderizar-adaptadores.mjs`: `engineer-<id>` is generated per stack.
-4. Activate the stack's packs (`state.stacks[].packs`) and copy only their skills/agents.
-
-Optional packs live in [`.atlas/packs/`](../../packs/README.md) and consume no context until
-activated. A stack without a pack uses the profile and the core process.
-
 ## Core vs pack
 
 - **Core**: `.agents/skills/` (workflow; always installed).
 - **Pack**: `.atlas/packs/<id>/` (technology or procedure; copied only when active in `state.stacks[].packs`).
 - **Version**: the pack in `pack.yaml`; the core follows the template version.
+
+## Manual mode (alternative)
+
+If you prefer to run the commands yourself, use the same scripts and validations. The result must pass
+`validar-contrato.mjs`, `validar-perfiles.mjs` and `medir-contexto.mjs`.

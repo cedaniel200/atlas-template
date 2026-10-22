@@ -1,6 +1,9 @@
 # Extender el arnés
 
 > Todo lo de aquí es **canónico**: se cambia una vez y el bootstrap lo propaga a los proyectos nuevos.
+>
+> **Estas instrucciones son para el agente.** El humano pide el cambio y aprueba; el agente ejecuta
+> los scripts, edita el estado y valida. El modo manual está al final como alternativa.
 
 ---
 
@@ -9,7 +12,7 @@
 Después del bootstrap no hace falta repetir el ritual. Se validan al final con
 `validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs` y `medir-contexto.mjs`.
 
-| Quiero… | Procedimiento |
+| Tú pides… | El agente hace… |
 |---|---|
 | Añadir un stack o perfil | `crear-perfil.mjs` → completar comandos → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
 | Añadir un agente implementador | Es el mismo `engineer` con un stack nuevo: `state.stacks` + `engineer-<id>` |
@@ -204,18 +207,13 @@ Qué mide (estimación **estática**, sin conversación ni tool outputs):
 **base ≤ 4k**, **por agente ≤ 14k** (las 5 skills externas de OpenSpec son un coste fijo: no se optimizan sin forkearlas). Si crece, ataca primero el mayor contribuyente: skills largas →
 disclosure progresiva; `AGENTS.md` → mover referencia a docs enlazados.
 
-## Añadir un stack
-
-1. Añade una fila a `state.stacks` (`id`, `profile`, `paths`, comandos, `packs`).
-2. Rellena `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); incluye `Install`, `Build`, `Run`, `Test`, `Lint` y `Quality`.
-3. Ejecuta `renderizar-adaptadores.mjs`: se genera `engineer-<id>` por stack.
-4. Activa los packs del stack (`state.stacks[].packs`) y copia solo sus skills/agentes.
-
-Los packs opcionales viven en [`.atlas/packs/`](../../packs/README.md) y no consumen contexto hasta
-que se activan. Un stack sin pack usa el perfil y el proceso del núcleo.
-
 ## Core vs pack
 
 - **Core**: `.agents/skills/` (workflow; se instala siempre).
 - **Pack**: `.atlas/packs/<id>/` (tecnología o procedimiento; solo se copia si está activo en `state.stacks[].packs`).
 - **Versión**: el pack en `pack.yaml`; el core sigue la versión del template.
+
+## Modo manual (alternativa)
+
+Si prefieres ejecutar los comandos tú mismo, usa los mismos scripts y validaciones. El resultado debe
+pasar `validar-contrato.mjs`, `validar-perfiles.mjs` y `medir-contexto.mjs`.

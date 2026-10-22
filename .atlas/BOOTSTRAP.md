@@ -228,7 +228,7 @@ Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
 8. **Orquestación**: orquestada (default) o manual.
 9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas:
    `mkdir -p .atlas/archive && mv .atlas/docs .atlas/archive/docs`; en `docs/README.md`
-   elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina el bullet "Skills, agentes, stacks y perfiles"
+   elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina los bullets que apunten a `.atlas/docs/`
    (apunta a `.atlas/docs/`) y cualquier enlace a `.atlas/docs/`.
 10. **README**: si el proyecto ya tiene `README.md`, ¿añadir las secciones que falten de
     `.atlas/PROJECT-README.md`? (solo añade; nunca sobrescribe).
@@ -307,10 +307,12 @@ Reglas:
 
 - Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
   `grep -r "{{" AGENTS.md openspec/config.yaml README.md` debe devolver **vacío**.
-- **Idioma**: `AGENTS.md`, el `README.md` del proyecto (generado desde `.atlas/PROJECT-README.md`) y
-  `docs/README.md` se escriben en `language.user`. Si el usuario eligió un idioma distinto del template
-  (español), tradúcelos. Las guías del template (`docs/README.md`, `.atlas/BOOTSTRAP.md`,
-  `docs/harness/<lang>/COMPATIBILITY.md`) pueden quedarse en español salvo que el usuario pida traducirlas.
+- **Idioma (humano)**: `AGENTS.md`, el `README.md` del proyecto y `docs/README.md` se escriben en
+  `language.user`. Si no es español, **traduce** `docs/README.md`, usa las guías de
+  `docs/harness/<language.user>/` y actualiza sus enlaces a `docs/harness/<language.user>/` y
+  `.atlas/docs/<language.user>/`; no dejes enlaces a `es/` en un proyecto en inglés.
+- **Idioma (agente)**: `.atlas/docs/en/`, `.atlas/agents/` y `.agents/skills/` siguen en
+  `language.agent` (inglés por defecto); no se traducen por proyecto.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adaptadores, comandos, CLAUDE.md).
 - Si el usuario dio términos de dominio, sustituye los ejemplos `<entity>` de las skills.
@@ -365,8 +367,8 @@ Al cerrar:
 
 Anuncia: **"Bootstrap completo. Ya puedes proponer un cambio."**
 
-**Después del bootstrap:** no repitas este ritual. Para añadir stacks, perfiles, packs o agentes usa
-`.atlas/docs/es/extending.md`.
+**Después del bootstrap:** no repitas este ritual. Procedimiento del agente para stacks, perfiles,
+packs o agentes: `.atlas/docs/en/extending.md` (versión humana: `.atlas/docs/<language.user>/extending.md`).
 
 ---
 
