@@ -120,3 +120,28 @@ openspec doctor && openspec context
 > **Solo dependencias declaradas.** Toda comprobación del harness usa Git, Node 20+, OpenSpec CLI y
 > shell POSIX. Si necesita otra herramienta, debe **detectarla y avisar**; nunca asumirla.
 > Un check que no puede ejecutarse no debe fingir que pasó.
+
+## Coste de contexto (diagnóstico de mantenimiento)
+
+`medir-contexto.mjs` **no es un gate** y no se ejecuta en el bootstrap: es una herramienta de
+**mantenimiento** para comprobar que el arnés no engorda y comparar antes/después de un cambio. Un
+equipo puede usarla si añade skills, agentes o packs propios.
+
+```bash
+node .template/scripts/medir-contexto.mjs          # informe legible
+node .template/scripts/medir-contexto.mjs --json   # línea base comparable
+```
+
+Qué mide (estimación **estática**, sin conversación ni tool outputs):
+
+| Grupo | Qué incluye |
+|---|---|
+| Base de sesión | AGENTS.md + descripciones de skills + config del host |
+| Arranque mínimo | BOOTSTRAP + AGENTS + PLACEHOLDERS + perfiles + host |
+| Arranque completo | lo anterior + los 5 prompts de agente |
+| Por agente | base + prompt + skills que menciona |
+| Techo | todo el arnés cargado a la vez |
+
+**Cómo leerlo:** proxy `~4 caracteres/token` (en español hasta ~3,5 → +15%). Presupuesto orientativo:
+**base ≤ 4k**, **por agente ≤ 12k**. Si crece, ataca primero el mayor contribuyente: skills largas →
+disclosure progresiva; `AGENTS.md` → mover referencia a docs enlazados.
