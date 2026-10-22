@@ -153,5 +153,15 @@ What it measures (**static** estimate, no conversation or tool outputs):
 | Ceiling | the whole harness loaded at once (**includes** on-demand references) |
 
 **How to read it:** `~4 chars/token` proxy (Spanish may reach ~3.5 → +15%). Target budget:
-**base ≤ 4k**, **per agent ≤ 13.5k** (the 5 external OpenSpec skills are a fixed cost: they are not optimized without forking them). If it grows, attack the biggest contributor first: long skills →
+**base ≤ 4k**, **per agent ≤ 14k** (the 5 external OpenSpec skills are a fixed cost: they are not optimized without forking them). If it grows, attack the biggest contributor first: long skills →
 progressive disclosure; `AGENTS.md` → move reference material to linked docs.
+
+## Add a stack
+
+1. Add a row to `state.stacks` (`id`, `profile`, `paths`, commands, `packs`).
+2. Fill `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); the first row is the default.
+3. Run `renderizar-adaptadores.mjs`: `engineer-<id>` is generated per stack.
+4. Activate the stack's packs (`state.stacks[].packs`) and copy only their skills/agents.
+
+Optional packs live in [`.template/packs/`](../../packs/README.md) and consume no context until
+activated. A stack without a pack uses the profile and the core process.

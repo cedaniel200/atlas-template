@@ -154,5 +154,15 @@ Qué mide (estimación **estática**, sin conversación ni tool outputs):
 | Techo | todo el arnés cargado a la vez (**incluye** las referencias on-demand) |
 
 **Cómo leerlo:** proxy `~4 caracteres/token` (en español hasta ~3,5 → +15%). Presupuesto orientativo:
-**base ≤ 4k**, **por agente ≤ 13,5k** (las 5 skills externas de OpenSpec son un coste fijo: no se optimizan sin forkearlas). Si crece, ataca primero el mayor contribuyente: skills largas →
+**base ≤ 4k**, **por agente ≤ 14k** (las 5 skills externas de OpenSpec son un coste fijo: no se optimizan sin forkearlas). Si crece, ataca primero el mayor contribuyente: skills largas →
 disclosure progresiva; `AGENTS.md` → mover referencia a docs enlazados.
+
+## Añadir un stack
+
+1. Añade una fila a `state.stacks` (`id`, `profile`, `paths`, comandos, `packs`).
+2. Rellena `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); la primera fila es el default.
+3. Ejecuta `renderizar-adaptadores.mjs`: se genera `engineer-<id>` por stack.
+4. Activa los packs del stack (`state.stacks[].packs`) y copia solo sus skills/agentes.
+
+Los packs opcionales viven en [`.template/packs/`](../../packs/README.md) y no consumen contexto hasta
+que se activan. Un stack sin pack usa el perfil y el proceso del núcleo.

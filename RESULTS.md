@@ -88,3 +88,21 @@
 1. Revisar esta rama y decidir los 4 puntos pendientes (B-merge, B-README, C-multi, D-gob).
 2. Si se aprueban, implementarlos con un change OpenSpec (uno por tema, ≤800–1200 líneas).
 3. B3 se ejecuta cuando exista la guía de merge; C/D pueden repetirse con agentes reales para medir tokens de conversación.
+
+---
+
+## 6. Implementación de las decisiones (post-QA, rama del template)
+
+Aplicado directamente sobre `qa/template-e2e-2026-10-22`, sin OpenSpec (decisión del usuario).
+
+| Decisión | Implementación |
+|---|---|
+| **Multi-stack** | `state.stacks` (fuente única) · `AGENTS.md § Stacks` (`{{STACKS_TABLE}}`) · renderer genera `engineer-<id>` por stack · `validar-contrato` valida stacks/adaptadores · fixture Python+JS: 6 adaptadores, 0 colisiones, aislamiento verificado |
+| **Packs por stack (D)** | `state.stacks[].packs` + `state.packs` (unión) · el bootstrap copia solo packs activos · registra sus skills en § Skill Registry · `validar-contrato` comprueba la unión |
+| **Adopción (B)** | `AGENTS.md` del template = base; el existente se respalda y su contenido propio va a `docs/project-context.md` · inventario con acción específica y notas |
+| **README** | Greenfield/sin README: se genera desde `PROJECT-README.md`. Brownfield: se conserva; `combinar-readme.mjs` (dry-run/`--apply`) añade solo secciones faltantes, sin duplicar ni sobrescribir |
+| **Presupuesto** | 14k por agente (antes 13,5k): el contrato multi-stack añade ~200 tokens. Base 3.547; analyst 13.581; engineers 12.3k. Si se exige 13,5k, recortar el prompt del analyst o el índice/Extending |
+
+**Verificación:** batería 55/55 · fixture multi-stack (render, validación, aislamiento) · `combinar-readme` (dry-run, apply, idempotencia) · inventario de adopción con notas y acción de `AGENTS.md`.
+
+**Pendiente/observaciones:** B3 puede ejecutarse ya con la política de base + `docs/project-context.md`; los packs web/mobile concretos son contenido del proyecto (el template aporta el mecanismo); el versionado por skill individual no se añadió (los packs tienen `version`; las skills core se versionan con el template).
