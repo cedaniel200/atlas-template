@@ -53,10 +53,13 @@ The ritual asks, in rounds:
 | Round | What |
 |---|---|
 | **0 — Language** | Documentation (`language.user`) and skills/prompt language |
-| **1 — Identity and stacks** | Name, description, stack(s), structure, base package; one row per stack (multi-stack) |
+| **1 — Identity and stacks** | Name, description, stack(s), structure, base package; profile generated on demand; one row per stack |
 | **2 — Commands & quality** | Build, run, test, lint, coverage, mutation, CRAP, QA environment |
 | **3 — Architecture, domain and boundaries** | Stance, domain, do-not-touch, git, docs, memory, OpenSpec, orchestration, contribution and README |
 | **4 — Optional agents** | `mentor` and `business-strategist`, one by one: optional and outside the delivery cycle |
+
+> **No catalog:** the profile is created with `crear-perfil.mjs` from `_templates/profile.yaml`; packs
+> only if you need them (`crear-pack.mjs`).
 
 If you do not know a command, answer `TBD`: the agent records it in `AGENTS.md` § Pending. **It never
 invents one.**

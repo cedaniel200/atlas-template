@@ -1,18 +1,18 @@
-# Plantillas de adaptador por herramienta
+# Per-host adapter templates
 
-El repositorio nace **neutro**: no incluye la configuración de ninguna herramienta en la raíz.
-El bootstrap (Fase 0) detecta el host y **copia desde aquí** lo necesario.
+The repository starts **neutral**: it does not include any tool configuration at the root.
+The bootstrap (Phase 0) detects the host and **copies what it needs from here**.
 
-| Host | Plantilla | Genera en la raíz |
+| Host | Template | Creates at the root |
 |---|---|---|
 | OpenCode | `opencode/opencode.json` | `opencode.json` |
-| Claude Code | *(sin plantilla: verifica el stub `CLAUDE.md`)* | `.claude/agents/`, `.claude/skills` (symlink); `CLAUDE.md` ya existe |
-| Codex | *(no requiere plantilla)* | Nada: lee `AGENTS.md` y `.agents/skills/` de forma nativa |
+| Claude Code | *(no template: verify the `CLAUDE.md` stub)* | `.claude/agents/`, `.claude/skills` (symlink); `CLAUDE.md` already exists |
+| Codex | *(no template required)* | Nothing: it reads `AGENTS.md` and `.agents/skills/` natively |
 
-## Reglas
+## Rules
 
-- **Nunca hardcodear modelos**: el host usa su configuración global o el bootstrap pregunta.
-- **Nunca versionar** credenciales, URLs de base de datos ni API keys.
-- Los comandos `opsx-*` **no** se escriben aquí: los genera `openspec update --tools <host>`.
-- Un adaptador se valida abriendo el proyecto con esa herramienta y comprobando que las skills
-  se descubren y que `AGENTS.md` se carga.
+- **Never hardcode models**: the host uses its global configuration or the bootstrap asks.
+- **Never version** credentials, database URLs or API keys.
+- `opsx-*` commands are **not** written here: `openspec update --tools <host>` generates them.
+- Validate an adapter by opening the project with that tool and checking that skills are discovered and
+  `AGENTS.md` is loaded.

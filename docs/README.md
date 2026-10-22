@@ -21,7 +21,7 @@
 >
 > **En la práctica:**
 > - 🧭 **SDD**: primero `proposal → specs → design → ADR → tasks`; después código.
-> - ⚙️ **Roles con gates**: analyst → **implementador(es)** (`engineer` o un `engineer-<stack>` por stack) → QA → reviewer → doc-writer.
+> - ⚙️ **Roles con gates**: analyst → **implementador(es)** (cada stack genera su `engineer-<stack>`) → QA → reviewer → doc-writer.
 > - 🧩 **Multi-stack y multi-host**: un perfil por stack; el mismo arnés en tres herramientas.
 >
 > **Idioma:** Español · [English](harness/en/QUICKSTART.md)
@@ -101,7 +101,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 | Quieres configurar MCP o memoria | [`docs/harness/es/TOOLS.md`](harness/es/TOOLS.md) |
 | Te interesan los gates y CRAP | [`docs/harness/es/QUALITY.md`](harness/es/QUALITY.md) |
 | No entiendes un término | [`docs/harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
-| Extender el arnés (skills/agentes/packs) | [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md) · [`.atlas/packs/README.md`](../.atlas/packs/README.md) |
+| Extender el arnés (skills/agentes/packs) | [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md) · [`.atlas/packs/README.md` (EN)](../.atlas/packs/README.md) |
 
 ---
 
@@ -121,7 +121,9 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 | Componente | Detalle |
 |---|---|
 | 🧭 **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
-| 🤖 **Agentes** | `analyst`, `engineer` (single-stack; multi-stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.atlas/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
+| 🤖 **Agentes** | `analyst`, `engineer` (cada stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.atlas/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
+| 🧱 **Perfiles** | Se generan bajo demanda con `crear-perfil.mjs` desde `_templates/profile.yaml`; no hay catálogo |
+| 🎒 **Packs** | Esqueletos con `crear-pack.mjs`; solo existen si el proyecto los necesita |
 | 🧩 **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.atlas/packs/` |
 | 🚀 **Ritual** | [`../.atlas/BOOTSTRAP.md`](../.atlas/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
 | 🧪 **Compatibilidad** | [`harness/es/COMPATIBILITY.md`](harness/es/COMPATIBILITY.md): matriz por host |
@@ -143,9 +145,11 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 │   ├── PLACEHOLDERS.md  # contrato de placeholders (perfil/proyecto, N/A)
 │   ├── PROJECT-README.md # plantilla del README del proyecto
 │   ├── agents/          # 5 prompts core + 2 opcionales (+ engineer-<stack> generado)
+│   ├── profiles/        # perfiles bajo demanda (_templates/ + _examples/)
+│   ├── packs/           # packs opcionales bajo demanda (_templates/ + activos)
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
-│   ├── scripts/         # sha256 + validadores + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── scripts/         # sha256 + validadores + crear-perfil + crear-pack + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
 │   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/
 │   ├── README.md        # este índice (portada de ATLAS)

@@ -28,6 +28,7 @@ async function buscarPerfiles(dir) {
   for (const entrada of entradas) {
     const ruta = join(dir, entrada.name);
     if (entrada.isDirectory()) {
+      if (entrada.name === '_templates') continue;
       encontrados.push(...(await buscarPerfiles(ruta)));
     } else if (entrada.isFile() && entrada.name.endsWith('.yaml')) {
       encontrados.push(ruta);

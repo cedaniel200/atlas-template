@@ -1,0 +1,48 @@
+# Plantilla de perfil de stack.
+# Copia este archivo con:
+#   node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>
+# Después completa los comandos con valores reales y valida ejecutándolos.
+# Un perfil es DATOS: comandos y rutas. No incluyas procedimientos ni prompts.
+name: {{ID}}
+description: "{{DESCRIPTION}}"
+
+stack:
+  language: "{{LANGUAGE}}"
+  runtime: "{{RUNTIME}}"
+  package_manager: "{{PACKAGE_MANAGER}}"
+
+structure:
+  source: "{{SOURCE}}"
+  tests: "{{TESTS}}"
+
+commands:
+  install: ""
+  build: ""
+  run: ""
+  test: ""
+  test_unit: ""
+  lint: ""
+  lint_tests: ""
+  typecheck: ""
+  static_analysis: ""
+  quality: ""
+  coverage: ""
+  mutation: ""
+  crap: ""
+
+quality:
+  crap_threshold: 6
+  coverage_min: null
+  tools: []
+  suggested: []
+
+qa:
+  docker: false
+  service_name: ""
+  app_port: ""
+  health_path: ""
+  metrics_path: ""
+
+notes: |
+  Comandos pendientes de completar y validar ejecutándolos.
+  Si un comando no aplica, déjalo como "" y explícalo aquí.

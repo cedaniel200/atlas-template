@@ -2,7 +2,7 @@
 
 > **Se ejecuta una vez por proyecto, antes de escribir código.**
 > Estado: `.atlas/state.json` (`pending` → `configured`).
-> Si `status` es `configured`, **no repetir**; ofrecer reconfiguración explícita.
+> Si `status` es `configured`, **no leer ni repetir** este archivo; ofrece reconfiguración explícita.
 >
 > Este archivo lo ejecuta el agente. El humano responde las preguntas y aprueba cada fase.
 
@@ -191,7 +191,9 @@ Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
 2. Stack y versiones (lenguaje, framework, gestor de dependencias, runtime).
 3. Estructura de primer nivel (¿monorepo? ¿módulos?).
 4. Package base / namespace.
-5. Perfil de stack: `java-gradle`, `node-ts`, u otro (se crea uno nuevo si no existe).
+5. Perfil de stack: **no hay catálogo**. Parte de `.atlas/profiles/_templates/profile.yaml`, propón
+   comandos reales y crea `.atlas/profiles/<id>.yaml` con `crear-perfil.mjs`. El usuario valida,
+   corrige o elimina. Si un ejemplo de `_examples/` encaja, úsalo como referencia, no lo copies.
 6. **Stacks** (multi-stack): si el proyecto mezcla tecnologías (p. ej. Python back + JS front + mobile),
    pide una fila por stack: `id`, `profile`, `paths`, comandos y `packs`. El **primero** es el default
    (rellena § Comandos); los demás van a § Stacks. La tabla de § Stacks incluye los comandos
@@ -226,7 +228,7 @@ Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
 8. **Orquestación**: orquestada (default) o manual.
 9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas:
    `mkdir -p .atlas/archive && mv .atlas/docs .atlas/archive/docs`; en `docs/README.md`
-   elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina el bullet "Skills y agentes"
+   elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina los bullets que apunten a `.atlas/docs/`
    (apunta a `.atlas/docs/`) y cualquier enlace a `.atlas/docs/`.
 10. **README**: si el proyecto ya tiene `README.md`, ¿añadir las secciones que falten de
     `.atlas/PROJECT-README.md`? (solo añade; nunca sobrescribe).
@@ -278,8 +280,8 @@ No los presentes como recomendados ni los actives por defecto.
   `node .atlas/scripts/renderizar-adaptadores.mjs --host <host>`. El script sustituye los
   placeholders desde `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
   `name` + `description`; Codex: sin subagentes). **No copies el cuerpo a mano.**
-  - **Multi-stack**: `state.stacks` es la fuente. Con más de un stack se genera `engineer-<id>` por
-    stack (con su bloque `{{STACK_CONTEXT}}`); con uno, `engineer.md`. Los demás roles son agnósticos.
+  - **Stacks**: cada stack se renderiza como `engineer-<id>` (también con uno solo). Sin stacks se
+    genera `engineer.md` de arranque y se elimina al aparecer el primero. Los demás roles son agnósticos.
   - **Agentes opcionales**: solo se renderizan los ids de `state.optional_agents` (Ronda 4). Los prompts
     marcados con `<!-- optional-role -->` que no estén activados se omiten.
 - **README (brownfield)**: si `README.md` existe, **no lo sobrescribas**. Pregunta:
@@ -305,10 +307,12 @@ Reglas:
 
 - Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
   `grep -r "{{" AGENTS.md openspec/config.yaml README.md` debe devolver **vacío**.
-- **Idioma**: `AGENTS.md`, el `README.md` del proyecto (generado desde `.atlas/PROJECT-README.md`) y
-  `docs/README.md` se escriben en `language.user`. Si el usuario eligió un idioma distinto del template
-  (español), tradúcelos. Las guías del template (`docs/README.md`, `.atlas/BOOTSTRAP.md`,
-  `docs/harness/<lang>/COMPATIBILITY.md`) pueden quedarse en español salvo que el usuario pida traducirlas.
+- **Idioma (humano)**: `AGENTS.md`, el `README.md` del proyecto y `docs/README.md` se escriben en
+  `language.user`. Si no es español, **traduce** `docs/README.md`, usa las guías de
+  `docs/harness/<language.user>/` y actualiza sus enlaces a `docs/harness/<language.user>/` y
+  `.atlas/docs/<language.user>/`; no dejes enlaces a `es/` en un proyecto en inglés.
+- **Idioma (agente)**: `.atlas/docs/en/`, `.atlas/agents/` y `.agents/skills/` siguen en
+  `language.agent` (inglés por defecto); no se traducen por proyecto.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adaptadores, comandos, CLAUDE.md).
 - Si el usuario dio términos de dominio, sustituye los ejemplos `<entity>` de las skills.
@@ -340,8 +344,7 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
 - [ ] Adaptador del host activo presente (agentes y comandos)
 - [ ] Agentes opcionales: solo los elegidos en `state.optional_agents` tienen adaptador
-- [ ] Multi-stack: `node .atlas/scripts/validar-contrato.mjs` valida `state.stacks` y los adaptadores
-      `engineer-<stack>` (o `engineer` si hay un solo stack).
+- [ ] Stacks: cada uno tiene `engineer-<stack>.md` y no queda `engineer.md`.
 - [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.atlas --exclude-dir=node_modules .` → sin resultados
 - [ ] `.atlas/manifest.json` generado
 - [ ] `git status` limpio y las fases commiteadas
@@ -363,6 +366,9 @@ Al cerrar:
 **Commit:** `chore(bootstrap): validar el contexto del proyecto`
 
 Anuncia: **"Bootstrap completo. Ya puedes proponer un cambio."**
+
+**Después del bootstrap:** no repitas este ritual. Procedimiento del agente para stacks, perfiles,
+packs o agentes: `.atlas/docs/en/extending.md` (versión humana: `.atlas/docs/<language.user>/extending.md`).
 
 ---
 

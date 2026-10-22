@@ -21,13 +21,14 @@ async function leer(ruta) {
   return readFile(ruta, 'utf8');
 }
 
-async function archivosDe(dir, extension) {
+async function archivosDe(dir, extension, excluir = []) {
   const encontrados = [];
   const entradas = await readdir(dir, { withFileTypes: true });
   for (const entrada of entradas) {
     const ruta = join(dir, entrada.name);
     if (entrada.isDirectory()) {
-      encontrados.push(...(await archivosDe(ruta, extension)));
+      if (excluir.includes(entrada.name)) continue;
+      encontrados.push(...(await archivosDe(ruta, extension, excluir)));
     } else if (entrada.isFile() && entrada.name.endsWith(extension)) {
       encontrados.push(ruta);
     }
@@ -122,7 +123,7 @@ for (const directorio of DIRECTORIOS_PROYECTO) {
   }
 }
 
-for (const archivo of await archivosDe(PERFILES, '.yaml')) {
+for (const archivo of await archivosDe(PERFILES, '.yaml', ['_templates'])) {
   for (const nombre of nombresUsados(await leer(archivo))) {
     if (!perfilContrato.has(nombre)) {
       errores.push(`${relative('.', archivo)}: {{${nombre}}} no está en el contrato de perfil`);
@@ -155,17 +156,30 @@ if (stacks.length > 0) {
   for (const pack of packsDeStacks) {
     if (!packsEstado.has(pack)) errores.push(`state.packs: falta el pack ${pack} (declarado en un stack)`);
   }
+  for (const pack of packsEstado) {
+    try {
+      await access(join('.atlas/packs', pack, 'pack.yaml'));
+    } catch {
+      errores.push(`.atlas/packs/${pack}/pack.yaml: falta el pack activado ${pack}`);
+    }
+  }
 
   const host = estado.host;
   const directorio = host === 'opencode' ? '.opencode/agent' : host === 'claude' ? '.claude/agents' : null;
   if (directorio) {
     for (const stack of stacks) {
-      const esperado = stacks.length > 1 ? `engineer-${stack.id}.md` : 'engineer.md';
+      const esperado = `engineer-${stack.id}.md`;
       try {
         await access(join(directorio, esperado));
       } catch {
         errores.push(`${directorio}/${esperado}: falta el adaptador del stack ${stack.id}`);
       }
+    }
+    try {
+      await access(join(directorio, 'engineer.md'));
+      errores.push(`${directorio}/engineer.md: adaptador obsoleto; el engineer se genera por stack (engineer-<id>.md)`);
+    } catch {
+      // no existe: correcto cuando hay stacks
     }
   }
 }

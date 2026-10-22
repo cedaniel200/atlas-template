@@ -152,7 +152,7 @@ Si falla, **no se inventa**: se amplía este contrato y se documenta el origen d
 - `id` es obligatorio y único; el adaptador es `engineer-<id>`.
 - `profile` referencia `.atlas/profiles/<id>.yaml` (o un perfil del proyecto).
 - `packs` son los packs activos de ese stack; `state.packs` es la unión.
-- Single-stack: un elemento; el renderer genera `engineer.md`. Multi-stack: uno por tecnología.
+- Cada stack se renderiza como `engineer-<id>`, incluso si solo hay uno.
 - `AGENTS.md` § Stacks se rellena desde `state.stacks` (`{{STACKS_TABLE}}`).
 
 La tabla de `§ Stacks` incluye los comandos para que el contrato sea autocontenido:

@@ -1,6 +1,23 @@
 # Extender el arnés
 
 > Todo lo de aquí es **canónico**: se cambia una vez y el bootstrap lo propaga a los proyectos nuevos.
+>
+> **Estas instrucciones son para el agente.** El humano pide el cambio y aprueba; el agente ejecuta
+> los scripts, edita el estado y valida. El modo manual está al final como alternativa.
+
+---
+
+## Operaciones en caliente
+
+Después del bootstrap no hace falta repetir el ritual. Se validan al final con
+`validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs` y `medir-contexto.mjs`.
+
+| Tú pides… | El agente hace… |
+|---|---|
+| Añadir un stack o perfil | `crear-perfil.mjs` → completar comandos → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
+| Añadir un agente implementador | Es el mismo `engineer` con un stack nuevo: `state.stacks` + `engineer-<id>` |
+| Añadir un pack | `crear-pack.mjs` → skills/agentes → activar en `state.stacks[].packs` y `state.packs` |
+| Quitar un stack o pack | Quitar de `state.stacks`/`state.packs` → `renderizar-adaptadores.mjs` (limpia adaptadores) → regenerar manifiesto |
 
 ---
 
@@ -43,7 +60,7 @@ metadata: <opcional, mapa de strings>
    - OpenCode: `.opencode/agent/<rol>.md` (`description`, `mode: all`).
    - Claude Code: `.claude/agents/<rol>.md` (`name`, `description`).
    - Codex: sin subagentes; el rol se emula desde `AGENTS.md`.
-   - Multi-stack: `engineer-<stack>` por stack con `STACK_CONTEXT`; `state.stacks` es la fuente.
+   - Cada stack: `engineer-<stack>` con `STACK_CONTEXT` (también con uno solo); `state.stacks` es la fuente.
 4. Si el rol es **opcional**, empieza el prompt con `<!-- optional-role -->` y regístralo en
    `state.optional_agents` (el bootstrap lo pregunta en la Ronda 4). Sin ese id no se genera su adaptador.
 5. Registrar el rol en `AGENTS.md` § Roles.
@@ -59,22 +76,24 @@ Un pack existe solo para **conocimiento procedimental que no se puede expresar c
   pack.yaml
   README.md
   skills/<nombre>/SKILL.md
-  .atlas/agents/<rol>.md
+  agents/<rol>.md
 ```
 
 ```yaml
 name: <pack>
 version: 0.1.0
 description: <qué aporta>
-provides: [skills/<nombre>]
-requires: [profile:<perfil>]
-stack_hints: [<stack>]
-license: MIT
+requires: []
+skills: [<id-skill>]
+agents: [<rol>]
+notes: |
+  Ajustes o advertencias del pack.
 ```
 
+- Créalo con `node .atlas/scripts/crear-pack.mjs --id <id> --description "<texto>"`.
 - **No** se descubre automáticamente; el bootstrap lo copia a `.agents/skills/` y `.atlas/agents/`.
 - Nunca es requisito para que el núcleo funcione.
-- Registrarlo en el catálogo de packs y en `THIRD-PARTY-NOTICES.md` si vendoriza contenido de terceros.
+- Registra el pack en `THIRD-PARTY-NOTICES.md` si vendoriza contenido de terceros.
 - Actívalo en `state.stacks[].packs` (la unión va a `state.packs`); el bootstrap copia solo los packs activos y registra sus skills en `AGENTS.md § Skill Registry`.
 - Versión: `pack.yaml`; en una actualización solo se actualizan los packs activos.
 
@@ -82,8 +101,9 @@ license: MIT
 
 ## Añadir un perfil
 
-Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/README.md`.
+Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/README.md` (EN).
 
+- Créalo con `node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>`; el script parte de `_templates/profile.yaml`.
 - Solo comandos, rutas, nombres de herramientas y umbrales.
 - Sin valores de framework bajo un nombre de toolchain (por ejemplo, sin rutas de Spring en `java-gradle`).
 - Si un comando no existe, dejar `""` y anotarlo; nunca inventarlo.
@@ -91,10 +111,25 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/RE
 
 ---
 
+## Añadir un stack
+
+Un stack = perfil + ruta + comandos + packs. Se puede añadir **en cualquier momento**:
+
+1. Crea el perfil si no existe (`crear-perfil.mjs`) y completa los comandos.
+2. Añade la fila a `state.stacks` y a `AGENTS.md § Stacks`.
+3. Genera el adaptador: `node .atlas/scripts/renderizar-adaptadores.mjs` → `engineer-<id>`.
+4. Valida: `validar-contrato.mjs`, `validar-perfiles.mjs` y `medir-contexto.mjs`.
+5. Regenera el manifiesto: `node .atlas/scripts/generar-manifiesto.mjs`.
+
+Quitar un stack: quita la fila, regenera adaptadores (el obsoleto se elimina) y regenera el manifiesto.
+Nunca edites `engineer-<id>.md` a mano: se regenera.
+
+---
+
 ## Añadir un adaptador de host
 
 1. Crear `.atlas/hosts/<host>/` con los archivos que el host necesita en la raíz del proyecto.
-2. Documentarlo en `.atlas/hosts/README.md`.
+2. Documentarlo en `.atlas/hosts/README.md` (EN).
 3. Actualizar `docs/harness/es/COMPATIBILITY.md` con la matriz y cualquier degradación.
 4. El bootstrap debe poder crear el adaptador sin destruir los de otras herramientas.
 
@@ -163,27 +198,24 @@ Qué mide (estimación **estática**, sin conversación ni tool outputs):
 | Grupo | Qué incluye |
 |---|---|
 | Base de sesión | AGENTS.md + descripciones de skills + config del host |
-| Arranque mínimo | BOOTSTRAP + AGENTS + PLACEHOLDERS + perfiles + host |
-| Arranque completo | lo anterior + los prompts de agente (5 core + 2 opcionales) |
+| Arranque mínimo | BOOTSTRAP + AGENTS + PLACEHOLDERS + config + README base + host activo |
+| Arranque completo | lo anterior + prompts de agente activos |
 | Por agente | base + prompt + **núcleo** (`SKILL.md`) de las skills que menciona |
 | Techo | todo el arnés cargado a la vez (**incluye** las referencias on-demand) |
+
+No se miden: READMEs de mantenimiento, `_templates`, `_examples` ni hosts no activos.
 
 **Cómo leerlo:** proxy `~4 caracteres/token` (en español hasta ~3,5 → +15%). Presupuesto orientativo:
 **base ≤ 4k**, **por agente ≤ 14k** (las 5 skills externas de OpenSpec son un coste fijo: no se optimizan sin forkearlas). Si crece, ataca primero el mayor contribuyente: skills largas →
 disclosure progresiva; `AGENTS.md` → mover referencia a docs enlazados.
-
-## Añadir un stack
-
-1. Añade una fila a `state.stacks` (`id`, `profile`, `paths`, comandos, `packs`).
-2. Rellena `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); incluye `Install`, `Build`, `Run`, `Test`, `Lint` y `Quality`.
-3. Ejecuta `renderizar-adaptadores.mjs`: se genera `engineer-<id>` por stack.
-4. Activa los packs del stack (`state.stacks[].packs`) y copia solo sus skills/agentes.
-
-Los packs opcionales viven en [`.atlas/packs/`](../../packs/README.md) y no consumen contexto hasta
-que se activan. Un stack sin pack usa el perfil y el proceso del núcleo.
 
 ## Core vs pack
 
 - **Core**: `.agents/skills/` (workflow; se instala siempre).
 - **Pack**: `.atlas/packs/<id>/` (tecnología o procedimiento; solo se copia si está activo en `state.stacks[].packs`).
 - **Versión**: el pack en `pack.yaml`; el core sigue la versión del template.
+
+## Modo manual (alternativa)
+
+Si prefieres ejecutar los comandos tú mismo, usa los mismos scripts y validaciones. El resultado debe
+pasar `validar-contrato.mjs`, `validar-perfiles.mjs` y `medir-contexto.mjs`.
