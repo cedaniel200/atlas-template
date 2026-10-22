@@ -1,0 +1,41 @@
+{
+  "bootstrap_version": 1,
+  "template_version": "0.1.0",
+  "template_source": {
+    "url": null,
+    "commit": null
+  },
+  "status": "pending",
+  "mode": null,
+  "host": null,
+  "host_source": null,
+  "language": {
+    "user": null,
+    "agent": "en"
+  },
+  "architecture": {
+    "stance": null,
+    "notes": null
+  },
+  "profile": null,
+  "stacks": [],
+  "packs": [],
+  "readme": null,
+  "preferences": {
+    "openspec_commands": "ask",
+    "orchestration": "orchestrated"
+  },
+  "quality": {
+    "crap_threshold": 6
+  },
+  "docs": {
+    "functional": "docs/functional",
+    "architecture": "docs/architecture",
+    "api": "docs/api",
+    "guides": "docs/guides"
+  },
+  "phase": 0,
+  "displaced": [],
+  "override_reason": null,
+  "configured_at": null
+}

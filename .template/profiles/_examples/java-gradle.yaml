@@ -1,0 +1,48 @@
+# ILUSTRATIVO — no normativo.
+# No forma parte del catálogo soportado. Muestra la forma de un perfil.
+# Los valores de framework e infraestructura van como placeholders: no fijan
+# ninguna tecnología concreta. Los valores del catálogo se ajustan al proyecto.
+name: java-gradle
+description: Proyecto Java + Gradle (ejemplo)
+
+stack:
+  language: Java
+  runtime: JVM
+  package_manager: Gradle
+
+structure:
+  source: src/main/java/
+  tests: src/test/java/
+
+commands:
+  install: "./gradlew dependencies"
+  build: "./gradlew build"
+  run: "{{RUN_APP_COMMAND}}"
+  test: "./gradlew test"
+  test_unit: "./gradlew test --tests '*UnitTest'"
+  lint: "./gradlew checkstyleMain"
+  lint_tests: "./gradlew checkstyleTest"
+  typecheck: ""
+  static_analysis: "./gradlew spotbugsMain"
+  quality: "./gradlew checkstyleMain checkstyleTest spotbugsMain test"
+  coverage: "./gradlew jacocoTestReport"
+  mutation: "./gradlew pitest"
+  crap: "./gradlew crapAnalysis"
+
+quality:
+  crap_threshold: 6
+  coverage_min: null
+  tools: [checkstyle, spotbugs, junit5, jacoco, gitleaks]
+  suggested: [errorprone, archunit, pit, owasp-dependency-check]
+
+qa:
+  docker: false
+  service_name: "{{SERVICE_NAME}}"
+  app_port: "{{APP_PORT}}"
+  health_path: "{{HEALTH_PATH}}"
+  metrics_path: "{{METRICS_PATH}}"
+
+notes: |
+  Solo los comandos de build y calidad son propios del toolchain.
+  El comando de arranque, el puerto y las rutas de health/métricas dependen del
+  framework y la infraestructura: se resuelven en el cuestionario.
