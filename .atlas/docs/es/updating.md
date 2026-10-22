@@ -1,6 +1,6 @@
 # Actualizar un proyecto configurado
 
-> **Flujo automatizado:** `node .template/scripts/actualizar-arnes.mjs --template <ruta>`.
+> **Flujo automatizado:** `node .atlas/scripts/actualizar-arnes.mjs --template <ruta>`.
 > Guía para personas: `docs/harness/es/UPDATE.md`. Este documento es la referencia interna del algoritmo.
 
 > El template es un **andamio**, no una dependencia de ejecución. Las actualizaciones son opcionales,
@@ -10,7 +10,7 @@
 
 ## Versionado
 
-- `template_version` (semver) vive en `.template/state.json`.
+- `template_version` (semver) vive en `.atlas/state.json`.
 - `template_source` registra la URL y el commit usados, para que la actualización sea reproducible.
 - Los packs tienen su propia versión en `pack.yaml`.
 
@@ -20,11 +20,11 @@
 
 | Archivo | Rol |
 |---|---|
-| `.template/state.json` | **Entradas**: host, idioma, arquitectura, perfil, packs, preferencias |
-| `.template/manifest.json` | **Salidas**: por archivo, `origin`, `sha256` y `ownership` |
+| `.atlas/state.json` | **Entradas**: host, idioma, arquitectura, perfil, packs, preferencias |
+| `.atlas/manifest.json` | **Salidas**: por archivo, `origin`, `sha256` y `ownership` |
 
 > **Formato del hash:** 64 hex en **minúsculas**, sin nombre de archivo, calculado con
-> `.template/scripts/sha256.sh` (POSIX) o `sha256.ps1` (PowerShell). Al comparar, normaliza a
+> `.atlas/scripts/sha256.sh` (POSIX) o `sha256.ps1` (PowerShell). Al comparar, normaliza a
 > minúsculas. Si el proyecto se generó en otro sistema operativo, el hash solo coincide si el
 > archivo está normalizado a LF (el `.gitattributes` generado usa `* text=auto eol=lf`).
 
@@ -52,7 +52,7 @@
      managed   -> hash(actual) == hash(base) (en minúsculas) ? sobrescribir : escribir .new + conflicto
 5. **Reescribir manifest.json** (hashes nuevos, `template_version`, `generated_at`) y **state.json**
    (`template_version`, `template_source`, `updated_at`) — sin esto, la próxima actualización da falsos conflictos
-6. **Validar**: `node .template/scripts/validar-manifiesto.mjs`
+6. **Validar**: `node .atlas/scripts/validar-manifiesto.mjs`
 7. Reporte: actualizados / sin cambios / conflictos / omitidos
 ```
 
@@ -64,7 +64,7 @@ futura.
 ## Actualizar packs
 
 - Solo se actualizan los packs **activados**.
-- Los inactivos quedan intactos en `.template/packs/`.
+- Los inactivos quedan intactos en `.atlas/packs/`.
 - Un pack puede subir de versión independientemente del template.
 
 ---

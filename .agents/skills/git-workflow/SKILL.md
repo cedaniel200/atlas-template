@@ -80,7 +80,7 @@ Partial PRs target the integration branch; the merge to the default branch happe
 
 ## Bootstrap exception
 
-The initial setup (`.template/BOOTSTRAP.md`) is the **only** task that does not use a change worktree. It runs on
+The initial setup (`.atlas/BOOTSTRAP.md`) is the **only** task that does not use a change worktree. It runs on
 its own `chore/bootstrap` branch, with one commit per phase and no push unless the user asks. The user
 reviews and merges that branch.
 

@@ -29,15 +29,15 @@ metadata: <opcional, mapa de strings>
    - Sin sintaxis de comandos slash; los wrappers se generan por host.
    - Breve; el detalle largo va a un archivo de referencia hermano.
 4. Registrarla en `AGENTS.md` § Skill Registry.
-5. Regenera el manifiesto (`node .template/scripts/generar-manifiesto.mjs --host <host>`) y valida
-   (`node .template/scripts/validar-manifiesto.mjs`).
+5. Regenera el manifiesto (`node .atlas/scripts/generar-manifiesto.mjs --host <host>`) y valida
+   (`node .atlas/scripts/validar-manifiesto.mjs`).
 6. Si viene de otro repositorio, conservar su licencia y añadirla a `THIRD-PARTY-NOTICES.md`.
 
 ---
 
 ## Añadir un agente
 
-1. Crear `.template/agents/<rol>.md` con el cuerpo del prompt y **sin frontmatter de host**.
+1. Crear `.atlas/agents/<rol>.md` con el cuerpo del prompt y **sin frontmatter de host**.
 2. Nombrarlo por rol, no por arquitectura (`analyst`, no `ddd-analyst`).
 3. El renderer (`renderizar-adaptadores.mjs`) genera los adaptadores:
    - OpenCode: `.opencode/agent/<rol>.md` (`description`, `mode: all`).
@@ -53,11 +53,11 @@ metadata: <opcional, mapa de strings>
 Un pack existe solo para **conocimiento procedimental que no se puede expresar como comando o ruta**.
 
 ```text
-.template/packs/<pack>/
+.atlas/packs/<pack>/
   pack.yaml
   README.md
   skills/<nombre>/SKILL.md
-  .template/agents/<rol>.md
+  .atlas/agents/<rol>.md
 ```
 
 ```yaml
@@ -70,7 +70,7 @@ stack_hints: [<stack>]
 license: MIT
 ```
 
-- **No** se descubre automáticamente; el bootstrap lo copia a `.agents/skills/` y `.template/agents/`.
+- **No** se descubre automáticamente; el bootstrap lo copia a `.agents/skills/` y `.atlas/agents/`.
 - Nunca es requisito para que el núcleo funcione.
 - Registrarlo en el catálogo de packs y en `THIRD-PARTY-NOTICES.md` si vendoriza contenido de terceros.
 - Actívalo en `state.stacks[].packs` (la unión va a `state.packs`); el bootstrap copia solo los packs activos y registra sus skills en `AGENTS.md § Skill Registry`.
@@ -80,7 +80,7 @@ license: MIT
 
 ## Añadir un perfil
 
-Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles/README.md`.
+Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/README.md`.
 
 - Solo comandos, rutas, nombres de herramientas y umbrales.
 - Sin valores de framework bajo un nombre de toolchain (por ejemplo, sin rutas de Spring en `java-gradle`).
@@ -91,8 +91,8 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles
 
 ## Añadir un adaptador de host
 
-1. Crear `.template/hosts/<host>/` con los archivos que el host necesita en la raíz del proyecto.
-2. Documentarlo en `.template/hosts/README.md`.
+1. Crear `.atlas/hosts/<host>/` con los archivos que el host necesita en la raíz del proyecto.
+2. Documentarlo en `.atlas/hosts/README.md`.
 3. Actualizar `docs/harness/es/COMPATIBILITY.md` con la matriz y cualquier degradación.
 4. El bootstrap debe poder crear el adaptador sin destruir los de otras herramientas.
 
@@ -121,7 +121,7 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles
   comprueba que aparece.
 - Marca las skills del núcleo como `managed` en el manifiesto; las de packs, como opcionales.
 - Antes de modificar una skill existente, busca quién la invoca
-  (`grep -rn "<skill>" .template/agents .agents/skills docs`) y avisa de posibles roturas.
+  (`grep -rn "<skill>" .atlas/agents .agents/skills docs`) y avisa de posibles roturas.
 - No hay versionado de skills todavía: si el cambio es incompatible, documenta la migración en el commit.
 
 ## Checklist de verificación
@@ -130,13 +130,13 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles
 # skills
 for f in .agents/skills/*/SKILL.md; do sed -n '1,5p' "$f"; done
 # referencias de agentes (informativo: nunca falla)
-grep -rn "ddd-\|opencode\|claude" .template/agents/ .agents/skills/ || true
+grep -rn "ddd-\|opencode\|claude" .atlas/agents/ .agents/skills/ || true
 # perfiles (gate): estructural sin dependencias; con `npm i yaml` añade parseo real
-node .template/scripts/validar-perfiles.mjs
+node .atlas/scripts/validar-perfiles.mjs
 # contrato de placeholders (gate)
-node .template/scripts/validar-contrato.mjs
+node .atlas/scripts/validar-contrato.mjs
 # coste de contexto (informativo: detecta archivos que engordan el arnés)
-node .template/scripts/medir-contexto.mjs
+node .atlas/scripts/medir-contexto.mjs
 # contrato
 openspec doctor && openspec context
 ```
@@ -152,8 +152,8 @@ openspec doctor && openspec context
 equipo puede usarla si añade skills, agentes o packs propios.
 
 ```bash
-node .template/scripts/medir-contexto.mjs          # informe legible
-node .template/scripts/medir-contexto.mjs --json   # línea base comparable
+node .atlas/scripts/medir-contexto.mjs          # informe legible
+node .atlas/scripts/medir-contexto.mjs --json   # línea base comparable
 ```
 
 Qué mide (estimación **estática**, sin conversación ni tool outputs):
@@ -177,11 +177,11 @@ disclosure progresiva; `AGENTS.md` → mover referencia a docs enlazados.
 3. Ejecuta `renderizar-adaptadores.mjs`: se genera `engineer-<id>` por stack.
 4. Activa los packs del stack (`state.stacks[].packs`) y copia solo sus skills/agentes.
 
-Los packs opcionales viven en [`.template/packs/`](../../packs/README.md) y no consumen contexto hasta
+Los packs opcionales viven en [`.atlas/packs/`](../../packs/README.md) y no consumen contexto hasta
 que se activan. Un stack sin pack usa el perfil y el proceso del núcleo.
 
 ## Core vs pack
 
 - **Core**: `.agents/skills/` (workflow; se instala siempre).
-- **Pack**: `.template/packs/<id>/` (tecnología o procedimiento; solo se copia si está activo en `state.stacks[].packs`).
+- **Pack**: `.atlas/packs/<id>/` (tecnología o procedimiento; solo se copia si está activo en `state.stacks[].packs`).
 - **Versión**: el pack en `pack.yaml`; el core sigue la versión del template.

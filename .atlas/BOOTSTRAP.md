@@ -1,7 +1,7 @@
-# BOOTSTRAP.md — Ritual de primera sesión
+# BOOTSTRAP.md — Ritual de primera sesión de ATLAS
 
 > **Se ejecuta una vez por proyecto, antes de escribir código.**
-> Estado: `.template/state.json` (`pending` → `configured`).
+> Estado: `.atlas/state.json` (`pending` → `configured`).
 > Si `status` es `configured`, **no repetir**; ofrecer reconfiguración explícita.
 >
 > Este archivo lo ejecuta el agente. El humano responde las preguntas y aprueba cada fase.
@@ -11,7 +11,7 @@
 ## Reglas del ritual
 
 1. **No escribir código de negocio** en ninguna fase.
-2. **No borrar nada.** Lo que no aplique se mueve a `.template/adapters/<host>/`.
+2. **No borrar nada.** Lo que no aplique se mueve a `.atlas/adapters/<host>/`.
 3. **Idempotente**: cada fase se puede repetir sin duplicar efectos.
 4. **Un commit por fase**, con el prefijo indicado.
 5. **Si una fase falla, no se avanza** a la siguiente.
@@ -83,7 +83,7 @@ Inspecciona y registra en `docs/template-adoption.md` (guía: `docs/harness/<lan
 ## −1.3 Política de conflicto
 
 ```text
-backup en .template/backups/<timestamp>/ → diff → fusión → confirmación del usuario
+backup en .atlas/backups/<timestamp>/ → diff → fusión → confirmación del usuario
 ```
 
 Nunca se sobrescribe un archivo del proyecto sin diff y aprobación. Greenfield y brownfield convergen en
@@ -117,14 +117,14 @@ Codex. Si la señal de entorno y la evidencia de archivos discrepan, **pregunta*
 
 | Acción | OpenCode | Claude Code | Codex |
 |---|---|---|---|
-| `opencode.json` | crear desde `.template/hosts/opencode/` | ignorar | ignorar |
-| `.template/agents/` | fuente canónica | fuente canónica | fuente canónica |
+| `opencode.json` | crear desde `.atlas/hosts/opencode/` | ignorar | ignorar |
+| `.atlas/agents/` | fuente canónica | fuente canónica | fuente canónica |
 | Adaptador de agentes | `.opencode/agent/<rol>.md` | `.claude/agents/<rol>.md` | *(no hay subagentes)* |
 | Skills | `.agents/skills/` (canónico) + `.opencode/skills/` (nativo, con prioridad) | `.claude/skills` → symlink a `.agents/skills` | `.agents/skills/` (nativo) |
 | `CLAUDE.md` | conservar | debe contener solo `@AGENTS.md` | conservar |
 
 **`prune` (opt-in, nunca por defecto):** si el usuario lo pide, mueve los artefactos de hosts no activos
-a `.template/adapters/<host>/` y regístralo en `state.json.displaced`. Se recupera con `git revert`.
+a `.atlas/adapters/<host>/` y regístralo en `state.json.displaced`. Se recupera con `git revert`.
 
 ## 0.3 Skills
 
@@ -134,8 +134,8 @@ a `.template/adapters/<host>/` y regístralo en `state.json.displaced`. Se recup
 | Claude Code | `ln -s ../.agents/skills .claude/skills` | `readlink .claude/skills` |
 | Claude Code sin symlink (Windows) | copiar y avisar de que es estática | `diff -r .agents/skills .claude/skills` |
 
-**Packs**: no se copian por defecto. Copia solo `.template/packs/<id>/skills` y
-`.template/packs/<id>/agents` de los packs activos en `state.stacks[].packs`; el resto no consume
+**Packs**: no se copian por defecto. Copia solo `.atlas/packs/<id>/skills` y
+`.atlas/packs/<id>/agents` de los packs activos en `state.stacks[].packs`; el resto no consume
 contexto. `state.packs` es la unión de los packs de todos los stacks. Registra las skills del pack en
 `AGENTS.md` § Skill Registry y su `{name, version}` en `state.packs`.
 
@@ -225,11 +225,11 @@ Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
    cada sesión). Default: `ask`.
 8. **Orquestación**: orquestada (default) o manual.
 9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas:
-   `mkdir -p .template/archive && mv .template/docs .template/archive/docs`; en `docs/README.md`
+   `mkdir -p .atlas/archive && mv .atlas/docs .atlas/archive/docs`; en `docs/README.md`
    elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina el bullet "Skills y agentes"
-   (apunta a `.template/docs/`) y cualquier enlace a `.template/docs/`.
+   (apunta a `.atlas/docs/`) y cualquier enlace a `.atlas/docs/`.
 10. **README**: si el proyecto ya tiene `README.md`, ¿añadir las secciones que falten de
-    `.template/PROJECT-README.md`? (solo añade; nunca sobrescribe).
+    `.atlas/PROJECT-README.md`? (solo añade; nunca sobrescribe).
 
 ## Ronda 4 — Agentes opcionales
 
@@ -262,20 +262,20 @@ No los presentes como recomendados ni los actives por defecto.
 |---|---|
 | `AGENTS.md` | Resumen, arquitectura, comandos, **Stacks**, estructura, no tocar, preferencias, placeholders |
 | `openspec/config.yaml` | Bloque `context:` y `rules:` (reglas de diseño según la arquitectura elegida) |
-| `.template/PROJECT-README.md` → `README.md` del proyecto | Greenfield/sin README: generar. Brownfield con README: conservar y preguntar append |
+| `.atlas/PROJECT-README.md` → `README.md` del proyecto | Greenfield/sin README: generar. Brownfield con README: conservar y preguntar append |
 | `docs/project-context.md` | Contexto propio del proyecto (brownfield: migrar el `AGENTS.md` existente) |
 | `.env.example` / `.gitattributes` / `.editorconfig` | **Solo si no existen**: créalos con las convenciones del stack (variables detectadas, EOL, indentación). Si existen, consérvalos. No vienen del template. |
 | `.gitignore` | Stack, secretos, estado local (si no existe, créalo) |
 | `docs/` | Renombrar carpetas si el usuario eligió otros nombres y actualizar `AGENTS.md` |
 | `CLAUDE.md` | Verificar el stub de una línea: `@AGENTS.md` |
 | Adaptadores | Agentes y comandos del host detectado |
-| `.template/docs/` | Si no se contribuye, mover a `.template/archive/docs/` y quitar la fila del índice |
-| `.template/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
+| `.atlas/docs/` | Si no se contribuye, mover a `.atlas/archive/docs/` y quitar la fila del índice |
+| `.atlas/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
 
 ### Generación de adaptadores y manifiesto
 
 - **Agentes**: genera el adaptador del host con
-  `node .template/scripts/renderizar-adaptadores.mjs --host <host>`. El script sustituye los
+  `node .atlas/scripts/renderizar-adaptadores.mjs --host <host>`. El script sustituye los
   placeholders desde `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
   `name` + `description`; Codex: sin subagentes). **No copies el cuerpo a mano.**
   - **Multi-stack**: `state.stacks` es la fuente. Con más de un stack se genera `engineer-<id>` por
@@ -283,16 +283,16 @@ No los presentes como recomendados ni los actives por defecto.
   - **Agentes opcionales**: solo se renderizan los ids de `state.optional_agents` (Ronda 4). Los prompts
     marcados con `<!-- optional-role -->` que no estén activados se omiten.
 - **README (brownfield)**: si `README.md` existe, **no lo sobrescribas**. Pregunta:
-  "¿Añadir las secciones que falten de `.template/PROJECT-README.md`?". Dry-run:
-  `node .template/scripts/combinar-readme.mjs --proyecto .`; si acepta, `--apply`. Registra
+  "¿Añadir las secciones que falten de `.atlas/PROJECT-README.md`?". Dry-run:
+  `node .atlas/scripts/combinar-readme.mjs --proyecto .`; si acepta, `--apply`. Registra
   `state.readme` (`generated|preserved|appended`).
-- **AGENTS.md (brownfield)**: `node .template/scripts/adoptar-agents.mjs --template <pristine> --apply`
+- **AGENTS.md (brownfield)**: `node .atlas/scripts/adoptar-agents.mjs --template <pristine> --apply`
   (backup + base del template + contenido propio a `docs/project-context.md`); después rellena los
   placeholders de la base en esta Fase 2. No es un merge de iguales.
-- **Manifiesto**: `node .template/scripts/generar-manifiesto.mjs --host <host>`. Aplica las reglas de
+- **Manifiesto**: `node .atlas/scripts/generar-manifiesto.mjs --host <host>`. Aplica las reglas de
   ownership y origen (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs;
   generated: adaptadores/commands/opencode.json/CLAUDE.md), calcula `sha256` y escribe
-  `.template/manifest.json`. **Contrato: 64 hex en minúsculas, sin nombre de archivo** (lo aplica el script).
+  `.atlas/manifest.json`. **Contrato: 64 hex en minúsculas, sin nombre de archivo** (lo aplica el script).
   **Ejecútalo al final de la Fase 2**, después de placeholders, docs y contribución; si cambias un archivo después, vuelve a ejecutarlo.
 - **Shell**: el ritual usa comandos POSIX (`sh`, `grep`, `diff`, `mkdir`). En Windows ejecútalo
   desde **Git Bash o WSL** (recomendado). Si el host ejecuta PowerShell, al menos el hash debe
@@ -305,9 +305,9 @@ Reglas:
 
 - Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
   `grep -r "{{" AGENTS.md openspec/config.yaml README.md` debe devolver **vacío**.
-- **Idioma**: `AGENTS.md`, el `README.md` del proyecto (generado desde `.template/PROJECT-README.md`) y
+- **Idioma**: `AGENTS.md`, el `README.md` del proyecto (generado desde `.atlas/PROJECT-README.md`) y
   `docs/README.md` se escriben en `language.user`. Si el usuario eligió un idioma distinto del template
-  (español), tradúcelos. Las guías del template (`docs/README.md`, `.template/BOOTSTRAP.md`,
+  (español), tradúcelos. Las guías del template (`docs/README.md`, `.atlas/BOOTSTRAP.md`,
   `docs/harness/<lang>/COMPATIBILITY.md`) pueden quedarse en español salvo que el usuario pida traducirlas.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adaptadores, comandos, CLAUDE.md).
@@ -328,9 +328,9 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `AGENTS.md` tiene `## Preferencias` con `language`, comandos OpenSpec y orquestación
 - [ ] `AGENTS.md` tiene `## Arquitectura`
 - [ ] No quedan `{{...}}` en `AGENTS.md`, `openspec/config.yaml` y `README.md`
-- [ ] Contrato de placeholders consistente: `node .template/scripts/validar-contrato.mjs`
-- [ ] Perfiles válidos: `node .template/scripts/validar-perfiles.mjs`
-- [ ] Manifiesto consistente: `node .template/scripts/validar-manifiesto.mjs`
+- [ ] Contrato de placeholders consistente: `node .atlas/scripts/validar-contrato.mjs`
+- [ ] Perfiles válidos: `node .atlas/scripts/validar-perfiles.mjs`
+- [ ] Manifiesto consistente: `node .atlas/scripts/validar-manifiesto.mjs`
 - [ ] Adaptadores sin placeholders: `grep -rn "{{" .opencode/agent .claude/agents` → vacío (si existen)
 - [ ] Hooks de git activos: `git config core.hooksPath .githooks` (si falta gitleaks, el hook avisa y no bloquea)
 - [ ] Sin health/puerto: si `qa.health_path` o `qa.app_port` están vacíos, `HEALTH_URL` es `N/A` (no se compone una URL con path vacío)
@@ -340,10 +340,10 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
 - [ ] Adaptador del host activo presente (agentes y comandos)
 - [ ] Agentes opcionales: solo los elegidos en `state.optional_agents` tienen adaptador
-- [ ] Multi-stack: `node .template/scripts/validar-contrato.mjs` valida `state.stacks` y los adaptadores
+- [ ] Multi-stack: `node .atlas/scripts/validar-contrato.mjs` valida `state.stacks` y los adaptadores
       `engineer-<stack>` (o `engineer` si hay un solo stack).
-- [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.template --exclude-dir=node_modules .` → sin resultados
-- [ ] `.template/manifest.json` generado
+- [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.atlas --exclude-dir=node_modules .` → sin resultados
+- [ ] `.atlas/manifest.json` generado
 - [ ] `git status` limpio y las fases commiteadas
 
 Si algo falla: corrige y repite. Si el usuario insiste en saltar el gate:
@@ -371,8 +371,8 @@ Anuncia: **"Bootstrap completo. Ya puedes proponer un cambio."**
 | Situación | Acción |
 |---|---|
 | `status == configured` | No repetir. Reconfigurar solo con petición explícita |
-| Cambio de herramienta | Fase 0 con el nuevo host; restaurar adaptadores desde `.template/adapters/` o `git revert` |
-| Repo clonado de nuevo | `.template/state.json` viaja en git → el ritual se salta solo |
+| Cambio de herramienta | Fase 0 con el nuevo host; restaurar adaptadores desde `.atlas/adapters/` o `git revert` |
+| Repo clonado de nuevo | `.atlas/state.json` viaja en git → el ritual se salta solo |
 
 ## Lo que este ritual NO hace
 

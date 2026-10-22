@@ -7,10 +7,10 @@
 //   nuevo    -> el template lo trae y el proyecto no lo tiene
 //   igual    -> idéntico (se puede reutilizar)
 //   distinto -> existe y difiere (conflicto: se decide con la política de ADOPTION)
-// Antes de tocar nada, copia los `distinto` a .template/backups/adopcion-<ts>/.
+// Antes de tocar nada, copia los `distinto` a .atlas/backups/adopcion-<ts>/.
 //
 // Uso:
-//   node .template/scripts/inventariar-adopcion.mjs --template /ruta/template-pristino [--proyecto .] [--dry-run]
+//   node .atlas/scripts/inventariar-adopcion.mjs --template /ruta/template-pristino [--proyecto .] [--dry-run]
 
 import { readdir, readFile, writeFile, mkdir, copyFile, access } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -18,8 +18,8 @@ import { dirname, join, relative } from 'node:path';
 
 const EXCLUIR = new Set([
   '.git', 'node_modules', 'build', 'dist', 'graphify-out',
-  '.template/backups', '.template/adapters',
-  '.template/state.json', '.template/manifest.json',
+  '.atlas/backups', '.atlas/adapters',
+  '.atlas/state.json', '.atlas/manifest.json',
 ]);
 
 const sha256 = async (ruta) => createHash('sha256').update(await readFile(ruta)).digest('hex');
@@ -58,7 +58,7 @@ if (!template) {
 }
 
 const marca = new Date().toISOString().replace(/[:.]/g, '-');
-const backup = join(proyecto, '.template/backups', `adopcion-${marca}`);
+const backup = join(proyecto, '.atlas/backups', `adopcion-${marca}`);
 const clases = { nuevo: [], igual: [], distinto: [] };
 const notas = [];
 
@@ -84,7 +84,7 @@ if (await existe(join(proyecto, 'AGENTS.md'))) {
   notas.push('`AGENTS.md` existente: se reemplaza por la base del template (backup) y el contenido propio se migra a `docs/project-context.md`.');
 }
 if ((await existe(join(proyecto, 'README.md'))) && !(await existe(join(template, 'README.md')))) {
-  notas.push('`README.md` existente: se conserva; el bootstrap preguntará si añadir las secciones faltantes de `.template/PROJECT-README.md`.');
+  notas.push('`README.md` existente: se conserva; el bootstrap preguntará si añadir las secciones faltantes de `.atlas/PROJECT-README.md`.');
 }
 
 if (!dryRun) {
@@ -114,11 +114,11 @@ if (!dryRun) {
     ...clases.nuevo.map((rel) => `- \`${rel}\``),
     '',
   ];
-  await mkdir(join(proyecto, '.template'), { recursive: true });
-  await writeFile(join(proyecto, '.template/adoption-report.md'), `${lineas.join('\n')}\n`, 'utf8');
+  await mkdir(join(proyecto, '.atlas'), { recursive: true });
+  await writeFile(join(proyecto, '.atlas/adoption-report.md'), `${lineas.join('\n')}\n`, 'utf8');
 }
 
-console.log(dryRun ? 'SIMULACIÓN (sin escribir)' : `Inventario escrito en .template/adoption-report.md`);
+console.log(dryRun ? 'SIMULACIÓN (sin escribir)' : `Inventario escrito en .atlas/adoption-report.md`);
 console.log(`  nuevos: ${clases.nuevo.length} · iguales: ${clases.igual.length} · distintos: ${clases.distinto.length}`);
 if (clases.distinto.length > 0) {
   console.log(`  conflictos: ${clases.distinto.slice(0, 8).join(', ')}${clases.distinto.length > 8 ? '…' : ''}`);

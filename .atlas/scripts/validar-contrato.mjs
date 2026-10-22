@@ -3,18 +3,18 @@
 // y que cada stack de `state.stacks` referencia un perfil real del proyecto.
 //
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
-// Fuente única del contrato: .template/PLACEHOLDERS.md
+// Fuente única del contrato: .atlas/PLACEHOLDERS.md
 //
-// Uso: node .template/scripts/validar-contrato.mjs
+// Uso: node .atlas/scripts/validar-contrato.mjs
 // Salida: 0 = ok; 1 = hallazgos (placeholders fuera del contrato o stacks inconsistentes).
 
 import { access, readdir, readFile } from 'node:fs/promises';
 import { basename, join, relative } from 'node:path';
 
-const CONTRATO = '.template/PLACEHOLDERS.md';
-const CONSUMIDORES_PROYECTO = ['AGENTS.md', 'openspec/config.yaml', '.template/PROJECT-README.md'];
-const DIRECTORIOS_PROYECTO = ['.template/agents', '.agents/skills'];
-const PERFILES = '.template/profiles';
+const CONTRATO = '.atlas/PLACEHOLDERS.md';
+const CONSUMIDORES_PROYECTO = ['AGENTS.md', 'openspec/config.yaml', '.atlas/PROJECT-README.md'];
+const DIRECTORIOS_PROYECTO = ['.atlas/agents', '.agents/skills'];
+const PERFILES = '.atlas/profiles';
 const PERFILES_EJEMPLO = '_examples';
 
 async function leer(ruta) {
@@ -78,7 +78,7 @@ function nombresDeTabla(texto) {
 
 let estado = {};
 try {
-  estado = JSON.parse(await leer('.template/state.json'));
+  estado = JSON.parse(await leer('.atlas/state.json'));
 } catch {
   // template sin estado: se asume no configurado
 }
@@ -178,7 +178,7 @@ if (agentesOpcionales.length > 0) {
     errores.push(`state.optional_agents: el host ${host ?? '(sin host)'} no soporta subagentes`);
   }
   for (const rol of agentesOpcionales) {
-    const canonico = join('.template/agents', `${rol}.md`);
+    const canonico = join('.atlas/agents', `${rol}.md`);
     try {
       const texto = await leer(canonico);
       if (!texto.trimStart().startsWith('<!-- optional-role -->')) {

@@ -1,16 +1,16 @@
 #!/usr/bin/env node
-// generar-manifiesto.mjs — genera .template/manifest.json con ownership, origin y sha256.
+// generar-manifiesto.mjs — genera .atlas/manifest.json con ownership, origin y sha256.
 //
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
 //
 // Reglas (BOOTSTRAP Fase 2):
 //   owned     AGENTS.md, README.md, openspec/config.yaml, .env.example, .gitignore,
 //             .gitattributes, .editorconfig, docs/**, adr/**, openspec/specs/**
-//   managed   .agents/skills/**, .template/agents/**, openspec/schemas/**, .template/packs/<id>/**
+//   managed   .agents/skills/**, .atlas/agents/**, openspec/schemas/**, .atlas/packs/<id>/**
 //   generated .opencode/agent/**, .claude/agents/**, .opencode/commands/**,
 //             .claude/commands/**, .codex/prompts/**, opencode.json, CLAUDE.md
 //
-// Uso: node .template/scripts/generar-manifiesto.mjs --host opencode|claude|codex
+// Uso: node .atlas/scripts/generar-manifiesto.mjs --host opencode|claude|codex
 
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -22,7 +22,7 @@ const valor = (flag) => {
   return indice === -1 ? undefined : args[indice + 1];
 };
 const proyecto = valor('--project') ?? '.';
-const state = JSON.parse(await readFile(join(proyecto, '.template/state.json'), 'utf8'));
+const state = JSON.parse(await readFile(join(proyecto, '.atlas/state.json'), 'utf8'));
 const host = valor('--host') ?? state.host;
 if (!host) {
   console.error('❌ host no detectado; pasa --host opencode|claude|codex');
@@ -31,8 +31,8 @@ if (!host) {
 
 const EXCLUIR = new Set([
   '.git', 'node_modules', 'build', 'dist', 'graphify-out',
-  '.template/backups', '.template/adapters', '.template/archive',
-  '.template/manifest.json', '.template/state.json',
+  '.atlas/backups', '.atlas/adapters', '.atlas/archive',
+  '.atlas/manifest.json', '.atlas/state.json',
 ]);
 
 const REGLAS = [
@@ -47,12 +47,12 @@ const REGLAS = [
     origin: () => 'core',
   },
   {
-    patron: /^\.agents\/skills\/|^\.template\/agents\/|^openspec\/schemas\//,
+    patron: /^\.agents\/skills\/|^\.atlas\/agents\/|^openspec\/schemas\//,
     ownership: 'managed',
     origin: () => 'core',
   },
   {
-    patron: /^\.template\/packs\//,
+    patron: /^\.atlas\/packs\//,
     ownership: 'managed',
     origin: (rel) => `pack:${rel.split('/')[2]}`,
   },
@@ -89,5 +89,5 @@ const manifest = {
   note: 'Generado por el bootstrap. No editar a mano.',
   files,
 };
-await writeFile(join(proyecto, '.template/manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+await writeFile(join(proyecto, '.atlas/manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 console.log(`✅ manifiesto: ${Object.keys(files).length} archivos (host: ${host})`);

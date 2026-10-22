@@ -8,7 +8,7 @@
 
 1. **Clean tree**: `git status --porcelain` must be empty.
 2. **Own branch**: create `chore/bootstrap` (or a `.worktrees/bootstrap` worktree). **Do not run on `main`.**
-3. **Backup**: the ritual copies to `.template/backups/<timestamp>/` before merging.
+3. **Backup**: the ritual copies to `.atlas/backups/<timestamp>/` before merging.
 
 ---
 
@@ -22,8 +22,8 @@ Copy only what is missing from the template:
 | `docs/project-context.md` | Create from the base; migrate the existing `AGENTS.md` project content |
 | `openspec/config.yaml` | Merge `context:` and `rules:` |
 | `openspec/specs/`, `adr/` | Keep the project's |
-| `.agents/skills/`, `.template/agents/` | Keep the project's; add the template's with a prefix or as a pack |
-| `README.md` | **Keep it**; the bootstrap asks whether to append the missing sections from `.template/PROJECT-README.md` |
+| `.agents/skills/`, `.atlas/agents/` | Keep the project's; add the template's with a prefix or as a pack |
+| `README.md` | **Keep it**; the bootstrap asks whether to append the missing sections from `.atlas/PROJECT-README.md` |
 | `docs/README.md` | Merge: keep the project's index and link the harness sections |
 | Adapters (`.opencode/`, `.claude/`) | Preserve; adapt only what collides |
 
@@ -51,7 +51,7 @@ The bootstrap detects **brownfield** and inventories before touching anything.
 | Project agents and skills | What to keep and what to adapt |
 | `.env`, secrets | Names only; **never values** |
 
-The result is written to `.template/adoption-report.md` (and summarized in `docs/template-adoption.md` if the project uses it):
+The result is written to `.atlas/adoption-report.md` (and summarized in `docs/template-adoption.md` if the project uses it):
 
 ```markdown
 # Harness adoption
@@ -68,8 +68,8 @@ The result is written to `.template/adoption-report.md` (and summarized in `docs
 ## 3.1 Automated inventory (optional)
 
 ```bash
-node .template/scripts/inventariar-adopcion.mjs --template <pristine-template-path>
-node .template/scripts/adoptar-agents.mjs --template <pristine-template-path> --apply
+node .atlas/scripts/inventariar-adopcion.mjs --template <pristine-template-path>
+node .atlas/scripts/adoptar-agents.mjs --template <pristine-template-path> --apply
 ```
 
 The second one backs up the existing `AGENTS.md`, copies the template base and moves the previous
@@ -78,7 +78,7 @@ content to `docs/project-context.md`. The bootstrap then fills the base placehol
 - `state.stacks` (multi-stack) and `state.packs` are preserved; the `README` is generated/preserved per the policy.
 
 Classifies each template file as `nuevo` / `igual` / `distinto`, copies the `distinto` ones to
-`.template/backups/adopcion-<timestamp>/` and writes `.template/adoption-report.md`.
+`.atlas/backups/adopcion-<timestamp>/` and writes `.atlas/adoption-report.md`.
 The agent decides the conflict policy; the script **does not merge**.
 
 ## 4. Conflict policy
@@ -128,7 +128,7 @@ explore → propose → apply → QA → review → close.
 | What | How |
 |---|---|
 | A whole phase | `git revert <commit>` |
-| A merged file | Restore from `.template/backups/<timestamp>/` |
+| A merged file | Restore from `.atlas/backups/<timestamp>/` |
 | The whole bootstrap | `git revert` the `chore/bootstrap` commits |
 
 ---

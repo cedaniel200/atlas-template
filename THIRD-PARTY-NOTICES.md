@@ -1,7 +1,7 @@
 # Avisos de terceros
 
 Este repositorio **redistribuye** material de terceros. Cada componente conserva la licencia de su
-origen. Si redistribuyes este template, mantén este archivo y los avisos de copyright.
+origen. Si redistribuyes ATLAS, mantén este archivo y los avisos de copyright.
 
 ## Skills vendorizadas
 
@@ -21,11 +21,11 @@ origen. Si redistribuyes este template, mantén este archivo y los avisos de cop
 |---|---|---|
 | `openspec/schemas/spec-driven-with-adr/` (schema + plantillas) | [intent-driven-dev/openspec-schemas](https://github.com/intent-driven-dev/openspec-schemas) | MIT — Copyright (c) 2026 |
 
-## Material original de este template
+## Material original de ATLAS
 
 | Componente | Licencia |
 |---|---|
-| `AGENTS.md`, `CLAUDE.md`, `.template/BOOTSTRAP.md`, `.template/PROJECT-README.md`, `.template/agents/`, `docs/README.md`, `docs/harness/`, `.template/docs/`, `.template/` | MIT (ver `LICENSE`) |
+| `AGENTS.md`, `CLAUDE.md`, `.atlas/BOOTSTRAP.md`, `.atlas/PROJECT-README.md`, `.atlas/agents/`, `docs/README.md`, `docs/harness/`, `.atlas/docs/`, `.atlas/` | MIT (ver `LICENSE`) |
 | Skills locales `gherkin-specs`, `conventional-commits`, `implementation-standards`, `session-startup`, `session-end`, `git-workflow`, `openspec-workflow` | MIT (ver `LICENSE`) |
 
 ## Dependencias de ejecución (no redistribuidas)

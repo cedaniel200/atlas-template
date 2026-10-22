@@ -1,6 +1,6 @@
 # Updating a configured project
 
-> **Automated flow:** `node .template/scripts/actualizar-arnes.mjs --template <path>`.
+> **Automated flow:** `node .atlas/scripts/actualizar-arnes.mjs --template <path>`.
 > User guide: `docs/harness/en/UPDATE.md`. This document is the internal algorithm reference.
 
 > The template is a **scaffold**, not a runtime dependency. Updates are optional, explicit and safe.
@@ -9,7 +9,7 @@
 
 ## Versioning
 
-- `template_version` (semver) lives in `.template/state.json`.
+- `template_version` (semver) lives in `.atlas/state.json`.
 - `template_source` records the URL and commit used, so an update is reproducible.
 - Packs have their own version in `pack.yaml`.
 
@@ -19,11 +19,11 @@
 
 | File | Role |
 |---|---|
-| `.template/state.json` | **Inputs**: host, language, architecture, profile, packs, preferences |
-| `.template/manifest.json` | **Outputs**: per file, `origin`, `sha256` and `ownership` |
+| `.atlas/state.json` | **Inputs**: host, language, architecture, profile, packs, preferences |
+| `.atlas/manifest.json` | **Outputs**: per file, `origin`, `sha256` and `ownership` |
 
 > **Hash format:** 64 lowercase hex chars, no filename, computed with
-> `.template/scripts/sha256.sh` (POSIX) or `sha256.ps1` (PowerShell). Normalize to lowercase when
+> `.atlas/scripts/sha256.sh` (POSIX) or `sha256.ps1` (PowerShell). Normalize to lowercase when
 > comparing. If the project was generated on another OS, the hash only matches when the file is
 > normalized to LF (the generated `.gitattributes` uses `* text=auto eol=lf`).
 
@@ -51,7 +51,7 @@
      managed   -> hash(current) == hash(base) (lowercase) ? overwrite : write .new + conflict
 5. **Rewrite manifest.json** (new hashes, `template_version`, `generated_at`) and **state.json**
    (`template_version`, `template_source`, `updated_at`) — without this, the next update reports false conflicts
-6. **Validate**: `node .template/scripts/validar-manifiesto.mjs`
+6. **Validate**: `node .atlas/scripts/validar-manifiesto.mjs`
 7. Report: updated / unchanged / conflicts / skipped
 ```
 
@@ -62,7 +62,7 @@ This version **never destroys** user work. A three-way merge for conflicts is a 
 ## Updating packs
 
 - Only **activated** packs are updated.
-- Inactive packs stay untouched in `.template/packs/`.
+- Inactive packs stay untouched in `.atlas/packs/`.
 - An update can bump a pack version independently of the template version.
 
 ---

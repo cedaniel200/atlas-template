@@ -4,13 +4,13 @@
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
 //
 // Qué hace (adopción brownfield):
-//   1. Backup del AGENTS.md del proyecto en .template/backups/agents-<ts>/.
+//   1. Backup del AGENTS.md del proyecto en .atlas/backups/agents-<ts>/.
 //   2. Copia el AGENTS.md del template (la base, con placeholders) al proyecto.
 //   3. Mueve el AGENTS.md anterior a docs/project-context.md (contenido íntegro).
 //   4. El bootstrap rellena después los placeholders de la base.
 //
 // Uso:
-//   node .template/scripts/adoptar-agents.mjs --template <ruta-template-pristino> [--proyecto .] [--apply]
+//   node .atlas/scripts/adoptar-agents.mjs --template <ruta-template-pristino> [--proyecto .] [--apply]
 //   Sin --apply es dry-run.
 
 import { access, copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -57,7 +57,7 @@ if ((await sha256(agentsProyecto)) === (await sha256(agentsTemplate))) {
 }
 
 const marca = new Date().toISOString().replace(/[:.]/g, '-');
-const backupDir = join(proyecto, '.template/backups', `agents-${marca}`);
+const backupDir = join(proyecto, '.atlas/backups', `agents-${marca}`);
 const backup = join(backupDir, 'AGENTS.md');
 const contexto = join(proyecto, 'docs/project-context.md');
 const fecha = new Date().toISOString().slice(0, 10);

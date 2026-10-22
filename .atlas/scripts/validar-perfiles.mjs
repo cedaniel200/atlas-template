@@ -5,8 +5,8 @@
 // no usa Python, PyYAML, jq ni yq.
 //
 // Uso:
-//   node .template/scripts/validar-perfiles.mjs           # estructural (siempre)
-//   node .template/scripts/validar-perfiles.mjs --deep    # exige parseo YAML real
+//   node .atlas/scripts/validar-perfiles.mjs           # estructural (siempre)
+//   node .atlas/scripts/validar-perfiles.mjs --deep    # exige parseo YAML real
 //
 // El parseo YAML se ejecuta automáticamente si el paquete "yaml" es resoluble
 // (p. ej. `npm i yaml` en el proyecto). Si no, se omite con un aviso visible.
@@ -17,7 +17,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { basename, join, relative } from 'node:path';
 import { createRequire } from 'node:module';
 
-const RAIZ = '.template/profiles';
+const RAIZ = '.atlas/profiles';
 const CLAVES_OBLIGATORIAS = ['name', 'description', 'stack', 'structure', 'commands'];
 const COMANDOS_OBLIGATORIOS = ['install', 'build', 'test'];
 const exigirProfundo = process.argv.includes('--deep');

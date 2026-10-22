@@ -8,8 +8,8 @@
 
 | Sistema | Qué aporta | Dónde |
 |---|---|---|
-| **Perfil** | **Datos** del stack: comandos, rutas, puerto, umbral | `.template/profiles/` |
-| **Pack** | **Procedimiento** opcional (skills/agentes) que no cabe en un comando | `.template/packs/` |
+| **Perfil** | **Datos** del stack: comandos, rutas, puerto, umbral | `.atlas/profiles/` |
+| **Pack** | **Procedimiento** opcional (skills/agentes) que no cabe en un comando | `.atlas/packs/` |
 
 Un pack **nunca** es requisito. Lo que todo proyecto necesita son los **placeholders del contrato**,
 que se resuelven con el perfil elegido + las respuestas del cuestionario.
@@ -120,10 +120,10 @@ y lo declara).
 
 ## Regla de verificación
 
-`node .template/scripts/validar-contrato.mjs` comprueba que:
+`node .atlas/scripts/validar-contrato.mjs` comprueba que:
 
-1. Todo `{{...}}` usado en `AGENTS.md`, `openspec/config.yaml`, `.template/PROJECT-README.md`,
-   `.template/agents/` y `.agents/skills/` está en la lista de **proyecto**.
+1. Todo `{{...}}` usado en `AGENTS.md`, `openspec/config.yaml`, `.atlas/PROJECT-README.md`,
+   `.atlas/agents/` y `.agents/skills/` está en la lista de **proyecto**.
 2. Todo `{{...}}` usado en los perfiles está en la lista de **perfil**.
 3. La tabla de `AGENTS.md` § Placeholders no declara claves fuera del contrato.
 
@@ -150,7 +150,7 @@ Si falla, **no se inventa**: se amplía este contrato y se documenta el origen d
 ```
 
 - `id` es obligatorio y único; el adaptador es `engineer-<id>`.
-- `profile` referencia `.template/profiles/<id>.yaml` (o un perfil del proyecto).
+- `profile` referencia `.atlas/profiles/<id>.yaml` (o un perfil del proyecto).
 - `packs` son los packs activos de ese stack; `state.packs` es la unión.
 - Single-stack: un elemento; el renderer genera `engineer.md`. Multi-stack: uno por tecnología.
 - `AGENTS.md` § Stacks se rellena desde `state.stacks` (`{{STACKS_TABLE}}`).

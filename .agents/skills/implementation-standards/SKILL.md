@@ -7,7 +7,7 @@ license: MIT
 # Implementation standards
 
 > Load this skill before writing or reviewing code. It is the **source of engineering criteria**;
-> `.template/agents/engineer.md` is only a summary.
+> `.atlas/agents/engineer.md` is only a summary.
 
 ---
 

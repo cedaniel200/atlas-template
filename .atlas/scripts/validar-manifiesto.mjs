@@ -3,7 +3,7 @@
 //
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
 //
-// Uso: node .template/scripts/validar-manifiesto.mjs
+// Uso: node .atlas/scripts/validar-manifiesto.mjs
 // Salida: 0 = ok; 1 = archivos ausentes, hashes desactualizados o versión incoherente.
 
 import { readFile, access } from 'node:fs/promises';
@@ -19,8 +19,8 @@ const existe = async (ruta) => {
   }
 };
 
-const manifest = JSON.parse(await readFile('.template/manifest.json', 'utf8'));
-const state = JSON.parse(await readFile('.template/state.json', 'utf8'));
+const manifest = JSON.parse(await readFile('.atlas/manifest.json', 'utf8'));
+const state = JSON.parse(await readFile('.atlas/state.json', 'utf8'));
 
 const errores = [];
 const pendientes = [];

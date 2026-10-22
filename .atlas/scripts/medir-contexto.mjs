@@ -12,8 +12,8 @@
 // conversación, tool outputs ni contenido generado en runtime.
 //
 // Uso:
-//   node .template/scripts/medir-contexto.mjs          # informe legible
-//   node .template/scripts/medir-contexto.mjs --json   # línea base comparable
+//   node .atlas/scripts/medir-contexto.mjs          # informe legible
+//   node .atlas/scripts/medir-contexto.mjs --json   # línea base comparable
 
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -126,31 +126,31 @@ function imprimir(titulo, filas) {
   return tokens;
 }
 
-const AGENTES = '.template/agents/*.md';
+const AGENTES = '.atlas/agents/*.md';
 const SKILLS = '.agents/skills/*/SKILL.md';
 
 const arranqueMinimo = await medirPatrones([
-  '.template/BOOTSTRAP.md',
+  '.atlas/BOOTSTRAP.md',
   'AGENTS.md',
   'openspec/config.yaml',
-  '.template/PLACEHOLDERS.md',
-  '.template/PROJECT-README.md',
-  '.template/profiles/_examples/*.yaml',
-  '.template/hosts/**/*',
+  '.atlas/PLACEHOLDERS.md',
+  '.atlas/PROJECT-README.md',
+  '.atlas/profiles/_examples/*.yaml',
+  '.atlas/hosts/**/*',
 ]);
 
 const arranque = await medirPatrones(
   [
-    '.template/BOOTSTRAP.md',
+    '.atlas/BOOTSTRAP.md',
     'AGENTS.md',
     'openspec/config.yaml',
-    '.template/PLACEHOLDERS.md',
-    '.template/PROJECT-README.md',
-    '.template/profiles/_examples/*.yaml',
-    '.template/hosts/**/*',
+    '.atlas/PLACEHOLDERS.md',
+    '.atlas/PROJECT-README.md',
+    '.atlas/profiles/_examples/*.yaml',
+    '.atlas/hosts/**/*',
     AGENTES,
   ],
-  ['.template/agents/README.md'],
+  ['.atlas/agents/README.md'],
 );
 
 const nombresSkills = (await expandir(SKILLS)).map((ruta) => ruta.split('/').at(-2)).sort();
@@ -158,7 +158,7 @@ const skills = await medirPatrones([SKILLS]);
 let descripciones = 0;
 for (const fila of skills) descripciones += frontmatter(fila.texto).length;
 
-const hostConfig = (await expandir('opencode.json')).length > 0 ? 'opencode.json' : '.template/hosts/opencode/opencode.json';
+const hostConfig = (await expandir('opencode.json')).length > 0 ? 'opencode.json' : '.atlas/hosts/opencode/opencode.json';
 const base = await medirPatrones(['AGENTS.md', 'CLAUDE.md', hostConfig]);
 const baseConSkills = [
   ...base,
@@ -183,7 +183,7 @@ const adaptadores = [
 const fuenteAgentes = adaptadores.length > 0 ? 'adaptadores del host' : 'prompts canónicos';
 const agentes = adaptadores.length > 0
   ? await medirPatrones(['.opencode/agent/*.md', '.claude/agents/*.md'])
-  : await medirPatrones([AGENTES], ['.template/agents/README.md']);
+  : await medirPatrones([AGENTES], ['.atlas/agents/README.md']);
 log(`\n## Por agente (base + prompt + núcleo de skills) — fuente: ${fuenteAgentes}`);
 const porAgente = [];
 for (const agente of agentes.sort((a, b) => a.ruta.localeCompare(b.ruta))) {

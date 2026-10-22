@@ -1,6 +1,6 @@
 # Actualizar el arnés
 
-> El template es un **andamio**, no una dependencia. Actualizar es opcional, explícito y **nunca destructivo**.
+> **ATLAS** es un **andamio**, no una dependencia. Actualizar es opcional, explícito y **nunca destructivo**.
 
 ---
 
@@ -11,7 +11,7 @@
 
 ## Qué necesitas
 
-- `.template/state.json` con `template_source` (url + commit) y `.template/manifest.json` (lo genera el bootstrap).
+- `.atlas/state.json` con `template_source` (url + commit) y `.atlas/manifest.json` (lo genera el bootstrap).
 - `state.stacks` (multi-stack), `state.packs` y `state.readme` (si existen) para conservar la configuración.
 - **Node 20+** (el único runtime que asume el arnés).
 - Una copia del template nuevo (clone o checkout del tag/commit).
@@ -28,13 +28,13 @@
 2. **Ejecuta la actualización** desde la raíz de tu proyecto:
 
    ```bash
-   node .template/scripts/actualizar-arnes.mjs --template /tmp/template-nuevo
+   node .atlas/scripts/actualizar-arnes.mjs --template /tmp/template-nuevo
    ```
 
    - `owned` (AGENTS.md, config, docs, adr, specs) → **no se toca**.
    - `generated` (adaptadores, `opencode.json`, `CLAUDE.md`) → **se regenera** (adaptadores con placeholders resueltos).
    - `managed` (skills, prompts, schemas, packs activos) → se reemplaza **solo si no lo modificaste**; si lo modificaste, se escribe `<archivo>.new`.
-   - Antes de escribir, copia lo que reemplaza a `.template/backups/<timestamp>/`.
+   - Antes de escribir, copia lo que reemplaza a `.atlas/backups/<timestamp>/`.
    - **Actualiza `manifest.json` y `state.json`** (versión, commit y hashes) para que la próxima actualización no dé falsos conflictos.
 
 3. **Resuelve los conflictos** (`.new`):
@@ -47,9 +47,9 @@
 4. **Valida**:
 
    ```bash
-   node .template/scripts/validar-manifiesto.mjs
-   node .template/scripts/validar-contrato.mjs
-   node .template/scripts/validar-perfiles.mjs
+   node .atlas/scripts/validar-manifiesto.mjs
+   node .atlas/scripts/validar-contrato.mjs
+   node .atlas/scripts/validar-perfiles.mjs
    openspec doctor && openspec context
    ```
 
@@ -59,12 +59,12 @@
 
 - No sobrescribe `owned`.
 - No borra archivos: si el template elimina uno, lo **reporta**.
-- **Packs**: los activos se actualizan como `managed` (si no los modificaste); los inactivos y el catálogo `.template/packs` no se tocan. Se activan/desactivan a mano.
+- **Packs**: los activos se actualizan como `managed` (si no los modificaste); los inactivos y el catálogo `.atlas/packs` no se tocan. Se activan/desactivan a mano.
 - No resuelve conflictos por ti.
 
 ## Rollback
 
-Copia de vuelta los archivos desde `.template/backups/<timestamp>/`.
+Copia de vuelta los archivos desde `.atlas/backups/<timestamp>/`.
 
 ## Para agentes
 

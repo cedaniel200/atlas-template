@@ -17,10 +17,10 @@ Flow to bring a new template version into a configured project. **It never overw
 
 ## Steps
 
-1. **Check state**: `.template/state.json` (`template_source`) and `.template/manifest.json`.
+1. **Check state**: `.atlas/state.json` (`template_source`) and `.atlas/manifest.json`.
 2. **Get the new template** in a temp directory (`git clone` + `checkout <tag|commit>`).
 3. **Run the script** from the project root:
-   `node .template/scripts/actualizar-arnes.mjs --template <path>`
+   `node .atlas/scripts/actualizar-arnes.mjs --template <path>`
    - `owned` → skipped · `generated` → regenerated (adapters with resolved placeholders) ·
      `managed` → replaced if the hash matches, otherwise `<file>.new`.
    - It backs up and **rewrites `manifest.json` and `state.json`** (version, commit, hashes).
@@ -34,6 +34,6 @@ Flow to bring a new template version into a configured project. **It never overw
 - **Do not improvise hashes**: use `sha256.sh`/`sha256.ps1` or the scripts.
 - **Do not overwrite `owned`** (AGENTS.md, config, docs, adr, specs).
 - If the template removes a file, **report it**; do not delete it.
-- Packs are enabled/disabled by hand (`.template/packs/README.md`).
+- Packs are enabled/disabled by hand (`.atlas/packs/README.md`).
 
 Human guide: `docs/harness/es/UPDATE.md` (or `docs/harness/en/UPDATE.md`).

@@ -29,10 +29,10 @@ Thumbs.db
 *.key
 *.p12
 
-# ─── Estado local del template (no versionar) ───────────────────────
-.template/adapters/
-.template/backups/
-.template/archive/
+# ─── Estado local de ATLAS (no versionar) ───────────────────────────
+.atlas/adapters/
+.atlas/backups/
+.atlas/archive/
 
 # ─── Memoria persistente (opt-in; nunca versionar por defecto) ──────
 .engram/

@@ -1,7 +1,7 @@
-# `.template/` — estado y material del ritual
+# `.atlas/` — estado y material del ritual
 
 Este directorio es el **único** lugar del repo que sabe que el proyecto todavía no está configurado.
-Lo consume `.template/BOOTSTRAP.md` en la primera sesión.
+Lo consume `.atlas/BOOTSTRAP.md` en la primera sesión.
 
 ## Estructura
 
@@ -26,17 +26,17 @@ Lo consume `.template/BOOTSTRAP.md` en la primera sesión.
 - **Perfil = dato.** Comandos, rutas, herramientas, umbrales. Se puede añadir uno nuevo en ~40 líneas
   de YAML y cualquier stack queda soportado.
 - **Pack = procedimiento.** Conocimiento que **no** se reduce a un comando (patrones, checklists,
-  configuración). Es opcional: el template funciona sin packs.
+  configuración). Es opcional: ATLAS funciona sin packs.
 
 ## `state.json` — inputs
 
 | Campo | Valores | Significado |
 |---|---|---|
 | `bootstrap_version` | entero | Versión del ritual con la que se configuró |
-| `template_version` | semver | Versión del template usada como base |
+| `template_version` | semver | Versión de ATLAS usada como base |
 | `template_source` | `{url, commit}` | Origen para actualizaciones reproducibles |
 | `status` | `pending` \| `configured` | Si es `configured`, el ritual no se repite |
-| `mode` | `greenfield` \| `brownfield` \| `null` | Cómo se adoptó el template |
+| `mode` | `greenfield` \| `brownfield` \| `null` | Cómo se adoptó ATLAS |
 | `host` | `opencode` \| `claude` \| `codex` \| `null` | Herramienta anfitriona |
 | `host_source` | `env` \| `user` \| `files` \| `null` | Cómo se determinó |
 | `language.user` | `es` \| `en` \| otro \| `null` | Idioma de la documentación de usuario |
@@ -83,7 +83,7 @@ Lo consume `.template/BOOTSTRAP.md` en la primera sesión.
 
 ### Propiedad de archivos
 
-| `ownership` | Ejemplos | Al actualizar el template |
+| `ownership` | Ejemplos | Al actualizar ATLAS |
 |---|---|---|
 | `managed` | skills y prompts del núcleo | Se reemplaza **solo si el hash coincide** con el manifiesto; si no, se escribe `<archivo>.new` y se reporta conflicto |
 | `generated` | adaptador de host, wrappers `opsx-*` | Se regenera siempre |
@@ -93,7 +93,7 @@ Lo consume `.template/BOOTSTRAP.md` en la primera sesión.
 
 ```
 1. Leer state.json (inputs) y manifest.json (base)
-2. Obtener el template en template_source.commit
+2. Obtener ATLAS en `template_source.commit`
 3. Regenerar en un directorio temporal con los MISMOS inputs
 4. Por archivo del manifiesto:
      owned     -> omitir
@@ -111,4 +111,4 @@ reportan como conflicto en lugar de sobrescribirse.
 2. **La raíz nace neutra.** No hay configuración de ninguna herramienta en la raíz hasta que el
    bootstrap la genera desde `hosts/`.
 3. **Un commit por fase.** El ritual deja rastro explícito en el historial.
-4. **Un pack nunca es requisito** para que el template funcione.
+4. **Un pack nunca es requisito** para que ATLAS funcione.
