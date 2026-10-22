@@ -105,10 +105,14 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles
 ```bash
 # skills
 for f in .agents/skills/*/SKILL.md; do sed -n '1,5p' "$f"; done
-# referencias de agentes
+# referencias de agentes (informativo: nunca falla)
 grep -rn "ddd-\|opencode\|claude" .template/agents/ .agents/skills/ || true
-# perfiles
-python3 -c "import yaml,glob;[yaml.safe_load(open(f)) for f in glob.glob('.template/profiles/*.yaml')]"
+# perfiles (gate): estructural sin dependencias; con `npm i yaml` añade parseo real
+node .template/scripts/validar-perfiles.mjs
 # contrato
 openspec doctor && openspec context
 ```
+
+> **Solo dependencias declaradas.** Toda comprobación del harness usa Git, Node 20+, OpenSpec CLI y
+> shell POSIX. Si necesita otra herramienta, debe **detectarla y avisar**; nunca asumirla.
+> Un check que no puede ejecutarse no debe fingir que pasó.
