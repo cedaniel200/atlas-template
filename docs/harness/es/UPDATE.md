@@ -12,6 +12,7 @@
 ## Qué necesitas
 
 - `.template/state.json` con `template_source` (url + commit) y `.template/manifest.json` (lo genera el bootstrap).
+- `state.stacks` (multi-stack), `state.packs` y `state.readme` (si existen) para conservar la configuración.
 - **Node 20+** (el único runtime que asume el arnés).
 - Una copia del template nuevo (clone o checkout del tag/commit).
 
@@ -32,7 +33,7 @@
 
    - `owned` (AGENTS.md, config, docs, adr, specs) → **no se toca**.
    - `generated` (adaptadores, `opencode.json`, `CLAUDE.md`) → **se regenera** (adaptadores con placeholders resueltos).
-   - `managed` (skills, prompts, schemas) → se reemplaza **solo si no lo modificaste**; si lo modificaste, se escribe `<archivo>.new`.
+   - `managed` (skills, prompts, schemas, packs activos) → se reemplaza **solo si no lo modificaste**; si lo modificaste, se escribe `<archivo>.new`.
    - Antes de escribir, copia lo que reemplaza a `.template/backups/<timestamp>/`.
    - **Actualiza `manifest.json` y `state.json`** (versión, commit y hashes) para que la próxima actualización no dé falsos conflictos.
 
@@ -58,7 +59,7 @@
 
 - No sobrescribe `owned`.
 - No borra archivos: si el template elimina uno, lo **reporta**.
-- No actualiza packs (se activan/desactivan a mano; ver `.template/packs/README.md`).
+- **Packs**: los activos se actualizan como `managed` (si no los modificaste); los inactivos y el catálogo `.template/packs` no se tocan. Se activan/desactivan a mano.
 - No resuelve conflictos por ti.
 
 ## Rollback

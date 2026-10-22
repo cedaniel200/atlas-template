@@ -132,8 +132,9 @@ Además:
 | `qa-analyst` | `.template/agents/qa-analyst.md` | Pruebas funcionales |
 | `doc-writer` | `.template/agents/doc-writer.md` | Documentación técnica y funcional |
 
-Los adaptadores por herramienta los genera el bootstrap desde `.template/agents/`. Codex no tiene subagentes: los
-roles se emulan con este archivo y el anuncio de rol.
+Los adaptadores los genera `renderizar-adaptadores.mjs` desde `.template/agents/` + `AGENTS.md`.
+Multi-stack: el `engineer` se renderiza por stack (`engineer-<stack>`). Codex no tiene subagentes:
+los roles se emulan con este archivo y el anuncio de rol.
 
 ---
 
@@ -146,6 +147,8 @@ explore → propose → apply → QA → review → cierre
 
 > **Excepción — bootstrap:** la configuración inicial (`.template/BOOTSTRAP.md`) corre en su propia rama
 > (`chore/bootstrap`), no en un worktree de cambio. Un commit por fase y el merge lo hace el usuario.
+>
+> **Multi-stack:** `state.stacks` es la fuente; el `engineer` se renderiza por stack y los `packs` se activan por stack.
 
 ### Gates
 
@@ -195,6 +198,7 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 
 > Los **triggers** pueden expresarse en cualquier idioma; cada skill declara ejemplos de disparo
 > en su `description` (cuerpo y descripción en inglés, `language.agent`).
+> **17 core + packs opcionales**; las skills de packs se registran al activarse.
 
 | Skill | Ruta | Trigger |
 |---|---|---|
@@ -266,6 +270,11 @@ placeholder sin resolver.
 | Reportes de QA | `openspec/changes/<cambio>/qa-report-*.md` |
 | Reportes de revisión | `openspec/changes/<cambio>/reviewer-report-*.md` |
 | Guías del arnés | `docs/README.md` (índice) · `docs/harness/es/` · `docs/harness/en/` |
+| Contexto específico del proyecto | `docs/project-context.md` |
+| Portada del template | `docs/README.md` (el proyecto no tiene README raíz; el suyo se genera desde `.template/PROJECT-README.md`) |
+| Packs opcionales | `.template/packs/README.md` |
+| Scripts del arnés | `.template/scripts/` |
+| Estado del proyecto | `.template/state.json` (`stacks`, `packs`, `readme`) |
 
 ---
 

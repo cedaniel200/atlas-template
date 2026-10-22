@@ -163,7 +163,7 @@ Si `openspec init` reescribe `AGENTS.md`, restáuralo desde el backup y fusiona 
 
 # Fase 1 — Interrogatorio
 
-Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
+Conduce el interrogatorio en **4 rondas (0–3)**, agrupando preguntas.
 
 ## Ronda 0 — Idioma
 

@@ -24,6 +24,8 @@ rm -rf .git && git init
 
 If you cloned instead of using `degit`, remove the template history and start a new one.
 
+> The project `README.md` is generated from `.template/PROJECT-README.md`; the template has no root README.
+
 ---
 
 ## 2. Open the host and ask for the ritual
@@ -48,11 +50,10 @@ The ritual asks, in rounds:
 
 | Round | What |
 |---|---|
-| Language | Documentation (`language.user`) and skills/prompt language |
-| Identity | Name, description, stack, structure, base package |
-| Commands & quality | Build, run, test, lint, coverage, mutation, CRAP, QA environment |
-| Architecture & limits | Declared stance, domain, do-not-touch rules |
-| Preferences | Persistent memory, OpenSpec commands (`user`/`agent`/`ask`), orchestration |
+| **0 — Language** | Documentation (`language.user`) and skills/prompt language |
+| **1 — Identity and stacks** | Name, description, stack(s), structure, base package; one row per stack (multi-stack) |
+| **2 — Commands & quality** | Build, run, test, lint, coverage, mutation, CRAP, QA environment |
+| **3 — Architecture, domain and boundaries** | Stance, domain, do-not-touch, git, docs, memory, OpenSpec, orchestration, contribution and README |
 
 If you do not know a command, answer `TBD`: the agent records it in `AGENTS.md` § Pending. **It never
 invents one.**
@@ -97,6 +98,7 @@ The `analyst` asks at the start whether to orchestrate the cycle or let you invo
 | `Schema not found` | Missing `openspec/schemas/` | Restore the vendored schema |
 | Skills do not appear | Wrong path or host not restarted | Check `.agents/skills/*/SKILL.md` and restart |
 | `AGENTS.md` changed after `openspec init` | The CLI rewrote it | Restore the backup and merge manually |
+| `openspec init` duplicates skills | The CLI copies skills to `.opencode/skills` | The ritual removes them; the canonical path is `.agents/skills/` |
 | The gate fails | Commands or sections still `TBD` | Complete them in `AGENTS.md` |
 
 ---
@@ -108,3 +110,5 @@ The `analyst` asks at the start whether to orchestrate the cycle or let you invo
 - Quality and CRAP → [`QUALITY.md`](QUALITY.md)
 - Host compatibility → [`COMPATIBILITY.md`](COMPATIBILITY.md)
 - Glossary → [`GLOSSARY.md`](GLOSSARY.md)
+- Extend the harness (skills/agents/packs) → [`../../../.template/docs/en/extending.md`](../../../.template/docs/en/extending.md) · [`../../../.template/packs/README.md`](../../../.template/packs/README.md)
+- Project README → generated from `.template/PROJECT-README.md`; the template has no root README (the landing is `docs/README.md`).
