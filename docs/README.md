@@ -101,7 +101,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 | Quieres configurar MCP o memoria | [`docs/harness/es/TOOLS.md`](harness/es/TOOLS.md) |
 | Te interesan los gates y CRAP | [`docs/harness/es/QUALITY.md`](harness/es/QUALITY.md) |
 | No entiendes un término | [`docs/harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
-| Extender el arnés (skills/agentes/packs) | [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md) · [`.atlas/packs/README.md`](../.atlas/packs/README.md) |
+| Extender el arnés (skills/agentes/packs) | [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md) · [`.atlas/packs/README.md` (EN)](../.atlas/packs/README.md) |
 
 ---
 

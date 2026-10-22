@@ -198,10 +198,12 @@ What it measures (**static** estimate, no conversation or tool outputs):
 | Group | What it includes |
 |---|---|
 | Session base | AGENTS.md + skill descriptions + host config |
-| Minimum bootstrap | BOOTSTRAP + AGENTS + PLACEHOLDERS + profiles + host |
-| Full bootstrap | the above + the agent prompts (5 core + 2 optional) |
+| Minimum bootstrap | BOOTSTRAP + AGENTS + PLACEHOLDERS + config + base README + active host |
+| Full bootstrap | the above + active agent prompts |
 | Per agent | base + prompt + **core** (`SKILL.md`) of the skills it mentions |
 | Ceiling | the whole harness loaded at once (**includes** on-demand references) |
+
+Not measured: maintainer READMEs, `_templates`, `_examples` or inactive hosts.
 
 **How to read it:** `~4 chars/token` proxy (Spanish may reach ~3.5 → +15%). Target budget:
 **base ≤ 4k**, **per agent ≤ 14k** (the 5 external OpenSpec skills are a fixed cost: they are not optimized without forking them). If it grows, attack the biggest contributor first: long skills →

@@ -129,37 +129,59 @@ function imprimir(titulo, filas) {
 const AGENTES = '.atlas/agents/*.md';
 const SKILLS = '.agents/skills/*/SKILL.md';
 
+// Política de medición:
+// - Base: AGENTS + CLAUDE + host activo + descripciones de skills.
+// - Arranque mínimo: lo que el bootstrap necesita (BOOTSTRAP, AGENTS, config, placeholders, README base, host).
+// - Arranque completo: + prompts de agente activos (core + opcionales en state.optional_agents).
+// - Techo: todo el arnés, incluidas referencias on-demand y prompts opcionales.
+// Fuera de la medición: READMEs de mantenimiento, _templates, _examples y hosts no activos.
+let estado = {};
+try {
+  estado = JSON.parse(await readFile('.atlas/state.json', 'utf8'));
+} catch {
+  // template sin estado
+}
+const opcionalesActivos = new Set(Array.isArray(estado.optional_agents) ? estado.optional_agents : []);
+const host = estado.host;
+const hostConfig = host === 'claude' || host === 'codex'
+  ? null
+  : ((await expandir('opencode.json')).length > 0 ? 'opencode.json' : '.atlas/hosts/opencode/opencode.json');
+const patronesHost = hostConfig ? [hostConfig] : [];
+
 const arranqueMinimo = await medirPatrones([
   '.atlas/BOOTSTRAP.md',
   'AGENTS.md',
   'openspec/config.yaml',
   '.atlas/PLACEHOLDERS.md',
   '.atlas/PROJECT-README.md',
-  '.atlas/profiles/_examples/*.yaml',
-  '.atlas/hosts/**/*',
+  ...patronesHost,
 ]);
 
-const arranque = await medirPatrones(
-  [
+const agentesCanonicos = await medirPatrones([AGENTES], ['.atlas/agents/README.md']);
+const esOpcional = (fila) => fila.texto.trimStart().startsWith('<!-- optional-role -->');
+const rolDe = (fila) => fila.ruta.split('/').at(-1).replace(/\.md$/, '');
+const agentesActivos = agentesCanonicos.filter(
+  (fila) => !esOpcional(fila) || opcionalesActivos.has(rolDe(fila)),
+);
+
+const arranque = [
+  ...(await medirPatrones([
     '.atlas/BOOTSTRAP.md',
     'AGENTS.md',
     'openspec/config.yaml',
     '.atlas/PLACEHOLDERS.md',
     '.atlas/PROJECT-README.md',
-    '.atlas/profiles/_examples/*.yaml',
-    '.atlas/hosts/**/*',
-    AGENTES,
-  ],
-  ['.atlas/agents/README.md'],
-);
+    ...patronesHost,
+  ])),
+  ...agentesActivos,
+];
 
 const nombresSkills = (await expandir(SKILLS)).map((ruta) => ruta.split('/').at(-2)).sort();
 const skills = await medirPatrones([SKILLS]);
 let descripciones = 0;
 for (const fila of skills) descripciones += frontmatter(fila.texto).length;
 
-const hostConfig = (await expandir('opencode.json')).length > 0 ? 'opencode.json' : '.atlas/hosts/opencode/opencode.json';
-const base = await medirPatrones(['AGENTS.md', 'CLAUDE.md', hostConfig]);
+const base = await medirPatrones(['AGENTS.md', 'CLAUDE.md', ...patronesHost]);
 const baseConSkills = [
   ...base,
   {
@@ -173,7 +195,7 @@ log('Coste de contexto del arnés (estimación estática)');
 log('Proxy: ~4 caracteres/token (en español puede llegar a ~3,5 → hasta +15%).');
 log('No incluye conversación ni tool outputs.');
 imprimir('Arranque mínimo del ritual (sin leer prompts de agente)', arranqueMinimo);
-imprimir('Arranque completo (si además lee los prompts: 5 core + 2 opcionales)', arranque);
+imprimir('Arranque completo (si además lee los prompts de agente activos)', arranque);
 const tokensBase = imprimir('Contexto base de sesión (siempre)', baseConSkills);
 
 const adaptadores = [
@@ -183,7 +205,7 @@ const adaptadores = [
 const fuenteAgentes = adaptadores.length > 0 ? 'adaptadores del host' : 'prompts canónicos';
 const agentes = adaptadores.length > 0
   ? await medirPatrones(['.opencode/agent/*.md', '.claude/agents/*.md'])
-  : await medirPatrones([AGENTES], ['.atlas/agents/README.md']);
+  : agentesActivos;
 log(`\n## Por agente (base + prompt + núcleo de skills) — fuente: ${fuenteAgentes}`);
 const porAgente = [];
 for (const agente of agentes.sort((a, b) => a.ruta.localeCompare(b.ruta))) {
@@ -207,7 +229,7 @@ const todasLasSkills = await medirPatrones(['.agents/skills/**/*.md']);
 const techo =
   tokensBase +
   Math.ceil(todasLasSkills.reduce((total, fila) => total + fila.caracteres, 0) / PROXY) +
-  Math.ceil(agentes.reduce((total, fila) => total + fila.caracteres, 0) / PROXY);
+  Math.ceil(agentesCanonicos.reduce((total, fila) => total + fila.caracteres, 0) / PROXY);
 log(`\n## Techo (todo el arnés cargado a la vez, incl. referencias on-demand)\n  ~${techo} tok`);
 
 const cota = (tokens) => Math.ceil(tokens * 1.15);

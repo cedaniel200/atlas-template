@@ -101,7 +101,7 @@ notes: |
 
 ## Añadir un perfil
 
-Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/README.md`.
+Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/README.md` (EN).
 
 - Créalo con `node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>`; el script parte de `_templates/profile.yaml`.
 - Solo comandos, rutas, nombres de herramientas y umbrales.
@@ -129,7 +129,7 @@ Nunca edites `engineer-<id>.md` a mano: se regenera.
 ## Añadir un adaptador de host
 
 1. Crear `.atlas/hosts/<host>/` con los archivos que el host necesita en la raíz del proyecto.
-2. Documentarlo en `.atlas/hosts/README.md`.
+2. Documentarlo en `.atlas/hosts/README.md` (EN).
 3. Actualizar `docs/harness/es/COMPATIBILITY.md` con la matriz y cualquier degradación.
 4. El bootstrap debe poder crear el adaptador sin destruir los de otras herramientas.
 
@@ -198,10 +198,12 @@ Qué mide (estimación **estática**, sin conversación ni tool outputs):
 | Grupo | Qué incluye |
 |---|---|
 | Base de sesión | AGENTS.md + descripciones de skills + config del host |
-| Arranque mínimo | BOOTSTRAP + AGENTS + PLACEHOLDERS + perfiles + host |
-| Arranque completo | lo anterior + los prompts de agente (5 core + 2 opcionales) |
+| Arranque mínimo | BOOTSTRAP + AGENTS + PLACEHOLDERS + config + README base + host activo |
+| Arranque completo | lo anterior + prompts de agente activos |
 | Por agente | base + prompt + **núcleo** (`SKILL.md`) de las skills que menciona |
 | Techo | todo el arnés cargado a la vez (**incluye** las referencias on-demand) |
+
+No se miden: READMEs de mantenimiento, `_templates`, `_examples` ni hosts no activos.
 
 **Cómo leerlo:** proxy `~4 caracteres/token` (en español hasta ~3,5 → +15%). Presupuesto orientativo:
 **base ≤ 4k**, **por agente ≤ 14k** (las 5 skills externas de OpenSpec son un coste fijo: no se optimizan sin forkearlas). Si crece, ataca primero el mayor contribuyente: skills largas →

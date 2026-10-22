@@ -276,9 +276,9 @@ placeholder sin resolver.
 | Guías del arnés | `docs/README.md` (índice) · `docs/harness/es/` · `docs/harness/en/` |
 | Contexto específico del proyecto | `docs/project-context.md` |
 | Portada de ATLAS | `docs/README.md` (el proyecto no tiene README raíz; el suyo se genera desde `.atlas/PROJECT-README.md`) |
-| Packs opcionales | `.atlas/packs/README.md` |
+| Packs opcionales | `.atlas/packs/README.md` (EN) |
 | Scripts del arnés | `.atlas/scripts/` |
-| Estado del proyecto | `.atlas/state.json` (`stacks`, `packs`, `readme`) |
+| Estado del proyecto | `.atlas/state.json` (`stacks`, `packs`, `optional_agents`, `readme`) |
 
 ---
 

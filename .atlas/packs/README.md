@@ -1,87 +1,86 @@
-# Packs opcionales
+# Optional packs
 
-Un pack agrupa **conocimiento procedimental** —skills y agentes— que no se puede expresar como un
-comando o una ruta. **No se descubre automáticamente**: vive fuera de `.agents/skills/` y `.atlas/agents/`,
-así que no consume contexto en sesiones donde no aplica.
+A pack groups **procedural knowledge** —skills and agents— that cannot be expressed as a command or a
+path. **It is not discovered automatically**: it lives outside `.agents/skills/` and `.atlas/agents/`,
+so it consumes no context in sessions where it does not apply.
 
-**No hay catálogo base.** Un pack existe solo si el proyecto lo crea con `crear-pack.mjs` a partir de
-`_templates/pack/`; el contenido lo aporta el proyecto. Se puede crear en cualquier momento.
+**There is no base catalog.** A pack exists only if the project creates it with `crear-pack.mjs` from
+`_templates/pack/`; the project provides the content. It can be created at any time.
 
-## Regla de admisión
+## Admission rule
 
-Antes de crear un pack, clasifica el conocimiento:
+Before creating a pack, classify the knowledge:
 
-| Tipo | Ejemplo | Dónde va |
+| Type | Example | Where it goes |
 |---|---|---|
-| **Workflow** (invariante entre stacks) | cómo se propone, se hace TDD, se revisa | **Núcleo** |
-| **Dato de configuración** | comando de test, puerto, rutas, umbral CRAP | **Perfil** (`.atlas/profiles/`) |
-| **Procedimiento tecnológico** | cómo medir CRAP en Gradle, patrones de test React, checklist MASVS | **Pack** |
+| **Workflow** (invariant across stacks) | how to propose, do TDD, review | **Core** |
+| **Configuration data** | test command, port, paths, CRAP threshold | **Profile** (`.atlas/profiles/`) |
+| **Technology procedure** | how to measure CRAP in Gradle, React testing patterns, MASVS checklist | **Pack** |
 
-> Si el "pack" solo contendría comandos y rutas, **no es un pack: es un perfil**.
+> If the "pack" would only contain commands and paths, **it is not a pack: it is a profile**.
 
-**Ejemplo:** `bootRun`, el puerto y `health` van en el perfil/stack; cómo probar un controller o
-proteger un endpoint va en un pack.
+**Example:** `bootRun`, the port and `health` go in the profile/stack; how to test a controller or
+protect an endpoint goes in a pack.
 
-**Un pack nunca es requisito** para que ATLAS funcione. Sin pack, el agente usa el perfil y el
-proceso del núcleo; con pack, gana profundidad.
+**A pack is never required** for ATLAS to work. Without a pack, the agent uses the profile and the core
+process; with a pack, it gains depth.
 
-## Estructura y manifiesto
+## Structure and manifest
 
 ```
 .atlas/packs/<pack>/
   pack.yaml
   README.md
-  skills/<nombre>/SKILL.md
-  agents/<rol>.md
-  docs/<plantilla>.md
+  skills/<name>/SKILL.md
+  agents/<role>.md
+  docs/<template>.md
 ```
 
 ```yaml
 # pack.yaml
 name: <id>
 version: 0.1.0
-description: <texto>
-requires: []          # perfiles o packs de los que depende
-skills: []            # ids de skills incluidas
-agents: []            # roles incluidos
+description: <text>
+requires: []          # profiles or packs it depends on
+skills: []            # skill ids included
+agents: []            # roles included
 notes: |
-  Ajustes o advertencias del pack.
+  Pack adjustments or warnings.
 ```
 
-- `requires` permite validar la coherencia (un pack de Java no se activa con un perfil de Python).
-- La versión del pack es independiente de la de ATLAS.
-- Cada skill conserva su `license` y se registra en `THIRD-PARTY-NOTICES.md`.
+- `requires` validates coherence (a Java pack is not activated with a Python profile).
+- The pack version is independent from the ATLAS version.
+- Each skill keeps its `license` and is registered in `THIRD-PARTY-NOTICES.md`.
 
-## Activación
+## Activation
 
-1. Cuando existan packs en `.atlas/packs/`, el bootstrap lee sus `pack.yaml` y propone los que encajan
-   con los perfiles de `state.stacks`.
-2. El usuario elige.
-3. El bootstrap copia el contenido a `.agents/skills/` y `.atlas/agents/`, registra el id en
-   `state.stacks[].packs` (y en la unión `state.packs`) y las skills en `AGENTS.md` § Skill Registry.
-   Solo los packs activos consumen contexto.
+1. When packs exist in `.atlas/packs/`, the bootstrap reads their `pack.yaml` and proposes the ones that
+   fit the `state.stacks` profiles.
+2. The user chooses.
+3. The bootstrap copies the content to `.agents/skills/` and `.atlas/agents/`, records the id in
+   `state.stacks[].packs` (and in the `state.packs` union) and the skills in `AGENTS.md` § Skill Registry.
+   Only active packs consume context.
 
-Desactivar un pack = quitar su id de `state.stacks[].packs` y `state.packs`, y borrar sus archivos
-copiados (o restaurarlos desde este directorio). En una actualización, **solo se actualizan los packs
-activados**.
+Deactivating a pack = remove its id from `state.stacks[].packs` and `state.packs`, and delete its copied
+files (or restore them from this directory). On update, **only active packs are updated**.
 
-## Crear un pack
+## Create a pack
 
 ```bash
-node .atlas/scripts/crear-pack.mjs --id <id> --description "<texto>"
+node .atlas/scripts/crear-pack.mjs --id <id> --description "<text>"
 ```
 
-Crea el esqueleto desde `_templates/pack/` (no sobrescribe sin `--force`). La plantilla usa
-`{{ID}}`/`{{DESCRIPTION}}`; el script los resuelve. Después:
+It creates the skeleton from `_templates/pack/` (it does not overwrite without `--force`). The template
+uses `{{ID}}`/`{{DESCRIPTION}}`; the script resolves them. Then:
 
-1. Añade skills en `skills/<nombre>/SKILL.md` y agentes en `agents/<rol>.md`, o deja el pack vacío
-   si aún no hay contenido.
-2. Actívalo en `state.stacks[].packs` y `state.packs`.
-3. Copia sus skills a `.agents/skills/` y regístralas en `AGENTS.md § Skill Registry`.
-4. Valida: `node .atlas/scripts/validar-contrato.mjs` (exige `pack.yaml` para cada pack activo).
+1. Add skills in `skills/<name>/SKILL.md` and agents in `agents/<role>.md`, or leave the pack empty if
+   there is no content yet.
+2. Activate it in `state.stacks[].packs` and `state.packs`.
+3. Copy its skills to `.agents/skills/` and register them in `AGENTS.md § Skill Registry`.
+4. Validate: `node .atlas/scripts/validar-contrato.mjs` (it requires `pack.yaml` for every active pack).
 
-## Lo que un pack NO es
+## What a pack is NOT
 
-- No es una copia del perfil (eso son datos).
-- No es una variante del núcleo (eso es duplicación).
-- No es obligatorio para ningún stack: si no existe, ATLAS sigue funcionando.
+- It is not a copy of the profile (that is data).
+- It is not a core variant (that is duplication).
+- It is not required for any stack: if it does not exist, ATLAS keeps working.

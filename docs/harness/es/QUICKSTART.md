@@ -124,5 +124,5 @@ Borra solo los IDs duplicados si quieres conservar skills propias. El proyecto a
 - Calidad y CRAP → [`QUALITY.md`](QUALITY.md)
 - Compatibilidad por herramienta → [`COMPATIBILITY.md`](COMPATIBILITY.md)
 - Glosario → [`GLOSSARY.md`](GLOSSARY.md)
-- Extender el arnés (skills/agentes/packs) → [`../../../.atlas/docs/es/extending.md`](../../../.atlas/docs/es/extending.md) · [`../../../.atlas/packs/README.md`](../../../.atlas/packs/README.md)
+- Extender el arnés (skills/agentes/packs) → [`../../../.atlas/docs/es/extending.md`](../../../.atlas/docs/es/extending.md) · [`../../../.atlas/packs/README.md` (EN)](../../../.atlas/packs/README.md)
 - README del proyecto → se genera desde `.atlas/PROJECT-README.md`; ATLAS no trae README raíz (la portada es `docs/README.md`).
