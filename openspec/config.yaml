@@ -1,35 +1,35 @@
 schema: spec-driven-with-adr
 
 context: |
-  Proyecto: {{PROJECT_NAME}}
-  Descripción: {{ONE_LINE_DESCRIPTION}}
+  Project: {{PROJECT_NAME}}
+  Description: {{ONE_LINE_DESCRIPTION}}
   Stack: {{STACK_SUMMARY}}
-  Dominio: {{DOMAIN_SUMMARY}}
-  Arquitectura: {{ARCHITECTURE_SUMMARY}}
-  Package base: {{PACKAGE_BASE}}
-  Idioma de la documentación: {{LANGUAGE_USER}}
+  Domain: {{DOMAIN_SUMMARY}}
+  Architecture: {{ARCHITECTURE_SUMMARY}}
+  Base package: {{PACKAGE_BASE}}
+  Documentation language: {{LANGUAGE_USER}}
 
-# IMPORTANTE: cada regla debe ser un string entre comillas.
-# Un ": " sin comillas convierte el ítem en un mapa y OpenSpec descarta TODA la regla
-# del artefacto ("must be an array of strings"). Validar con: openspec context
+# IMPORTANT: each rule must be a quoted string.
+# A ": " without quotes turns the item into a map and OpenSpec discards the WHOLE rule
+# of the artifact ("must be an array of strings"). Validate with: openspec context
 #
-# Las reglas son agnósticas de arquitectura: la postura concreta (capas, hexagonal,
-# DDD táctico, la que ya tenga el proyecto) se declara en AGENTS.md §Arquitectura y
-# el bootstrap puede ajustar estas reglas a ella.
+# Rules are architecture-agnostic: the concrete stance (layers, hexagonal, tactical DDD,
+# whatever the project already uses) is declared in AGENTS.md § Architecture and the
+# bootstrap may adjust these rules to it.
 rules:
   proposal:
-    - "Máximo 250 palabras"
-    - "Incluir una sección de capacidades mapeadas al dominio del negocio"
+    - "Maximum 250 words"
+    - "Include a capabilities section mapped to the business domain"
   specs:
-    - "Usar el lenguaje del dominio definido en AGENTS.md; no introducir sinónimos"
-    - "Escenarios GIVEN/WHEN/THEN en lenguaje de negocio, no técnico"
+    - "Use the domain language defined in AGENTS.md; do not introduce synonyms"
+    - "GIVEN/WHEN/THEN scenarios in business language, not technical"
   design:
-    - "Alinear con la arquitectura declarada en AGENTS.md"
-    - "Respetar las fronteras y la dirección de dependencias que declare el proyecto"
-    - "Incluir diagramas C4 en Mermaid cuando sea relevante (Context → Container → Component)"
+    - "Align with the architecture declared in AGENTS.md"
+    - "Respect the boundaries and dependency direction declared by the project"
+    - "Include C4 Mermaid diagrams when relevant (Context → Container → Component)"
   adr:
-    - "Registrar solo decisiones durables; no inventar ADRs para detalles tácticos"
-    - "Un ADR aceptado es inmutable: para cambiarlo se crea uno nuevo que lo supersede"
+    - "Record only durable decisions; do not invent ADRs for tactical details"
+    - "An accepted ADR is immutable: create a new one that supersedes it"
   tasks:
-    - "Desglosar por capas o módulos según la arquitectura declarada"
-    - "Cada tarea debe ser verificable de forma independiente"
+    - "Break down by layers or modules according to the declared architecture"
+    - "Each task must be independently verifiable"
