@@ -53,6 +53,9 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
   }
 
   const state = JSON.parse(await readFile(join(proyecto, '.template/state.json'), 'utf8'));
+  if (state.status !== 'configured') {
+    throw new Error(`${proyecto} no está configurado (state.status != configured); ejecuta el bootstrap primero`);
+  }
   const manifest = JSON.parse(await readFile(join(proyecto, '.template/manifest.json'), 'utf8'));
   const stateTemplate = JSON.parse(await readFile(join(template, '.template/state.json'), 'utf8'));
 
