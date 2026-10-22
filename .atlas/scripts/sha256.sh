@@ -5,7 +5,7 @@
 # Orden de herramientas: sha256sum (Linux/Git Bash) -> shasum -a 256 (macOS/Perl)
 #                       -> openssl (fallback POSIX).
 #
-# Uso: sh .template/scripts/sha256.sh <archivo>
+# Uso: sh .atlas/scripts/sha256.sh <archivo>
 set -eu
 
 if [ "$#" -ne 1 ]; then

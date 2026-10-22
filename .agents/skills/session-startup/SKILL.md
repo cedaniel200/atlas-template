@@ -12,8 +12,8 @@ license: MIT
 
 1. **Read `AGENTS.md`** — it is the entry point. If `## Commands`, `## Structure` or
    `## Do Not Touch` are missing, stop and ask to complete them.
-2. **Check the bootstrap state** — if `.template/state.json` exists and `status` is `pending`, run
-   `.template/BOOTSTRAP.md` before anything else.
+2. **Check the bootstrap state** — if `.atlas/state.json` exists and `status` is `pending`, run
+   `.atlas/BOOTSTRAP.md` before anything else.
 3. **Resolve the OpenSpec command preference** — read it from `AGENTS.md` (§ Preferences):
    - `user` or `agent`: no question.
    - `ask`: ask once at session start: *"Do I run the OpenSpec commands this session, or do you?"* and

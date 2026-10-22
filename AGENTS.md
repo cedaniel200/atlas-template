@@ -1,8 +1,8 @@
 # AGENTS.md — Contrato del proyecto
 
 > **Punto de entrada para cualquier agente.**
-> **Primera sesión:** si `.template/state.json` no existe o su `status` es `pending`, lee y ejecuta
-> `.template/BOOTSTRAP.md` **antes de cualquier otra acción**.
+> **Primera sesión:** si `.atlas/state.json` no existe o su `status` es `pending`, lee y ejecuta
+> `.atlas/BOOTSTRAP.md` **antes de cualquier otra acción**.
 > Si el usuario dice **"configura este proyecto"**, **"haz el setup inicial"** o cualquier equivalente,
 > esto es lo que debe ejecutar.
 >
@@ -126,13 +126,13 @@ Además:
 
 | Rol | Prompt canónico | Función |
 |---|---|---|
-| `analyst` | `.template/agents/analyst.md` | Análisis y planificación |
-| `engineer` | `.template/agents/engineer.md` | Implementación con TDD (single-stack; multi-stack genera `engineer-<stack>`) |
-| `reviewer` | `.template/agents/reviewer.md` | Revisión de código (solo lectura) |
-| `qa-analyst` | `.template/agents/qa-analyst.md` | Pruebas funcionales |
-| `doc-writer` | `.template/agents/doc-writer.md` | Documentación técnica y funcional |
+| `analyst` | `.atlas/agents/analyst.md` | Análisis y planificación |
+| `engineer` | `.atlas/agents/engineer.md` | Implementación con TDD (single-stack; multi-stack genera `engineer-<stack>`) |
+| `reviewer` | `.atlas/agents/reviewer.md` | Revisión de código (solo lectura) |
+| `qa-analyst` | `.atlas/agents/qa-analyst.md` | Pruebas funcionales |
+| `doc-writer` | `.atlas/agents/doc-writer.md` | Documentación técnica y funcional |
 
-Los adaptadores los genera `renderizar-adaptadores.mjs` desde `.template/agents/` + `AGENTS.md`.
+Los adaptadores los genera `renderizar-adaptadores.mjs` desde `.atlas/agents/` + `AGENTS.md`.
 Multi-stack: el `engineer` se renderiza por stack (`engineer-<stack>`). Codex no tiene subagentes:
 los roles se emulan con este archivo y el anuncio de rol.
 
@@ -150,7 +150,7 @@ explore → propose → apply → QA → review → cierre
          (proposal → specs → design → adr → tasks)
 ```
 
-> **Excepción — bootstrap:** la configuración inicial (`.template/BOOTSTRAP.md`) corre en su propia rama
+> **Excepción — bootstrap:** la configuración inicial (`.atlas/BOOTSTRAP.md`) corre en su propia rama
 > (`chore/bootstrap`), no en un worktree de cambio. Un commit por fase y el merge lo hace el usuario.
 >
 > **Multi-stack:** `state.stacks` es la fuente; el `engineer` se renderiza por stack y los `packs` se activan por stack.
@@ -225,21 +225,21 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 | `session-end` | `.agents/skills/session-end/` | Cierre de sesión |
 | `update-harness` | `.agents/skills/update-harness/` | Actualizar el template/arnés a una versión nueva (cualquier idioma) |
 
-Las skills de packs (`.template/packs/`) solo existen cuando el pack está activado.
+Las skills de packs (`.atlas/packs/`) solo existen cuando el pack está activado.
 
 ---
 
 ## Extending
 
-- Skills y agentes: [`.template/docs/es/extending.md`](.template/docs/es/extending.md).
-- Packs opcionales: [`.template/packs/README.md`](.template/packs/README.md).
+- Skills y agentes: [`.atlas/docs/es/extending.md`](.atlas/docs/es/extending.md).
+- Packs opcionales: [`.atlas/packs/README.md`](.atlas/packs/README.md).
 - Contexto específico del proyecto: [`docs/project-context.md`](docs/project-context.md).
 
 ## Placeholders
 
-Los prompts de `.template/agents/` usan **placeholders de proyecto**; esta tabla les da el valor.
+Los prompts de `.atlas/agents/` usan **placeholders de proyecto**; esta tabla les da el valor.
 El contrato completo —lista cerrada, capa de perfil y de proyecto, y los tres estados— está en
-[`.template/PLACEHOLDERS.md`](.template/PLACEHOLDERS.md). **Un placeholder que no esté en el contrato
+[`.atlas/PLACEHOLDERS.md`](.atlas/PLACEHOLDERS.md). **Un placeholder que no esté en el contrato
 no existe y no puede usarse.**
 
 | Placeholder | Valor |
@@ -276,10 +276,10 @@ placeholder sin resolver.
 | Reportes de revisión | `openspec/changes/<cambio>/reviewer-report-*.md` |
 | Guías del arnés | `docs/README.md` (índice) · `docs/harness/es/` · `docs/harness/en/` |
 | Contexto específico del proyecto | `docs/project-context.md` |
-| Portada del template | `docs/README.md` (el proyecto no tiene README raíz; el suyo se genera desde `.template/PROJECT-README.md`) |
-| Packs opcionales | `.template/packs/README.md` |
-| Scripts del arnés | `.template/scripts/` |
-| Estado del proyecto | `.template/state.json` (`stacks`, `packs`, `readme`) |
+| Portada de ATLAS | `docs/README.md` (el proyecto no tiene README raíz; el suyo se genera desde `.atlas/PROJECT-README.md`) |
+| Packs opcionales | `.atlas/packs/README.md` |
+| Scripts del arnés | `.atlas/scripts/` |
+| Estado del proyecto | `.atlas/state.json` (`stacks`, `packs`, `readme`) |
 
 ---
 

@@ -1,7 +1,7 @@
 # Harness documentation (internal)
 
-> This folder is for **maintainers and contributors** of the template, not for projects that adopt it.
-> If you only use the harness, you can remove `.template/docs/` (the bootstrap asks).
+> This folder is for **maintainers and contributors** of ATLAS, not for projects that adopt it.
+> If you only use the harness, you can remove `.atlas/docs/` (the bootstrap asks).
 
 ---
 
@@ -23,16 +23,16 @@ It is **agnostic** of:
 
 | Path | What it is | Ownership |
 |---|---|---|
-| `.template/agents/` | Canonical role prompts, no host frontmatter | managed |
+| `.atlas/agents/` | Canonical role prompts, no host frontmatter | managed |
 | `.agents/skills/` | Portable procedures loaded on demand | managed |
 | `openspec/schemas/spec-driven-with-adr/` | Vendored OpenSpec schema | managed |
-| `.template/hosts/<host>/` | Host adapter templates | managed |
-| `.template/profiles/` | Stack data: commands, paths, quality | managed |
-| `.template/packs/` | Optional procedural knowledge | managed |
-| `.template/state.json` | Bootstrap inputs and status | owned after setup |
-| `.template/manifest.json` | Generated files, hashes and ownership | generated |
+| `.atlas/hosts/<host>/` | Host adapter templates | managed |
+| `.atlas/profiles/` | Stack data: commands, paths, quality | managed |
+| `.atlas/packs/` | Optional procedural knowledge | managed |
+| `.atlas/state.json` | Bootstrap inputs and status | owned after setup |
+| `.atlas/manifest.json` | Generated files, hashes and ownership | generated |
 | `AGENTS.md` | Project contract: architecture, commands, limits | owned |
-| `.template/BOOTSTRAP.md` | First-session ritual | managed |
+| `.atlas/BOOTSTRAP.md` | First-session ritual | managed |
 | `docs/` | Documentation (harness, usage, project) | mixed |
 
 ---
@@ -40,7 +40,7 @@ It is **agnostic** of:
 ## How it works
 
 ```text
-.template/BOOTSTRAP.md
+.atlas/BOOTSTRAP.md
   ├── detects the host and creates its adapter
   ├── interrogates the user (language, stack, quality, architecture, limits)
   ├── fills AGENTS.md + openspec/config.yaml + docs

@@ -11,7 +11,7 @@ Skills are reusable procedures the agent loads when a task matches their descrip
 `.agents/skills/` is read natively by OpenCode and Codex. Claude Code reads `.claude/skills/`, which the
 bootstrap links to this directory.
 
-Optional packs live in `.template/packs/` and are copied here only when activated.
+Optional packs live in `.atlas/packs/` and are copied here only when activated.
 
 ## Frontmatter
 

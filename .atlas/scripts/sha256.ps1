@@ -5,10 +5,10 @@
 
 .DESCRIPTION
     Contrato: imprime SOLO el hash (64 hex, minúsculas), sin nombre de archivo.
-    Equivalente a .template/scripts/sha256.sh.
+    Equivalente a .atlas/scripts/sha256.sh.
 
 .EXAMPLE
-    powershell -NoProfile -File .template/scripts/sha256.ps1 .template/BOOTSTRAP.md
+    powershell -NoProfile -File .atlas/scripts/sha256.ps1 .atlas/BOOTSTRAP.md
 #>
 [CmdletBinding()]
 param(

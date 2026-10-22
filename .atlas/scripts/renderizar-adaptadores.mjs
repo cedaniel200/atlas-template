@@ -4,7 +4,7 @@
 //
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
 //
-// Canónico vs renderizado: `.template/agents/<rol>.md` conserva `{{...}}`;
+// Canónico vs renderizado: `.atlas/agents/<rol>.md` conserva `{{...}}`;
 // el adaptador generado (`.opencode/agent` / `.claude/agents`) se escribe con
 // los valores de AGENTS.md § Placeholders. Así el agente no tiene que resolver
 // placeholders en su propio prompt.
@@ -19,7 +19,7 @@
 // uno por uno). La marca no llega al adaptador.
 //
 // Uso:
-//   node .template/scripts/renderizar-adaptadores.mjs [--host opencode|claude] [--template <dir>] [--dry-run]
+//   node .atlas/scripts/renderizar-adaptadores.mjs [--host opencode|claude] [--template <dir>] [--dry-run]
 
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -55,7 +55,7 @@ export async function renderizarAdaptadores({
   dryRun = false,
   log = console.log,
 } = {}) {
-  const state = JSON.parse(await readFile(join(proyecto, '.template/state.json'), 'utf8'));
+  const state = JSON.parse(await readFile(join(proyecto, '.atlas/state.json'), 'utf8'));
   const hostElegido = host ?? state.host;
   if (!['opencode', 'claude'].includes(hostElegido)) {
     throw new Error(`host no soportado: ${hostElegido} (usa opencode o claude)`);
@@ -75,7 +75,7 @@ export async function renderizarAdaptadores({
 
   const stacks = Array.isArray(state.stacks) ? state.stacks : [];
   const agentesOpcionales = new Set(Array.isArray(state.optional_agents) ? state.optional_agents : []);
-  const directorioAgentes = join(template, '.template/agents');
+  const directorioAgentes = join(template, '.atlas/agents');
   const destino = hostElegido === 'opencode' ? join(proyecto, '.opencode/agent') : join(proyecto, '.claude/agents');
   if (!dryRun) await mkdir(destino, { recursive: true });
 

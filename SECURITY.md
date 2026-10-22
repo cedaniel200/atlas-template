@@ -1,6 +1,6 @@
 # Seguridad, confidencialidad y responsabilidad
 
-> Este documento describe **qué hace y qué no hace** este template con tus datos.
+> Este documento describe **qué hace y qué no hace** ATLAS con tus datos.
 > No es asesoría legal. Para uso comercial, revisa la licencia (`LICENSE`) y consulta a un profesional.
 
 ## Qué incluye el repositorio
@@ -28,7 +28,7 @@ Además, el template **sugiere** (nunca activa por sí solo) herramientas que sa
 - El template **no recopila telemetría** ni envía datos a su autor.
 - Las integraciones opcionales se configuran **por proyecto y por herramienta**; su política de datos
   es la del proveedor correspondiente.
-- Los archivos en `.template/adapters/` y `.template/backups/` son **estado local**: no se versionan,
+- Los archivos en `.atlas/adapters/` y `.atlas/backups/` son **estado local**: no se versionan,
   pero tampoco son una copia de seguridad.
 
 ## Sin garantía

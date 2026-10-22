@@ -1,7 +1,7 @@
 # Packs opcionales
 
 Un pack agrupa **conocimiento procedimental** —skills y agentes— que no se puede expresar como un
-comando o una ruta. **No se descubre automáticamente**: vive fuera de `.agents/skills/` y `.template/agents/`,
+comando o una ruta. **No se descubre automáticamente**: vive fuera de `.agents/skills/` y `.atlas/agents/`,
 así que no consume contexto en sesiones donde no aplica.
 
 ## Regla de admisión
@@ -11,18 +11,18 @@ Antes de crear un pack, clasifica el conocimiento:
 | Tipo | Ejemplo | Dónde va |
 |---|---|---|
 | **Workflow** (invariante entre stacks) | cómo se propone, se hace TDD, se revisa | **Núcleo** |
-| **Dato de configuración** | comando de test, puerto, rutas, umbral CRAP | **Perfil** (`.template/profiles/`) |
+| **Dato de configuración** | comando de test, puerto, rutas, umbral CRAP | **Perfil** (`.atlas/profiles/`) |
 | **Procedimiento tecnológico** | cómo medir CRAP en Gradle, patrones de test React, checklist MASVS | **Pack** |
 
 > Si el "pack" solo contendría comandos y rutas, **no es un pack: es un perfil**.
 
-**Un pack nunca es requisito** para que el template funcione. Sin pack, el agente usa el perfil y el
+**Un pack nunca es requisito** para que ATLAS funcione. Sin pack, el agente usa el perfil y el
 proceso del núcleo; con pack, gana profundidad.
 
 ## Estructura y manifiesto
 
 ```
-.template/packs/<pack>/
+.atlas/packs/<pack>/
   pack.yaml
   README.md
   skills/<nombre>/SKILL.md
@@ -43,14 +43,14 @@ license: MIT
 ```
 
 - `requires` permite validar la coherencia (un pack de Java no se activa con perfil de Python).
-- La versión del pack es independiente de la del template.
+- La versión del pack es independiente de la de ATLAS.
 - Cada skill conserva su `license` y se registra en `THIRD-PARTY-NOTICES.md`.
 
 ## Activación
 
 1. El bootstrap lee los `pack.yaml` y propone los que encajan con los perfiles de `state.stacks`.
 2. El usuario elige.
-3. El bootstrap copia el contenido a `.agents/skills/` y `.template/agents/`, registra `{name, version}` en
+3. El bootstrap copia el contenido a `.agents/skills/` y `.atlas/agents/`, registra `{name, version}` en
    `state.stacks[].packs` (y en la unión `state.packs`) y las skills en `AGENTS.md` § Skill Registry.
    Solo los packs activos consumen contexto.
 
@@ -74,4 +74,4 @@ Se incorporan de forma incremental; el mecanismo de activación está disponible
 
 - No es una copia del perfil (eso son datos).
 - No es una variante del núcleo (eso es duplicación).
-- No es obligatorio para ningún stack: si no existe, el template sigue funcionando.
+- No es obligatorio para ningún stack: si no existe, ATLAS sigue funcionando.

@@ -1,7 +1,7 @@
 # Documentación del arnés (interna)
 
-> Esta carpeta es para **mantenedores y contribuidores** del template, no para los proyectos que lo usan.
-> Si solo usas el arnés, puedes eliminar `.template/docs/` (el bootstrap lo pregunta).
+> Esta carpeta es para **mantenedores y contribuidores** de ATLAS, no para los proyectos que lo usan.
+> Si solo usas el arnés, puedes eliminar `.atlas/docs/` (el bootstrap lo pregunta).
 
 ---
 
@@ -23,16 +23,16 @@ Es **agnóstico** de:
 
 | Ruta | Qué es | Propiedad |
 |---|---|---|
-| `.template/agents/` | Prompts canónicos de rol, sin frontmatter de host | managed |
+| `.atlas/agents/` | Prompts canónicos de rol, sin frontmatter de host | managed |
 | `.agents/skills/` | Procedimientos portables bajo demanda | managed |
 | `openspec/schemas/spec-driven-with-adr/` | Schema de OpenSpec vendorizado | managed |
-| `.template/hosts/<host>/` | Plantillas de adaptador por herramienta | managed |
-| `.template/profiles/` | Datos de stack: comandos, rutas, calidad | managed |
-| `.template/packs/` | Conocimiento procedimental opcional | managed |
-| `.template/state.json` | Entradas del bootstrap y estado | owned tras configurar |
-| `.template/manifest.json` | Archivos generados, hashes y propiedad | generated |
+| `.atlas/hosts/<host>/` | Plantillas de adaptador por herramienta | managed |
+| `.atlas/profiles/` | Datos de stack: comandos, rutas, calidad | managed |
+| `.atlas/packs/` | Conocimiento procedimental opcional | managed |
+| `.atlas/state.json` | Entradas del bootstrap y estado | owned tras configurar |
+| `.atlas/manifest.json` | Archivos generados, hashes y propiedad | generated |
 | `AGENTS.md` | Contrato del proyecto: arquitectura, comandos, límites | owned |
-| `.template/BOOTSTRAP.md` | Ritual de primera sesión | managed |
+| `.atlas/BOOTSTRAP.md` | Ritual de primera sesión | managed |
 | `docs/` | Documentación (arnés, uso, proyecto) | mixta |
 
 ---
@@ -40,7 +40,7 @@ Es **agnóstico** de:
 ## Cómo funciona
 
 ```text
-.template/BOOTSTRAP.md
+.atlas/BOOTSTRAP.md
   ├── detecta el host y crea su adaptador
   ├── interroga al usuario (idioma, stack, calidad, arquitectura, límites)
   ├── rellena AGENTS.md + openspec/config.yaml + docs

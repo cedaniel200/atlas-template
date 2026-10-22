@@ -1,6 +1,6 @@
 # QUICKSTART — new project
 
-> For projects starting from scratch. If you already have code, use [`ADOPTION.md`](ADOPTION.md).
+> For projects starting from scratch with **ATLAS**. If you already have code, use [`ADOPTION.md`](ADOPTION.md).
 
 ---
 
@@ -14,17 +14,17 @@
 
 ---
 
-## 1. Copy the template
+## 1. Create the project from ATLAS
 
 ```bash
-npx degit <user>/<repo> my-project
+npx degit <user>/atlas-template my-project
 cd my-project
 rm -rf .git && git init
 ```
 
-If you cloned instead of using `degit`, remove the template history and start a new one.
+If you cloned instead of using `degit`, remove ATLAS history and start a new one.
 
-> The project `README.md` is generated from `.template/PROJECT-README.md`; the template has no root README.
+> The project `README.md` is generated from `.atlas/PROJECT-README.md`; ATLAS has no root README.
 
 ---
 
@@ -34,11 +34,11 @@ Open the project and say:
 
 > **“Set up this project”**
 
-The agent reads `AGENTS.md`, sees `.template/state.json` is `pending`, and runs `.template/BOOTSTRAP.md`.
+The agent reads `AGENTS.md`, sees `.atlas/state.json` is `pending`, and runs `.atlas/BOOTSTRAP.md`.
 
 | Host | What happens |
 |---|---|
-| **OpenCode** | Creates `opencode.json` from `.template/hosts/opencode/` and generates command wrappers |
+| **OpenCode** | Creates `opencode.json` from `.atlas/hosts/opencode/` and generates command wrappers |
 | **Claude Code** | Creates `.claude/agents/` and the `.claude/skills` symlink; `CLAUDE.md` already points to `AGENTS.md` |
 | **Codex** | Reads `AGENTS.md` and `.agents/skills/` natively; there are no subagents |
 
@@ -120,5 +120,5 @@ Delete only the duplicate IDs if you want to keep your own skills. The project o
 - Quality and CRAP → [`QUALITY.md`](QUALITY.md)
 - Host compatibility → [`COMPATIBILITY.md`](COMPATIBILITY.md)
 - Glossary → [`GLOSSARY.md`](GLOSSARY.md)
-- Extend the harness (skills/agents/packs) → [`../../../.template/docs/en/extending.md`](../../../.template/docs/en/extending.md) · [`../../../.template/packs/README.md`](../../../.template/packs/README.md)
-- Project README → generated from `.template/PROJECT-README.md`; the template has no root README (the landing is `docs/README.md`).
+- Extend the harness (skills/agents/packs) → [`../../../.atlas/docs/en/extending.md`](../../../.atlas/docs/en/extending.md) · [`../../../.atlas/packs/README.md`](../../../.atlas/packs/README.md)
+- Project README → generated from `.atlas/PROJECT-README.md`; ATLAS has no root README (the landing is `docs/README.md`).

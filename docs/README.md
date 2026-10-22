@@ -1,13 +1,16 @@
-# Template — OpenSpec + Agentes
+# ATLAS — OpenSpec + Agentes
 
-> Plantilla **autocontenida** para proyectos con OpenSpec y agentes especializados.
+> **ATLAS** (*Agnostic Template for LLM Agent Systems*) es una plantilla **autocontenida** para proyectos con OpenSpec y agentes especializados.
 > Agnóstica de dominio, de arquitectura y de herramienta anfitriona (OpenCode, Claude Code, Codex).
 >
 > **Idioma:** Español · [English](harness/en/QUICKSTART.md)
+>
+> **Nombre:** ATLAS es el producto. “Template/plantilla” se mantiene como sustantivo común para el
+> andamio y para las claves `template_version` / `template_source` y el flag `--template`.
 
 ---
 
-## Flujo del template
+## Flujo de ATLAS
 
 ```text
 Humano + analyst — explore → propose (proposal, design, specs, ADR, tasks)
@@ -45,7 +48,7 @@ Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el hum
 
 ## Empieza aquí
 
-### 1. Crea el proyecto desde el template
+### 1. Crea el proyecto desde ATLAS
 
 - **GitHub:** usa **Use this template** (recomendado).
 - **Manual:** descarga o clona este repositorio y coloca su contenido en la **raíz del proyecto**
@@ -57,10 +60,10 @@ Abre el proyecto con tu herramienta y di:
 
 > **“Configura este proyecto”**
 
-El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` está `pending` y ejecuta
-[`../.template/BOOTSTRAP.md`](../.template/BOOTSTRAP.md).
+El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `pending` y ejecuta
+[`../.atlas/BOOTSTRAP.md`](../.atlas/BOOTSTRAP.md).
 
-> El `README.md` del proyecto se genera desde `.template/PROJECT-README.md`; este `docs/README.md` es la portada del template (no hay README raíz por decisión).
+> El `README.md` del proyecto se genera desde `.atlas/PROJECT-README.md`; este `docs/README.md` es la portada de ATLAS (no hay README raíz por decisión).
 
 ### 3. Elige tu guía
 
@@ -72,7 +75,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 | Quieres configurar MCP o memoria | [`docs/harness/es/TOOLS.md`](harness/es/TOOLS.md) |
 | Te interesan los gates y CRAP | [`docs/harness/es/QUALITY.md`](harness/es/QUALITY.md) |
 | No entiendes un término | [`docs/harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
-| Extender el arnés (skills/agentes/packs) | [`.template/docs/es/extending.md`](../.template/docs/es/extending.md) · [`.template/packs/README.md`](../.template/packs/README.md) |
+| Extender el arnés (skills/agentes/packs) | [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md) · [`.atlas/packs/README.md`](../.atlas/packs/README.md) |
 
 ---
 
@@ -80,8 +83,8 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 
 | Capa | Dónde | Para quién |
 |---|---|---|
-| **Arnés interno** | [`.template/docs/es/`](../.template/docs/es/README.md) | Quien mantiene o extiende el template |
-| **Uso** | [`docs/harness/es/`](harness/es/QUICKSTART.md) | Quien adopta el template en su proyecto |
+| **Arnés interno** | [`.atlas/docs/es/`](../.atlas/docs/es/README.md) | Quien mantiene o extiende ATLAS |
+| **Uso** | [`docs/harness/es/`](harness/es/QUICKSTART.md) | Quien adopta ATLAS en su proyecto |
 | **Proyecto** | `docs/architecture/`, `docs/api/`, `docs/functional/`, `docs/guides/` | El equipo del proyecto |
 | **Contexto del proyecto** | `docs/project-context.md` | El equipo del proyecto |
 
@@ -92,11 +95,11 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 | Componente | Detalle |
 |---|---|
 | **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
-| **Agentes** | `analyst`, `engineer` (single-stack; multi-stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.template/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
-| **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.template/packs/` |
-| **Ritual** | [`../.template/BOOTSTRAP.md`](../.template/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
+| **Agentes** | `analyst`, `engineer` (single-stack; multi-stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.atlas/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
+| **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.atlas/packs/` |
+| **Ritual** | [`../.atlas/BOOTSTRAP.md`](../.atlas/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
 | **Compatibilidad** | [`harness/es/COMPATIBILITY.md`](harness/es/COMPATIBILITY.md): matriz por host |
-| **Estado** | [`.template/`](../.template/README.md): hosts, perfiles, packs, `state.stacks`, manifiesto y estado |
+| **Estado** | [`.atlas/`](../.atlas/README.md): hosts, perfiles, packs, `state.stacks`, manifiesto y estado |
 | **Contexto del proyecto** | [`docs/project-context.md`](project-context.md): capa propia que complementa `AGENTS.md` |
 
 ---
@@ -109,7 +112,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 ├── CLAUDE.md            # stub para Claude Code
 ├── .agents/
 │   └── skills/          # 17 skills core portables
-├── .template/
+├── .atlas/
 │   ├── BOOTSTRAP.md     # ritual de primera sesión
 │   ├── PLACEHOLDERS.md  # contrato de placeholders (perfil/proyecto, N/A)
 │   ├── PROJECT-README.md # plantilla del README del proyecto
@@ -117,9 +120,9 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
 │   ├── scripts/         # sha256 + validadores + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
-│   └── state.json (stacks, packs) manifest.json
+│   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/
-│   ├── README.md        # este índice (portada del template)
+│   ├── README.md        # este índice (portada de ATLAS)
 │   ├── project-context.md # contexto propio del proyecto
 │   ├── harness/es|en/   # guías de uso + COMPATIBILITY
 │   ├── architecture/ api/ functional/ guides/   # documentación del proyecto

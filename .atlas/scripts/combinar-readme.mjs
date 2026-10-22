@@ -5,7 +5,7 @@
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
 //
 // Uso:
-//   node .template/scripts/combinar-readme.mjs [--proyecto .] [--plantilla .template/PROJECT-README.md] [--apply]
+//   node .atlas/scripts/combinar-readme.mjs [--proyecto .] [--plantilla .atlas/PROJECT-README.md] [--apply]
 //
 // Sin `--apply` es un dry-run: muestra las secciones que añadiría.
 // Con `--apply`, añade solo las secciones `##` cuyo título no exista ya en el
@@ -21,7 +21,7 @@ const valor = (flag) => {
   return indice === -1 ? undefined : args[indice + 1];
 };
 const proyecto = valor('--proyecto') ?? '.';
-const plantilla = valor('--plantilla') ?? join(proyecto, '.template/PROJECT-README.md');
+const plantilla = valor('--plantilla') ?? join(proyecto, '.atlas/PROJECT-README.md');
 const aplicar = args.includes('--apply');
 
 const existe = async (ruta) => {

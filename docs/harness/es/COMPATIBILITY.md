@@ -14,7 +14,7 @@
 | Skills | `.agents/skills/` (+ `.opencode/`, `.claude/`) | `.claude/skills/` | `.agents/skills/` | Canónico `.agents/skills/`; Claude por symlink |
 | Invocación de skill | Automática; `/nombre` si `metadata.opencode/slash` | Automática | `$nombre` o `/skills` | El cuerpo no depende de sintaxis de comando |
 | Comandos OpenSpec | `.opencode/commands/opsx-*` | `.claude/commands/opsx/*` | `.codex/prompts/*` | **Generados por `openspec update --tools <host>`** |
-| Subagentes | `.opencode/agent/*.md` | `.claude/agents/*.md` | **No existen** | Prompts canónicos en `.template/agents/`; adaptador por host; multi-stack: `engineer-<stack>` por stack |
+| Subagentes | `.opencode/agent/*.md` | `.claude/agents/*.md` | **No existen** | Prompts canónicos en `.atlas/agents/`; adaptador por host; multi-stack: `engineer-<stack>` por stack |
 | Roles en Codex | — | — | Un solo agente | Se emulan con `AGENTS.md` y el anuncio de rol |
 | Hooks de agente | Plugins | Hooks nativos | No disponibles | **El flujo núcleo no depende de hooks** |
 | Git hooks | `core.hooksPath` | `core.hooksPath` | `core.hooksPath` | **Tool‑agnósticos**: gitleaks funciona en los tres |
@@ -28,7 +28,7 @@
 
 ## Generación de adaptadores
 
-Los prompts de `.template/agents/<rol>.md` son la fuente canónica, **sin frontmatter de herramienta**.
+Los prompts de `.atlas/agents/<rol>.md` son la fuente canónica, **sin frontmatter de herramienta**.
 
 | Host | Adaptador | Frontmatter mínimo |
 |---|---|---|
@@ -49,10 +49,10 @@ Los comandos `opsx-*` **no** se mantienen a mano: `openspec update --tools <host
 | C‑1 | Codex no tiene subagentes | No hay `engineer`/`qa-analyst` como agentes separados; los opcionales tampoco se pueden instalar | `AGENTS.md` define el protocolo de roles; el anuncio de rol sigue vigente |
 | C‑2 | `disable-model-invocation` no está en la especificación Agent Skills | Algunos hosts pueden autoinvocar una skill que debería ser manual | Se documenta; si un pack la usa, se marca como dependiente del host |
 | C‑3 | Symlinks en Windows requieren modo desarrollador | `.claude/skills` roto en Windows | Copia estática + re-ejecutar el bootstrap al añadir skills |
-| C‑4 | `openspec init` puede reescribir `AGENTS.md` y escribir skills en `.opencode/skills` (ruta nativa de OpenCode, con prioridad sobre `.agents/skills`) | Pérdida del contrato / skills canónicas sombreadas por ID | Backup + `diff` + fusión manual. Si hay IDs duplicados, el proyecto elige: conservar la copia del CLI (sombreado) o eliminar solo esos IDs (canónico). Tradeoff asumido (`.template/BOOTSTRAP.md` § 0.4) |
+| C‑4 | `openspec init` puede reescribir `AGENTS.md` y escribir skills en `.opencode/skills` (ruta nativa de OpenCode, con prioridad sobre `.agents/skills`) | Pérdida del contrato / skills canónicas sombreadas por ID | Backup + `diff` + fusión manual. Si hay IDs duplicados, el proyecto elige: conservar la copia del CLI (sombreado) o eliminar solo esos IDs (canónico). Tradeoff asumido (`.atlas/BOOTSTRAP.md` § 0.4) |
 | C‑5 | Los wrappers de comandos dependen de la versión de OpenSpec | Wrappers obsoletos tras un upgrade | Regenerar con `openspec update --tools <host>` |
 | C‑6 | Claude Code y Codex cargan `AGENTS.md` anidados de forma distinta | Reglas de subdirectorio no uniformes | Núcleo solo en la raíz; anidar se documenta por proyecto |
-| C‑7 | MCP no es portable | Cada host tiene su formato | `.env.example` generado por el bootstrap + bloque por host en `.template/hosts/` |
+| C‑7 | MCP no es portable | Cada host tiene su formato | `.env.example` generado por el bootstrap + bloque por host en `.atlas/hosts/` |
 | C‑8 | Hooks de ciclo de vida del agente no existen en Codex | Automatizaciones que dependen de ellos no funcionan | Los hooks de agente son opcionales; el flujo vive en skills e instrucciones |
 | C‑9 | Dos fuentes de instrucciones (`CLAUDE.md` y `AGENTS.md`) | Reglas contradictorias | `CLAUDE.md` contiene **solo** `@AGENTS.md`; nunca duplicar |
 
@@ -92,9 +92,9 @@ El ritual usa comandos **POSIX** (`sh`, `grep`, `diff`, `mkdir`). En Windows se 
 
 | Entorno | Shell | Helper de hash del manifiesto |
 |---|---|---|
-| macOS / Linux | POSIX (`sh`) | `.template/scripts/sha256.sh` |
-| Windows + Git Bash / WSL | POSIX | `.template/scripts/sha256.sh` |
-| Windows nativo | PowerShell 5.1+ | `.template/scripts/sha256.ps1` |
+| macOS / Linux | POSIX (`sh`) | `.atlas/scripts/sha256.sh` |
+| Windows + Git Bash / WSL | POSIX | `.atlas/scripts/sha256.sh` |
+| Windows nativo | PowerShell 5.1+ | `.atlas/scripts/sha256.ps1` |
 
 - **No** usar `certutil` ni `Get-FileHash` directamente: emiten **mayúsculas** y otro formato
   (`certutil` además con cabecera y pie) → el manifiesto queda incomparable y la actualización

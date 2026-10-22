@@ -8,7 +8,7 @@
 
 1. **Árbol limpio**: `git status --porcelain` debe estar vacío.
 2. **Rama propia**: crea `chore/bootstrap` (o un worktree `.worktrees/bootstrap`). **No se ejecuta sobre `main`.**
-3. **Backup**: el ritual copia a `.template/backups/<timestamp>/` antes de fusionar.
+3. **Backup**: el ritual copia a `.atlas/backups/<timestamp>/` antes de fusionar.
 
 ---
 
@@ -22,8 +22,8 @@ Copia del template solo lo que falte:
 | `docs/project-context.md` | Crear desde la base; migrar el contenido propio del `AGENTS.md` existente |
 | `openspec/config.yaml` | Fusionar `context:` y `rules:` |
 | `openspec/specs/`, `adr/` | Conservar los del proyecto |
-| `.agents/skills/`, `.template/agents/` | Conservar las propias; añadir las del template con prefijo o como pack |
-| `README.md` | **Conservar**; el bootstrap pregunta si añadir las secciones que falten de `.template/PROJECT-README.md` |
+| `.agents/skills/`, `.atlas/agents/` | Conservar las propias; añadir las del template con prefijo o como pack |
+| `README.md` | **Conservar**; el bootstrap pregunta si añadir las secciones que falten de `.atlas/PROJECT-README.md` |
 | `docs/README.md` | Fusionar: conservar el índice del proyecto y enlazar las secciones del arnés |
 | Adaptadores (`.opencode/`, `.claude/`) | Preservar; adaptar solo lo que colisione |
 
@@ -51,7 +51,7 @@ El bootstrap detecta **brownfield** y hace inventario antes de tocar nada.
 | Agentes y skills propios | Qué se conserva y qué se adapta |
 | `.env`, secretos | Solo nombres; **nunca valores** |
 
-El resultado se escribe en `.template/adoption-report.md` (y se resume en `docs/template-adoption.md` si el proyecto lo usa):
+El resultado se escribe en `.atlas/adoption-report.md`:
 
 ```markdown
 # Adopción del arnés
@@ -68,8 +68,8 @@ El resultado se escribe en `.template/adoption-report.md` (y se resume en `docs/
 ## 3.1 Inventario automatizado (opcional)
 
 ```bash
-node .template/scripts/inventariar-adopcion.mjs --template <ruta-template-pristino>
-node .template/scripts/adoptar-agents.mjs --template <ruta-template-pristino> --apply
+node .atlas/scripts/inventariar-adopcion.mjs --template <ruta-template-pristino>
+node .atlas/scripts/adoptar-agents.mjs --template <ruta-template-pristino> --apply
 ```
 
 El segundo hace backup del `AGENTS.md` existente, copia la base del template y mueve el contenido
@@ -78,7 +78,7 @@ anterior a `docs/project-context.md`. Después el bootstrap rellena los placehol
 - `state.stacks` (multi-stack) y `state.packs` se conservan; el `README` se genera/conserva según la política.
 
 Clasifica cada archivo del template en `nuevo` / `igual` / `distinto`, copia los `distinto` a
-`.template/backups/adopcion-<timestamp>/` y escribe `.template/adoption-report.md` con la tabla.
+`.atlas/backups/adopcion-<timestamp>/` y escribe `.atlas/adoption-report.md` con la tabla.
 El agente decide la política de conflicto; el script **no fusiona**.
 
 ## 4. Política de conflicto
@@ -129,7 +129,7 @@ explore → propose → apply → QA → review → cierre.
 | Qué | Cómo |
 |---|---|
 | Una fase completa | `git revert <commit>` |
-| Un archivo fusionado | Restaurar desde `.template/backups/<timestamp>/` |
+| Un archivo fusionado | Restaurar desde `.atlas/backups/<timestamp>/` |
 | Todo el bootstrap | `git revert` de los commits de `chore/bootstrap` |
 
 ---

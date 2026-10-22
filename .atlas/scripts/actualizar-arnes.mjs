@@ -3,7 +3,7 @@
 //
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
 //
-// Reglas de propiedad (`.template/docs/es/updating.md`):
+// Reglas de propiedad (`.atlas/docs/es/updating.md`):
 //   owned     -> nunca se sobrescribe
 //   generated -> se regenera desde el template
 //   managed   -> se reemplaza solo si el hash coincide; si no, se escribe <archivo>.new
@@ -13,7 +13,7 @@
 // conflictos.
 //
 // Uso:
-//   node .template/scripts/actualizar-arnes.mjs --template /ruta/template-nuevo [--dry-run]
+//   node .atlas/scripts/actualizar-arnes.mjs --template /ruta/template-nuevo [--dry-run]
 
 import { copyFile, mkdir, readFile, writeFile, access } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -45,19 +45,19 @@ async function copiarConBackup(rel, proyecto, origen, backup, dryRun) {
 
 export async function actualizarArnes({ template, proyecto = '.', dryRun = false, log = console.log } = {}) {
   if (!template) throw new Error('falta --template <ruta del template nuevo>');
-  if (!(await existe(join(proyecto, '.template/state.json'))) || !(await existe(join(proyecto, '.template/manifest.json')))) {
-    throw new Error(`${proyecto} no parece un proyecto configurado (faltan .template/state.json o manifest.json)`);
+  if (!(await existe(join(proyecto, '.atlas/state.json'))) || !(await existe(join(proyecto, '.atlas/manifest.json')))) {
+    throw new Error(`${proyecto} no parece un proyecto configurado (faltan .atlas/state.json o manifest.json)`);
   }
-  if (!(await existe(join(template, '.template/BOOTSTRAP.md')))) {
-    throw new Error(`${template} no parece el template (falta .template/BOOTSTRAP.md)`);
+  if (!(await existe(join(template, '.atlas/BOOTSTRAP.md')))) {
+    throw new Error(`${template} no parece ATLAS (falta .atlas/BOOTSTRAP.md)`);
   }
 
-  const state = JSON.parse(await readFile(join(proyecto, '.template/state.json'), 'utf8'));
+  const state = JSON.parse(await readFile(join(proyecto, '.atlas/state.json'), 'utf8'));
   if (state.status !== 'configured') {
     throw new Error(`${proyecto} no está configurado (state.status != configured); ejecuta el bootstrap primero`);
   }
-  const manifest = JSON.parse(await readFile(join(proyecto, '.template/manifest.json'), 'utf8'));
-  const stateTemplate = JSON.parse(await readFile(join(template, '.template/state.json'), 'utf8'));
+  const manifest = JSON.parse(await readFile(join(proyecto, '.atlas/manifest.json'), 'utf8'));
+  const stateTemplate = JSON.parse(await readFile(join(template, '.atlas/state.json'), 'utf8'));
 
   let commit = state.template_source?.commit ?? null;
   let url = state.template_source?.url ?? null;
@@ -72,7 +72,7 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
   }
 
   const marca = new Date().toISOString().replace(/[:.]/g, '-');
-  const backup = join(proyecto, '.template/backups', marca);
+  const backup = join(proyecto, '.atlas/backups', marca);
   const host = state.host;
   const resultado = { actualizados: [], sinCambios: [], regenerados: [], conflictos: [], omitidos: [], nuevos: [], eliminados: [], errores: [] };
 
@@ -106,7 +106,7 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
         continue;
       }
       let origenGenerated = origen;
-      if (rel === 'opencode.json') origenGenerated = join(template, '.template/hosts/opencode/opencode.json');
+      if (rel === 'opencode.json') origenGenerated = join(template, '.atlas/hosts/opencode/opencode.json');
       if (rel === 'CLAUDE.md') origenGenerated = join(template, 'CLAUDE.md');
       if (!(await existe(origenGenerated))) {
         resultado.eliminados.push(rel);
@@ -150,12 +150,12 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
   if (!dryRun) {
     manifest.template_version = stateTemplate.template_version ?? manifest.template_version;
     manifest.generated_at = new Date().toISOString();
-    await writeFile(join(proyecto, '.template/manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+    await writeFile(join(proyecto, '.atlas/manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
 
     state.template_version = manifest.template_version;
     state.template_source = { url, commit };
     state.updated_at = new Date().toISOString();
-    await writeFile(join(proyecto, '.template/state.json'), `${JSON.stringify(state, null, 2)}\n`, 'utf8');
+    await writeFile(join(proyecto, '.atlas/state.json'), `${JSON.stringify(state, null, 2)}\n`, 'utf8');
   }
 
   log(dryRun ? 'SIMULACIÓN (sin escribir)' : `Actualización aplicada. Backup: ${backup}`);
