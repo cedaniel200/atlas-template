@@ -134,6 +134,11 @@ a `.template/adapters/<host>/` y regístralo en `state.json.displaced`. Se recup
 | Claude Code | `ln -s ../.agents/skills .claude/skills` | `readlink .claude/skills` |
 | Claude Code sin symlink (Windows) | copiar y avisar de que es estática | `diff -r .agents/skills .claude/skills` |
 
+**Packs**: no se copian por defecto. Copia solo `.template/packs/<id>/skills` y
+`.template/packs/<id>/agents` de los packs activos en `state.stacks[].packs`; el resto no consume
+contexto. `state.packs` es la unión de los packs de todos los stacks. Registra las skills del pack en
+`AGENTS.md` § Skill Registry y su `{name, version}` en `state.packs`.
+
 ## 0.4 Comandos
 
 No se escriben a mano: los genera OpenSpec.
@@ -174,6 +179,9 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 3. Estructura de primer nivel (¿monorepo? ¿módulos?).
 4. Package base / namespace.
 5. Perfil de stack: `java-gradle`, `node-ts`, u otro (se crea uno nuevo si no existe).
+6. **Stacks** (multi-stack): si el proyecto mezcla tecnologías (p. ej. Python back + JS front + mobile),
+   pide una fila por stack: `id`, `profile`, `paths`, comandos y `packs`. El **primero** es el default
+   (rellena § Comandos); los demás van a § Stacks. Un solo stack = una fila.
 
 ## Ronda 2 — Comandos y calidad
 
@@ -204,6 +212,8 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas:
    `mkdir -p .template/archive && mv .template/docs .template/archive/docs`; en `docs/README.md`
    elimina la fila "Arnés interno" y los enlaces a `.template/docs/`.
+10. **README**: si el proyecto ya tiene `README.md`, ¿añadir las secciones que falten de
+    `.template/PROJECT-README.md`? (solo añade; nunca sobrescribe).
 
 > Si el usuario responde “lo que sea”, elige el default de su stack **y dilo** para que lo corrija.
 > Las respuestas se escriben directamente en `AGENTS.md`; no se inventan comandos.
@@ -214,9 +224,10 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 
 | Artefacto | Qué rellenar |
 |---|---|
-| `AGENTS.md` | Resumen, arquitectura, comandos, estructura, no tocar, preferencias, placeholders |
+| `AGENTS.md` | Resumen, arquitectura, comandos, **Stacks**, estructura, no tocar, preferencias, placeholders |
 | `openspec/config.yaml` | Bloque `context:` y `rules:` (reglas de diseño según la arquitectura elegida) |
-| `.template/PROJECT-README.md` → `README.md` del proyecto | Nombre, descripción, quick start, C4, variables de entorno |
+| `.template/PROJECT-README.md` → `README.md` del proyecto | Greenfield/sin README: generar. Brownfield con README: conservar y preguntar append |
+| `docs/project-context.md` | Contexto propio del proyecto (brownfield: migrar el `AGENTS.md` existente) |
 | `.env.example` | Variables detectadas, sin valores reales |
 | `.gitignore` / `.gitattributes` / `.editorconfig` | Stack, secretos, estado local, EOL, indentación |
 | `docs/` | Renombrar carpetas si el usuario eligió otros nombres y actualizar `AGENTS.md` |
@@ -231,6 +242,14 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
   `node .template/scripts/renderizar-adaptadores.mjs --host <host>`. El script sustituye los
   placeholders desde `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
   `name` + `description`; Codex: sin subagentes). **No copies el cuerpo a mano.**
+  - **Multi-stack**: `state.stacks` es la fuente. Con más de un stack se genera `engineer-<id>` por
+    stack (con su bloque `{{STACK_CONTEXT}}`); con uno, `engineer.md`. Los demás roles son agnósticos.
+- **README (brownfield)**: si `README.md` existe, **no lo sobrescribas**. Pregunta:
+  "¿Añadir las secciones que falten de `.template/PROJECT-README.md`?". Dry-run:
+  `node .template/scripts/combinar-readme.mjs --proyecto .`; si acepta, `--apply`. Registra
+  `state.readme` (`generated|preserved|appended`).
+- **AGENTS.md (brownfield)**: backup; usa el `AGENTS.md` del template como **base**; mueve el contenido
+  propio a `docs/project-context.md` y enlázalo. No es un merge de iguales.
 - **Manifiesto**: `node .template/scripts/generar-manifiesto.mjs --host <host>`. Aplica las reglas de
   ownership y origen (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs;
   generated: adaptadores/commands/opencode.json/CLAUDE.md), calcula `sha256` y escribe
@@ -281,6 +300,8 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `openspec context` → sin warnings
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
 - [ ] Adaptador del host activo presente (agentes y comandos)
+- [ ] Multi-stack: `node .template/scripts/validar-contrato.mjs` valida `state.stacks` y los adaptadores
+      `engineer-<stack>` (o `engineer` si hay un solo stack).
 - [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.template --exclude-dir=node_modules .` → sin resultados
 - [ ] `.template/manifest.json` generado
 - [ ] `git status` limpio y las fases commiteadas
