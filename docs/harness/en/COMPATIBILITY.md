@@ -46,7 +46,7 @@ Multi-stack: the renderer generates `engineer-<stack>.md` per stack (OpenCode/Cl
 
 | ID | Limitation | Impact | Mitigation |
 |---|---|---|---|
-| C‑1 | Codex has no subagents | No separate `engineer`/`qa-analyst` agents | `AGENTS.md` defines the role protocol; the role announcement still applies |
+| C‑1 | Codex has no subagents | No separate `engineer`/`qa-analyst` agents; optional agents cannot be installed either | `AGENTS.md` defines the role protocol; the role announcement still applies |
 | C‑2 | `disable-model-invocation` is not in the Agent Skills spec | Some hosts may auto-invoke a skill that should be manual | Documented; a pack that uses it is marked as host-dependent |
 | C‑3 | Symlinks on Windows require developer mode | `.claude/skills` broken on Windows | Static copy + re-run the bootstrap when adding skills |
 | C‑4 | `openspec init` may rewrite `AGENTS.md` and write skills to `.opencode/skills` (OpenCode's native path, with precedence over `.agents/skills`) | Contract loss / canonical skills shadowed by ID | Backup + `diff` + manual merge. On duplicate IDs the project chooses: keep the CLI copy (shadowing) or delete only those IDs (canonical). Tradeoff owned by the project (`.template/BOOTSTRAP.md` § 0.4) |

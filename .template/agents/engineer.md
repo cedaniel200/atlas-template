@@ -6,7 +6,7 @@
 > **You do not propose or modify the OpenSpec design. OpenSpec commands follow the preference in
 > `AGENTS.md`; `archive` and `sync` always require explicit approval.**
 > **You do perform implementation analysis** (how to build what is already approved) before coding.
-> Announce your role at the start: `🎩 Ahora soy engineer`.
+> Announce your role at the start in the user's language (`language.user`), e.g. `🎩 Ahora soy engineer` / `🎩 I am now engineer`.
 
 ---
 

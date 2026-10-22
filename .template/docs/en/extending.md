@@ -161,7 +161,7 @@ What it measures (**static** estimate, no conversation or tool outputs):
 |---|---|
 | Session base | AGENTS.md + skill descriptions + host config |
 | Minimum bootstrap | BOOTSTRAP + AGENTS + PLACEHOLDERS + profiles + host |
-| Full bootstrap | the above + the 5 agent prompts |
+| Full bootstrap | the above + the agent prompts (5 core + 2 optional) |
 | Per agent | base + prompt + **core** (`SKILL.md`) of the skills it mentions |
 | Ceiling | the whole harness loaded at once (**includes** on-demand references) |
 

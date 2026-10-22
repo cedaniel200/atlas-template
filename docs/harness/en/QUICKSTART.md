@@ -54,6 +54,7 @@ The ritual asks, in rounds:
 | **1 — Identity and stacks** | Name, description, stack(s), structure, base package; one row per stack (multi-stack) |
 | **2 — Commands & quality** | Build, run, test, lint, coverage, mutation, CRAP, QA environment |
 | **3 — Architecture, domain and boundaries** | Stance, domain, do-not-touch, git, docs, memory, OpenSpec, orchestration, contribution and README |
+| **4 — Optional agents** | `mentor` and `business-strategist`, one by one: optional and outside the delivery cycle |
 
 If you do not know a command, answer `TBD`: the agent records it in `AGENTS.md` § Pending. **It never
 invents one.**

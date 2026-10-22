@@ -176,7 +176,7 @@ Borra solo los IDs que liste `comm` si quieres conservar las skills propias. No 
 
 # Fase 1 — Interrogatorio
 
-Conduce el interrogatorio en **4 rondas (0–3)**, agrupando preguntas.
+Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
 
 ## Ronda 0 — Idioma
 
@@ -231,6 +231,26 @@ Conduce el interrogatorio en **4 rondas (0–3)**, agrupando preguntas.
 10. **README**: si el proyecto ya tiene `README.md`, ¿añadir las secciones que falten de
     `.template/PROJECT-README.md`? (solo añade; nunca sobrescribe).
 
+## Ronda 4 — Agentes opcionales
+
+Pregunta **uno por uno**, en este orden. En cada pregunta di explícitamente: **(opcional)**, **qué hace**,
+**que no forma parte del ciclo de desarrollo** y que **queda disponible para invocarlo cuando se necesite**.
+No los presentes como recomendados ni los actives por defecto.
+
+| Rol | Qué hace |
+|---|---|
+| `mentor` | Enseña, de forma agnóstica, los conceptos y patrones que use el proyecto (DDD, arquitectura, diseño) según su contexto y stack; explica el código y genera material didáctico |
+| `business-strategist` | Modelo de negocio, propuesta de valor, segmentos, pricing y canales (`docs/business/`) |
+
+| Respuesta | Acción |
+|---|---|
+| Sí | Añade el id a `state.optional_agents` |
+| No | No lo añadas (default: `[]`) |
+
+- **Codex**: no tiene subagentes. Explica que el rol no se puede instalar y omítelo; no lo añadas al estado.
+- Si el usuario duda: puede activarlo después añadiendo el id a `state.optional_agents` y regenerando
+  adaptadores.
+
 > Si el usuario responde “lo que sea”, elige el default de su stack **y dilo** para que lo corrija.
 > Las respuestas se escriben directamente en `AGENTS.md`; no se inventan comandos.
 
@@ -260,6 +280,8 @@ Conduce el interrogatorio en **4 rondas (0–3)**, agrupando preguntas.
   `name` + `description`; Codex: sin subagentes). **No copies el cuerpo a mano.**
   - **Multi-stack**: `state.stacks` es la fuente. Con más de un stack se genera `engineer-<id>` por
     stack (con su bloque `{{STACK_CONTEXT}}`); con uno, `engineer.md`. Los demás roles son agnósticos.
+  - **Agentes opcionales**: solo se renderizan los ids de `state.optional_agents` (Ronda 4). Los prompts
+    marcados con `<!-- optional-role -->` que no estén activados se omiten.
 - **README (brownfield)**: si `README.md` existe, **no lo sobrescribas**. Pregunta:
   "¿Añadir las secciones que falten de `.template/PROJECT-README.md`?". Dry-run:
   `node .template/scripts/combinar-readme.mjs --proyecto .`; si acepta, `--apply`. Registra
@@ -317,6 +339,7 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `openspec context` → sin warnings
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
 - [ ] Adaptador del host activo presente (agentes y comandos)
+- [ ] Agentes opcionales: solo los elegidos en `state.optional_agents` tienen adaptador
 - [ ] Multi-stack: `node .template/scripts/validar-contrato.mjs` valida `state.stacks` y los adaptadores
       `engineer-<stack>` (o `engineer` si hay un solo stack).
 - [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.template --exclude-dir=node_modules .` → sin resultados

@@ -162,7 +162,7 @@ Qué mide (estimación **estática**, sin conversación ni tool outputs):
 |---|---|
 | Base de sesión | AGENTS.md + descripciones de skills + config del host |
 | Arranque mínimo | BOOTSTRAP + AGENTS + PLACEHOLDERS + perfiles + host |
-| Arranque completo | lo anterior + los 5 prompts de agente |
+| Arranque completo | lo anterior + los prompts de agente (5 core + 2 opcionales) |
 | Por agente | base + prompt + **núcleo** (`SKILL.md`) de las skills que menciona |
 | Techo | todo el arnés cargado a la vez (**incluye** las referencias on-demand) |
 

@@ -20,6 +20,7 @@
   "profile": null,
   "stacks": [],
   "packs": [],
+  "optional_agents": [],
   "readme": null,
   "preferences": {
     "openspec_commands": "ask",

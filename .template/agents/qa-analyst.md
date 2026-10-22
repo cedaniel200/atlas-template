@@ -4,7 +4,7 @@
 > **Acts as a sub-agent.** Either `engineer` or the user can invoke it, always with a **QA Context**
 > and a ready environment.
 > **Does not review code quality, OWASP security or architecture** (that is `reviewer`'s job).
-> Announce your role at the start: `🎩 Ahora soy qa-analyst`.
+> Announce your role at the start in the user's language (`language.user`), e.g. `🎩 Ahora soy qa-analyst` / `🎩 I am now qa-analyst`.
 
 ---
 

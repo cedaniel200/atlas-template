@@ -14,6 +14,10 @@
 // bloque `{{STACK_CONTEXT}}`; los demás roles son agnósticos al stack. Con un
 // solo stack se genera el `engineer.md` genérico.
 //
+// Roles opcionales: los prompts marcados con `<!-- optional-role -->` solo se
+// renderizan si su id está en `state.optional_agents` (el bootstrap pregunta
+// uno por uno). La marca no llega al adaptador.
+//
 // Uso:
 //   node .template/scripts/renderizar-adaptadores.mjs [--host opencode|claude] [--template <dir>] [--dry-run]
 
@@ -23,6 +27,7 @@ import { pathToFileURL } from 'node:url';
 
 const PATRON = /\{\{([A-Z0-9_]+)\}\}/g;
 const STACK_CONTEXT = '{{STACK_CONTEXT}}';
+const MARCA_OPCIONAL = '<!-- optional-role -->';
 
 function contextoStack(stack) {
   const rutas = Array.isArray(stack.paths) ? stack.paths.map((ruta) => `\`${ruta}\``).join(', ') : stack.paths ?? '—';
@@ -69,6 +74,7 @@ export async function renderizarAdaptadores({
   }
 
   const stacks = Array.isArray(state.stacks) ? state.stacks : [];
+  const agentesOpcionales = new Set(Array.isArray(state.optional_agents) ? state.optional_agents : []);
   const directorioAgentes = join(template, '.template/agents');
   const destino = hostElegido === 'opencode' ? join(proyecto, '.opencode/agent') : join(proyecto, '.claude/agents');
   if (!dryRun) await mkdir(destino, { recursive: true });
@@ -98,7 +104,12 @@ export async function renderizarAdaptadores({
   for (const entrada of (await readdir(directorioAgentes)).sort()) {
     if (!entrada.endsWith('.md') || entrada === 'README.md') continue;
     const rol = entrada.slice(0, -3);
-    const cuerpoCanonico = await readFile(join(directorioAgentes, entrada), 'utf8');
+    let cuerpoCanonico = await readFile(join(directorioAgentes, entrada), 'utf8');
+    const esOpcional = cuerpoCanonico.trimStart().startsWith(MARCA_OPCIONAL);
+    if (esOpcional) {
+      if (!agentesOpcionales.has(rol)) continue;
+      cuerpoCanonico = cuerpoCanonico.replace(MARCA_OPCIONAL, '').trimStart();
+    }
 
     if (rol === 'engineer' && stacks.length > 1) {
       for (const stack of stacks) {

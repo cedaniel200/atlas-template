@@ -38,6 +38,8 @@ Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el hum
 | `business-strategist` (opcional) | Modelo de negocio, propuesta de valor, segmentos, pricing y canales (`docs/business/`) |
 
 > No forman parte del ciclo de entrega: se añaden como agentes o packs propios del proyecto.
+> El bootstrap los pregunta **uno por uno** (Ronda 4) y solo instala los aceptados en
+> `state.optional_agents`.
 
 ---
 
@@ -90,7 +92,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 | Componente | Detalle |
 |---|---|
 | **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
-| **Agentes** | `analyst`, `engineer` (single-stack; multi-stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.template/agents/` |
+| **Agentes** | `analyst`, `engineer` (single-stack; multi-stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.template/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
 | **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.template/packs/` |
 | **Ritual** | [`../.template/BOOTSTRAP.md`](../.template/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
 | **Compatibilidad** | [`harness/es/COMPATIBILITY.md`](harness/es/COMPATIBILITY.md): matriz por host |
@@ -111,7 +113,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 │   ├── BOOTSTRAP.md     # ritual de primera sesión
 │   ├── PLACEHOLDERS.md  # contrato de placeholders (perfil/proyecto, N/A)
 │   ├── PROJECT-README.md # plantilla del README del proyecto
-│   ├── agents/          # 5 prompts canónicos (+ engineer-<stack> generado)
+│   ├── agents/          # 5 prompts core + 2 opcionales (+ engineer-<stack> generado)
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
 │   ├── scripts/         # sha256 + validadores + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir

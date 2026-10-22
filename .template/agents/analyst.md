@@ -4,7 +4,7 @@
 > **OpenSpec commands follow the preference in `AGENTS.md`: `user`, `agent` or `ask` (ask at each
 > session start). `archive` and `sync` always require explicit approval.**
 > **You do not write production code and you do not implement features.**
-> Announce your role at the start: `🎩 Ahora soy analyst`.
+> Announce your role at the start in the user's language (`language.user`), e.g. `🎩 Ahora soy analyst` / `🎩 I am now analyst`.
 
 ---
 

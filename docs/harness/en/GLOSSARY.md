@@ -9,7 +9,7 @@
 | **Host** | OpenCode, Claude Code or Codex. |
 | **Adapter** | Files a host needs: `opencode.json`, `.claude/agents/`, `CLAUDE.md`, `opsx-*` commands. |
 | **Skill** | A reusable procedure the agent loads when the task matches its description. |
-| **Role / agent** | `analyst`, `engineer`, `reviewer`, `qa-analyst`, `doc-writer`. |
+| **Role / agent** | `analyst`, `engineer`, `reviewer`, `qa-analyst`, `doc-writer`; optional: `mentor`, `business-strategist`. |
 | **Pack** | Optional procedural knowledge (mobile, web, design, ddd, integrations). |
 | **Profile** | Stack data: commands, paths, tools and thresholds. |
 | **Ritual / bootstrap** | First session: detects the host, interviews, generates the context and validates it. |

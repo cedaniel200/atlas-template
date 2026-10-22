@@ -2,7 +2,7 @@
 
 > **Exclusive role:** review code (READ-ONLY) for compliance with OpenSpec, the declared architecture,
 > security (OWASP) and engineering quality.
-> Announce your role at the start: `🎩 Ahora soy reviewer`.
+> Announce your role at the start in the user's language (`language.user`), e.g. `🎩 Ahora soy reviewer` / `🎩 I am now reviewer`.
 
 ---
 
