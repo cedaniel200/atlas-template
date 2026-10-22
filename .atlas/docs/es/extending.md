@@ -204,6 +204,8 @@ Qué mide (estimación **estática**, sin conversación ni tool outputs):
 | Techo | todo el arnés cargado a la vez (**incluye** las referencias on-demand) |
 
 No se miden: READMEs de mantenimiento, `_templates`, `_examples` ni hosts no activos.
+`node .atlas/scripts/medir-contexto.mjs --all` mide además todo el contenido textual del arnés
+(documentación, plantillas, ejemplos, legal y agentes opcionales). No es el coste de una sesión.
 
 **Cómo leerlo:** proxy `~4 caracteres/token` (en español hasta ~3,5 → +15%). Presupuesto orientativo:
 **base ≤ 4k**, **por agente ≤ 14k** (las 5 skills externas de OpenSpec son un coste fijo: no se optimizan sin forkearlas). Si crece, ataca primero el mayor contribuyente: skills largas →

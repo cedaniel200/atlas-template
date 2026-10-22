@@ -204,6 +204,8 @@ What it measures (**static** estimate, no conversation or tool outputs):
 | Ceiling | the whole harness loaded at once (**includes** on-demand references) |
 
 Not measured: maintainer READMEs, `_templates`, `_examples` or inactive hosts.
+`node .atlas/scripts/medir-contexto.mjs --all` also measures all textual harness content
+(documentation, templates, examples, legal and optional agents). It is not the cost of a session.
 
 **How to read it:** `~4 chars/token` proxy (Spanish may reach ~3.5 → +15%). Target budget:
 **base ≤ 4k**, **per agent ≤ 14k** (the 5 external OpenSpec skills are a fixed cost: they are not optimized without forking them). If it grows, attack the biggest contributor first: long skills →

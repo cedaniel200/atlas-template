@@ -14,12 +14,14 @@
 // Uso:
 //   node .atlas/scripts/medir-contexto.mjs          # informe legible
 //   node .atlas/scripts/medir-contexto.mjs --json   # línea base comparable
+//   node .atlas/scripts/medir-contexto.mjs --all    # incluye documentación no leída (diagnóstico de repo)
 
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const PROXY = 4;
 const json = process.argv.includes('--json');
+const medirTodo = process.argv.includes('--all');
 const log = json ? () => {} : (...args) => console.log(...args);
 
 async function expandir(patron) {
@@ -232,12 +234,44 @@ const techo =
   Math.ceil(agentesCanonicos.reduce((total, fila) => total + fila.caracteres, 0) / PROXY);
 log(`\n## Techo (todo el arnés cargado a la vez, incl. referencias on-demand)\n  ~${techo} tok`);
 
+let todoElArnes = null;
+if (medirTodo) {
+  // --all: todo el contenido textual del arnés, incluido lo que no se lee en una
+  // sesión. Excluye scripts (código) y state/manifest (estado), que no son contexto.
+  const todo = await medirPatrones([
+    'AGENTS.md',
+    'CLAUDE.md',
+    'openspec/config.yaml',
+    '.atlas/BOOTSTRAP.md',
+    '.atlas/PLACEHOLDERS.md',
+    '.atlas/PROJECT-README.md',
+    '.atlas/README.md',
+    '.atlas/docs/**/*.md',
+    '.atlas/profiles/**/*.yaml',
+    '.atlas/packs/**/*.md',
+    '.atlas/packs/**/*.yaml',
+    '.atlas/hosts/**/*',
+    '.atlas/legal/**/*',
+    '.atlas/agents/*.md',
+    '.agents/skills/**/*.md',
+    'docs/**/*.md',
+    'SECURITY.md',
+    'SECURITY.es.md',
+    'THIRD-PARTY-NOTICES.md',
+    'THIRD-PARTY-NOTICES.es.md',
+    'LICENSE',
+  ]);
+  todoElArnes = total(todo);
+  imprimir('Todo el contenido textual (--all, incluye lo que no se lee en sesión)', todo);
+}
+
 const cota = (tokens) => Math.ceil(tokens * 1.15);
 log('\n## Resumen (tokens, cota superior +15%)');
 log(`  Base de sesión:        ~${tokensBase} (≤${cota(tokensBase)})`);
 log(`  Arranque mínimo:       ~${arranqueMinimo.reduce((t, f) => t + f.tokens, 0)} (≤${cota(arranqueMinimo.reduce((t, f) => t + f.tokens, 0))})`);
 log(`  Arranque completo:     ~${arranque.reduce((t, f) => t + f.tokens, 0)} (≤${cota(arranque.reduce((t, f) => t + f.tokens, 0))})`);
 log(`  Techo del arnés:       ~${techo} (≤${cota(techo)})`);
+if (todoElArnes) log(`  Todo (--all):          ~${todoElArnes.tokens} (≤${cota(todoElArnes.tokens)})`);
 
 if (json) {
   console.log(JSON.stringify({
@@ -248,5 +282,6 @@ if (json) {
     arranqueCompleto: total(arranque),
     porAgente,
     techo,
+    ...(todoElArnes ? { todoElArnes } : {}),
   }, null, 2));
 }
