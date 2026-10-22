@@ -22,7 +22,7 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const PLANTILLA = '.atlas/profiles/_templates/perfil.yaml';
+const PLANTILLA = '.atlas/profiles/_templates/profile.yaml';
 const DIRECTORIO = '.atlas/profiles';
 
 const args = process.argv.slice(2);

@@ -2,7 +2,7 @@
 
 Un perfil es **datos**, no procedimiento: describe cómo se construye, se ejecuta y se valida un stack.
 **No hay catálogo**: el bootstrap crea solo el perfil que el proyecto necesita a partir de
-`_templates/perfil.yaml`, y el usuario valida los comandos.
+`_templates/profile.yaml`, y el usuario valida los comandos.
 
 ## Cómo se crea
 
@@ -11,7 +11,7 @@ node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje> \
   [--runtime <runtime>] [--package-manager <gestor>] [--source <ruta>] [--tests <ruta>]
 ```
 
-1. El script copia `_templates/perfil.yaml` a `<id>.yaml` (no sobrescribe sin `--force`).
+1. El script copia `_templates/profile.yaml` a `<id>.yaml` (no sobrescribe sin `--force`).
 2. Completa los comandos con valores reales; si no aplica, `""` + nota.
 3. Valida: `node .atlas/scripts/validar-perfiles.mjs`.
 4. Añade el stack a `state.stacks` y a `AGENTS.md § Stacks`.
@@ -116,7 +116,7 @@ Un campo que no aplica es `""` (nunca se omite ni se inventa). Derivaciones a pl
 
 ## Ejemplos y plantilla
 
-- `_templates/perfil.yaml` es la **plantilla** que usa `crear-perfil.mjs`. No se valida como perfil.
+- `_templates/profile.yaml` es la **plantilla** que usa `crear-perfil.mjs`. No se valida como perfil.
 - La plantilla usa marcadores de generación (`{{ID}}`, `{{LANGUAGE}}`, …) que no son placeholders de
   perfil: los resuelve `crear-perfil.mjs`. El borrador nace con `TODO` en runtime/rutas; complétalos.
 - En `_examples/` hay dos perfiles **ilustrativos**: muestran la forma del YAML, no un catálogo.
@@ -124,7 +124,7 @@ Un campo que no aplica es `""` (nunca se omite ni se inventa). Derivaciones a pl
 
 | Archivo | Ilustra |
 |---|---|
-| `_templates/perfil.yaml` | Esqueleto para generar un perfil |
+| `_templates/profile.yaml` | Esqueleto para generar un perfil |
 | `_examples/java-gradle.yaml` | Toolchain JVM (Gradle, Checkstyle, PIT, CRAP) |
 | `_examples/node-ts.yaml` | Toolchain Node/TS (lint, typecheck, cobertura) |
 

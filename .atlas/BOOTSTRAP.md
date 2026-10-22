@@ -191,7 +191,7 @@ Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
 2. Stack y versiones (lenguaje, framework, gestor de dependencias, runtime).
 3. Estructura de primer nivel (¿monorepo? ¿módulos?).
 4. Package base / namespace.
-5. Perfil de stack: **no hay catálogo**. Parte de `.atlas/profiles/_templates/perfil.yaml`, propón
+5. Perfil de stack: **no hay catálogo**. Parte de `.atlas/profiles/_templates/profile.yaml`, propón
    comandos reales y crea `.atlas/profiles/<id>.yaml` con `crear-perfil.mjs`. El usuario valida,
    corrige o elimina. Si un ejemplo de `_examples/` encaja, úsalo como referencia, no lo copies.
 6. **Stacks** (multi-stack): si el proyecto mezcla tecnologías (p. ej. Python back + JS front + mobile),

@@ -86,7 +86,7 @@ notes: |
 
 Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/README.md`.
 
-- Créalo con `node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>`; el script parte de `_templates/perfil.yaml`.
+- Créalo con `node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>`; el script parte de `_templates/profile.yaml`.
 - Solo comandos, rutas, nombres de herramientas y umbrales.
 - Sin valores de framework bajo un nombre de toolchain (por ejemplo, sin rutas de Spring en `java-gradle`).
 - Si un comando no existe, dejar `""` y anotarlo; nunca inventarlo.

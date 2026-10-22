@@ -122,7 +122,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 |---|---|
 | 🧭 **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
 | 🤖 **Agentes** | `analyst`, `engineer` (cada stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.atlas/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
-| 🧱 **Perfiles** | Se generan bajo demanda con `crear-perfil.mjs` desde `_templates/perfil.yaml`; no hay catálogo |
+| 🧱 **Perfiles** | Se generan bajo demanda con `crear-perfil.mjs` desde `_templates/profile.yaml`; no hay catálogo |
 | 🎒 **Packs** | Esqueletos con `crear-pack.mjs`; solo existen si el proyecto los necesita |
 | 🧩 **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.atlas/packs/` |
 | 🚀 **Ritual** | [`../.atlas/BOOTSTRAP.md`](../.atlas/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |

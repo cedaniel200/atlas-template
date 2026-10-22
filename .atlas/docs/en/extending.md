@@ -86,7 +86,7 @@ notes: |
 
 A profile is **data**, not procedure. See `.atlas/profiles/README.md` for the schema.
 
-- Create it with `node .atlas/scripts/crear-perfil.mjs --id <id> --language <language>`; the script starts from `_templates/perfil.yaml`.
+- Create it with `node .atlas/scripts/crear-perfil.mjs --id <id> --language <language>`; the script starts from `_templates/profile.yaml`.
 - Only commands, paths, tool names and thresholds.
 - No framework-specific values under a toolchain name (e.g., no Spring paths in a `java-gradle` profile).
 - If a command does not exist, leave `""` and note it; never invent one.
