@@ -7,17 +7,42 @@
 
 ---
 
-## Hot operations
+## Intent map
 
-After the bootstrap there is no need to repeat the ritual. Validate at the end with
-`validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs` and `medir-contexto.mjs`.
+**Intent is enough, not the exact phrase**: recognize the purpose in any language. If you infer the
+action from intent rather than an explicit command, **ask for explicit confirmation before executing**.
 
 | You ask… | The agent does… |
 |---|---|
+| Configure the project | Run `.atlas/BOOTSTRAP.md` only if `status=pending` |
 | Add a stack or profile | `crear-perfil.mjs` → fill in the commands → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
 | Add an implementer agent | It is the same `engineer` with a new stack: `state.stacks` + `engineer-<id>` |
 | Add a pack | `crear-pack.mjs` → skills/agents → activate in `state.stacks[].packs` and `state.packs` |
+| Minimize ATLAS | `minimizar.mjs` with closed scope |
 | Remove a stack or pack | Remove from `state.stacks`/`state.packs` → `renderizar-adaptadores.mjs` (cleans adapters) → regenerate the manifest |
+| Update ATLAS | `update-harness` skill |
+| Measure context | `medir-contexto.mjs` (`--all` for everything) |
+
+Validate at the end with `validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs`
+and `medir-contexto.mjs`.
+
+---
+
+## Minimize ATLAS
+
+Closed scope; it never deletes, it moves to `.atlas/archive/`:
+
+```bash
+node .atlas/scripts/minimizar.mjs --dry-run --all
+node .atlas/scripts/minimizar.mjs --apply --examples --hosts
+node .atlas/scripts/minimizar.mjs --apply --docs   # only if nothing links to .atlas/docs/
+```
+
+- `--examples`: `_examples/`.
+- `--hosts`: inactive host templates; keeps `state.host`.
+- `--docs`: `.atlas/docs/`; refuses if `AGENTS.md` or `docs/README*` still link to it.
+- Records `state.displaced` and regenerates the manifest: a later update does not touch archived files.
+- Does not delete active profiles/packs or generate a project license.
 
 ---
 

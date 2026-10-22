@@ -233,7 +233,7 @@ Pack skills (`.atlas/packs/`) only exist when the pack is activated.
 
 ## Extending
 
-- **Agent procedure** (skills, agents, stacks, profiles): [`.atlas/docs/en/extending.md`](.atlas/docs/en/extending.md). Follow it when the user asks.
+- **Agent procedure** (skills, agents, stacks, profiles, packs, minimize): [`.atlas/docs/en/extending.md`](.atlas/docs/en/extending.md). Follow it when the user asks.
 - Project-specific context: [`docs/project-context.md`](docs/project-context.md).
 
 ## Placeholders

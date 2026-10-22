@@ -126,4 +126,5 @@ Delete only the duplicate IDs if you want to keep your own skills. The project o
 - Host compatibility → [`COMPATIBILITY.md`](COMPATIBILITY.md)
 - Glossary → [`GLOSSARY.md`](GLOSSARY.md)
 - Extend the harness (skills/agents/packs) → [`../../../.atlas/docs/en/extending.md`](../../../.atlas/docs/en/extending.md) · [`../../../.atlas/packs/README.md`](../../../.atlas/packs/README.md)
+- You can also ask in your own words: “minimize ATLAS”, “add a profile for Go”, “create a pack for KMP”. If the agent infers it from intent, it confirms before acting.
 - Project README → generated from `.atlas/PROJECT-README.md`; ATLAS has no root README (the landing is `docs/README.md`).

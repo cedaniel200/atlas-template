@@ -125,4 +125,5 @@ Borra solo los IDs duplicados si quieres conservar skills propias. El proyecto a
 - Compatibilidad por herramienta → [`COMPATIBILITY.md`](COMPATIBILITY.md)
 - Glosario → [`GLOSSARY.md`](GLOSSARY.md)
 - Extender el arnés (skills/agentes/packs) → [`../../../.atlas/docs/es/extending.md`](../../../.atlas/docs/es/extending.md) · [`../../../.atlas/packs/README.md` (EN)](../../../.atlas/packs/README.md)
+- También puedes pedirlo con tus palabras: “deja ATLAS mínimo”, “añade un perfil para Go”, “crea un pack para KMP”. Si el agente lo deduce de la intención, confirma antes de actuar.
 - README del proyecto → se genera desde `.atlas/PROJECT-README.md`; ATLAS no trae README raíz (la portada es `docs/README.md`).
