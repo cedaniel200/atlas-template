@@ -4,6 +4,20 @@
 
 ---
 
+## Operaciones en caliente
+
+Después del bootstrap no hace falta repetir el ritual. Se validan al final con
+`validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs` y `medir-contexto.mjs`.
+
+| Quiero… | Procedimiento |
+|---|---|
+| Añadir un stack o perfil | `crear-perfil.mjs` → completar comandos → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
+| Añadir un agente implementador | Es el mismo `engineer` con un stack nuevo: `state.stacks` + `engineer-<id>` |
+| Añadir un pack | `crear-pack.mjs` → skills/agentes → activar en `state.stacks[].packs` y `state.packs` |
+| Quitar un stack o pack | Quitar de `state.stacks`/`state.packs` → `renderizar-adaptadores.mjs` (limpia adaptadores) → regenerar manifiesto |
+
+---
+
 ## Añadir una skill
 
 1. Crear `.agents/skills/<nombre>/SKILL.md`.

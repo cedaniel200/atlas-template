@@ -2,7 +2,7 @@
 
 > **Se ejecuta una vez por proyecto, antes de escribir código.**
 > Estado: `.atlas/state.json` (`pending` → `configured`).
-> Si `status` es `configured`, **no repetir**; ofrecer reconfiguración explícita.
+> Si `status` es `configured`, **no leer ni repetir** este archivo; ofrece reconfiguración explícita.
 >
 > Este archivo lo ejecuta el agente. El humano responde las preguntas y aprueba cada fase.
 
@@ -228,7 +228,7 @@ Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
 8. **Orquestación**: orquestada (default) o manual.
 9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas:
    `mkdir -p .atlas/archive && mv .atlas/docs .atlas/archive/docs`; en `docs/README.md`
-   elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina el bullet "Skills y agentes"
+   elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina el bullet "Skills, agentes, stacks y perfiles"
    (apunta a `.atlas/docs/`) y cualquier enlace a `.atlas/docs/`.
 10. **README**: si el proyecto ya tiene `README.md`, ¿añadir las secciones que falten de
     `.atlas/PROJECT-README.md`? (solo añade; nunca sobrescribe).
@@ -365,21 +365,8 @@ Al cerrar:
 
 Anuncia: **"Bootstrap completo. Ya puedes proponer un cambio."**
 
----
-
-## Extender después del bootstrap
-
-No hace falta repetir el ritual. Estas operaciones se hacen en caliente y se validan al final:
-
-| Quiero… | Procedimiento |
-|---|---|
-| Añadir un stack o perfil | `crear-perfil.mjs` → completar comandos → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
-| Añadir un agente implementador | Es el mismo `engineer` con un stack nuevo: `state.stacks` + `engineer-<id>` |
-| Añadir un pack | `crear-pack.mjs` → skills/agentes → activar en `state.stacks[].packs` y `state.packs` |
-| Quitar un stack o pack | Quitar de `state.stacks`/`state.packs` → `renderizar-adaptadores.mjs` (limpia adaptadores) → regenerar manifiesto |
-
-Guía detallada: `.atlas/docs/es/extending.md`. Validación: `validar-contrato.mjs`, `validar-perfiles.mjs`,
-`renderizar-adaptadores.mjs` y `medir-contexto.mjs`.
+**Después del bootstrap:** no repitas este ritual. Para añadir stacks, perfiles, packs o agentes usa
+`.atlas/docs/es/extending.md`.
 
 ---
 

@@ -231,7 +231,7 @@ Las skills de packs (`.atlas/packs/`) solo existen cuando el pack está activado
 
 ## Extending
 
-- Skills y agentes: [`.atlas/docs/es/extending.md`](.atlas/docs/es/extending.md).
+- Skills, agentes, stacks y perfiles (incluidas altas en caliente): [`.atlas/docs/es/extending.md`](.atlas/docs/es/extending.md).
 - Packs opcionales: [`.atlas/packs/README.md`](.atlas/packs/README.md).
 - Contexto específico del proyecto: [`docs/project-context.md`](docs/project-context.md).
 

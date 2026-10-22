@@ -4,6 +4,20 @@
 
 ---
 
+## Hot operations
+
+After the bootstrap there is no need to repeat the ritual. Validate at the end with
+`validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs` and `medir-contexto.mjs`.
+
+| I want to… | Procedure |
+|---|---|
+| Add a stack or profile | `crear-perfil.mjs` → fill in the commands → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
+| Add an implementer agent | It is the same `engineer` with a new stack: `state.stacks` + `engineer-<id>` |
+| Add a pack | `crear-pack.mjs` → skills/agents → activate in `state.stacks[].packs` and `state.packs` |
+| Remove a stack or pack | Remove from `state.stacks`/`state.packs` → `renderizar-adaptadores.mjs` (cleans adapters) → regenerate the manifest |
+
+---
+
 ## Add a skill
 
 1. Create `.agents/skills/<name>/SKILL.md`.
