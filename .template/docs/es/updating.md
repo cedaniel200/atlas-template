@@ -1,5 +1,8 @@
 # Actualizar un proyecto configurado
 
+> **Flujo automatizado:** `node .template/scripts/actualizar-arnes.mjs --template <ruta>`.
+> Guía para personas: `docs/harness/es/UPDATE.md`. Este documento es la referencia interna del algoritmo.
+
 > El template es un **andamio**, no una dependencia de ejecución. Las actualizaciones son opcionales,
 > explícitas y seguras.
 
@@ -47,7 +50,10 @@
      owned     -> omitir
      generated -> sobrescribir
      managed   -> hash(actual) == hash(base) (en minúsculas) ? sobrescribir : escribir .new + conflicto
-5. Reporte: actualizados / conflictos / omitidos
+5. **Reescribir manifest.json** (hashes nuevos, `template_version`, `generated_at`) y **state.json**
+   (`template_version`, `template_source`, `updated_at`) — sin esto, la próxima actualización da falsos conflictos
+6. **Validar**: `node .template/scripts/validar-manifiesto.mjs`
+7. Reporte: actualizados / sin cambios / conflictos / omitidos
 ```
 
 Esta versión **nunca destruye** trabajo del usuario. El merge a tres bandas para conflictos es una mejora

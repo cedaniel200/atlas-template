@@ -1,5 +1,8 @@
 # Updating a configured project
 
+> **Automated flow:** `node .template/scripts/actualizar-arnes.mjs --template <path>`.
+> User guide: `docs/harness/en/UPDATE.md`. This document is the internal algorithm reference.
+
 > The template is a **scaffold**, not a runtime dependency. Updates are optional, explicit and safe.
 
 ---
@@ -46,7 +49,10 @@
      owned     -> skip
      generated -> overwrite
      managed   -> hash(current) == hash(base) (lowercase) ? overwrite : write .new + conflict
-5. Report: updated / conflicts / skipped
+5. **Rewrite manifest.json** (new hashes, `template_version`, `generated_at`) and **state.json**
+   (`template_version`, `template_source`, `updated_at`) — without this, the next update reports false conflicts
+6. **Validate**: `node .template/scripts/validar-manifiesto.mjs`
+7. Report: updated / unchanged / conflicts / skipped
 ```
 
 This version **never destroys** user work. A three-way merge for conflicts is a future improvement.
