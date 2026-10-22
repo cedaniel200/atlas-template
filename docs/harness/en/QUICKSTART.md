@@ -58,7 +58,7 @@ The ritual asks, in rounds:
 | **3 — Architecture, domain and boundaries** | Stance, domain, do-not-touch, git, docs, memory, OpenSpec, orchestration, contribution and README |
 | **4 — Optional agents** | `mentor` and `business-strategist`, one by one: optional and outside the delivery cycle |
 
-> **No catalog:** the profile is created with `crear-perfil.mjs` from `_templates/preset.yaml`; packs
+> **No catalog:** the profile is created with `crear-perfil.mjs` from `_templates/perfil.yaml`; packs
 > only if you need them (`crear-pack.mjs`).
 
 If you do not know a command, answer `TBD`: the agent records it in `AGENTS.md` § Pending. **It never

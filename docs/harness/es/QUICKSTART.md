@@ -58,7 +58,7 @@ El ritual pregunta, por rondas:
 | **3 — Arquitectura, dominio y límites** | Postura, dominio, no tocar, git, documentación, memoria, OpenSpec, orquestación, contribución y README |
 | **4 — Agentes opcionales** | `mentor` y `business-strategist`, uno por uno: opcionales y fuera del ciclo de desarrollo |
 
-> **Sin catálogo:** el perfil se crea con `crear-perfil.mjs` desde `_templates/preset.yaml`; los packs
+> **Sin catálogo:** el perfil se crea con `crear-perfil.mjs` desde `_templates/perfil.yaml`; los packs
 > solo si los necesitas (`crear-pack.mjs`).
 
 Si no sabes un comando, responde `TBD`: el agente lo anota en `AGENTS.md` § Pendientes. **Nunca se inventa uno.**

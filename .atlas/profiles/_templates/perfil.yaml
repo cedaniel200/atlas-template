@@ -1,8 +1,8 @@
-# Plantilla de preset de stack.
+# Plantilla de perfil de stack.
 # Copia este archivo con:
 #   node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>
 # Después completa los comandos con valores reales y valida ejecutándolos.
-# Un preset es DATOS: comandos y rutas. No incluyas procedimientos ni prompts.
+# Un perfil es DATOS: comandos y rutas. No incluyas procedimientos ni prompts.
 name: {{ID}}
 description: "{{DESCRIPTION}}"
 

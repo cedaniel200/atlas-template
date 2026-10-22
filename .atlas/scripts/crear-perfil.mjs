@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// crear-perfil.mjs — crea un preset de stack a partir de la plantilla.
+// crear-perfil.mjs — crea un perfil de stack a partir de la plantilla.
 //
 // No hay catálogo de perfiles: este script genera solo el que el proyecto necesita.
-// El preset resultante es un borrador: completa los comandos y valida ejecutándolos.
+// El perfil resultante es un borrador: completa los comandos y valida ejecutándolos.
 //
 // Uso:
 //   node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje> [opciones]
@@ -14,7 +14,7 @@
 //   --package-manager <texto>    Gestor de paquetes (default: TODO)
 //   --source <ruta>              Ruta del código (default: TODO)
 //   --tests <ruta>               Ruta de tests (default: TODO)
-//   --description <texto>        Descripción (default: "Preset <id>")
+//   --description <texto>        Descripción (default: "Perfil <id>")
 //   --force                      Sobrescribe si el perfil ya existe
 //
 // Salida: 0 = creado; 1 = error.
@@ -22,7 +22,7 @@
 import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const PLANTILLA = '.atlas/profiles/_templates/preset.yaml';
+const PLANTILLA = '.atlas/profiles/_templates/perfil.yaml';
 const DIRECTORIO = '.atlas/profiles';
 
 const args = process.argv.slice(2);
@@ -40,7 +40,7 @@ if (args.includes('--help') || args.includes('-h')) {
   --package-manager <texto> Gestor de paquetes (default: TODO)
   --source <ruta>           Ruta del código (default: TODO)
   --tests <ruta>            Ruta de tests (default: TODO)
-  --description <texto>     Descripción (default: "Preset <id>")
+  --description <texto>     Descripción (default: "Perfil <id>")
   --force                   Sobrescribe si existe`);
   process.exit(0);
 }
@@ -65,7 +65,7 @@ if (existe && !args.includes('--force')) {
 
 const reemplazos = {
   ID: id,
-  DESCRIPTION: (valor('--description') ?? `Preset ${id}`).replaceAll('"', '\\"'),
+  DESCRIPTION: (valor('--description') ?? `Perfil ${id}`).replaceAll('"', '\\"'),
   LANGUAGE: language,
   RUNTIME: valor('--runtime') ?? 'TODO',
   PACKAGE_MANAGER: valor('--package-manager') ?? 'TODO',

@@ -86,7 +86,7 @@ notes: |
 
 A profile is **data**, not procedure. See `.atlas/profiles/README.md` for the schema.
 
-- Create it with `node .atlas/scripts/crear-perfil.mjs --id <id> --language <language>`; the script starts from `_templates/preset.yaml`.
+- Create it with `node .atlas/scripts/crear-perfil.mjs --id <id> --language <language>`; the script starts from `_templates/perfil.yaml`.
 - Only commands, paths, tool names and thresholds.
 - No framework-specific values under a toolchain name (e.g., no Spring paths in a `java-gradle` profile).
 - If a command does not exist, leave `""` and note it; never invent one.
@@ -98,7 +98,7 @@ A profile is **data**, not procedure. See `.atlas/profiles/README.md` for the sc
 
 A stack = profile + paths + commands + packs. It can be added **at any time**:
 
-1. Create the preset if it does not exist (`crear-perfil.mjs`) and fill in the commands.
+1. Create the profile if it does not exist (`crear-perfil.mjs`) and fill in the commands.
 2. Add the row to `state.stacks` and `AGENTS.md § Stacks`.
 3. Generate the adapter: `node .atlas/scripts/renderizar-adaptadores.mjs` → `engineer-<id>`.
 4. Validate: `validar-contrato.mjs`, `validar-perfiles.mjs` and `medir-contexto.mjs`.

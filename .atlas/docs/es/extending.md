@@ -86,7 +86,7 @@ notes: |
 
 Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/README.md`.
 
-- Créalo con `node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>`; el script parte de `_templates/preset.yaml`.
+- Créalo con `node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>`; el script parte de `_templates/perfil.yaml`.
 - Solo comandos, rutas, nombres de herramientas y umbrales.
 - Sin valores de framework bajo un nombre de toolchain (por ejemplo, sin rutas de Spring en `java-gradle`).
 - Si un comando no existe, dejar `""` y anotarlo; nunca inventarlo.
@@ -98,7 +98,7 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/RE
 
 Un stack = perfil + ruta + comandos + packs. Se puede añadir **en cualquier momento**:
 
-1. Crea el preset si no existe (`crear-perfil.mjs`) y completa los comandos.
+1. Crea el perfil si no existe (`crear-perfil.mjs`) y completa los comandos.
 2. Añade la fila a `state.stacks` y a `AGENTS.md § Stacks`.
 3. Genera el adaptador: `node .atlas/scripts/renderizar-adaptadores.mjs` → `engineer-<id>`.
 4. Valida: `validar-contrato.mjs`, `validar-perfiles.mjs` y `medir-contexto.mjs`.

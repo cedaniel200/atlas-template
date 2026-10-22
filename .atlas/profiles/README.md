@@ -1,8 +1,8 @@
-# Presets de stack (perfiles)
+# Perfiles de stack
 
-Un preset es **datos**, no procedimiento: describe cómo se construye, se ejecuta y se valida un stack.
-**No hay catálogo**: el bootstrap crea solo el preset que el proyecto necesita a partir de
-`_templates/preset.yaml`, y el usuario valida los comandos.
+Un perfil es **datos**, no procedimiento: describe cómo se construye, se ejecuta y se valida un stack.
+**No hay catálogo**: el bootstrap crea solo el perfil que el proyecto necesita a partir de
+`_templates/perfil.yaml`, y el usuario valida los comandos.
 
 ## Cómo se crea
 
@@ -11,7 +11,7 @@ node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje> \
   [--runtime <runtime>] [--package-manager <gestor>] [--source <ruta>] [--tests <ruta>]
 ```
 
-1. El script copia `_templates/preset.yaml` a `<id>.yaml` (no sobrescribe sin `--force`).
+1. El script copia `_templates/perfil.yaml` a `<id>.yaml` (no sobrescribe sin `--force`).
 2. Completa los comandos con valores reales; si no aplica, `""` + nota.
 3. Valida: `node .atlas/scripts/validar-perfiles.mjs`.
 4. Añade el stack a `state.stacks` y a `AGENTS.md § Stacks`.
@@ -21,9 +21,22 @@ Se puede hacer **en cualquier momento**, no solo en el bootstrap.
 
 ## Por qué existen
 
-Sin presets, cada stack obligaría a repetir los mismos comandos en cada proyecto. Con presets,
+Sin perfiles, cada stack obligaría a repetir los mismos comandos en cada proyecto. Con perfiles,
 **cualquier stack queda soportado** con ~40 líneas de YAML; los packs se reservan para conocimiento
 procedimental real. Al generarse bajo demanda, no hay archivos que nadie use.
+
+## Perfil o pack: cómo decidir
+
+| Necesitas… | Va en… | Ejemplo |
+|---|---|---|
+| Cómo se ejecuta el stack | **Perfil** + stack | `./gradlew build`, `npm test`, puerto, health |
+| Cómo se hace algo con una tecnología | **Pack** | cómo probar controllers de Spring, checklist MASVS |
+| Regla de workflow para todos | **Núcleo** | TDD, PR pequeño, gates |
+
+**Ejemplo — Spring Boot:**
+
+- **Perfil `java-gradle` + stack:** comandos de build/test/run, `8080`, `/actuator/health` (datos).
+- **Pack `spring-boot` (opcional):** convenciones de tests, seguridad y observabilidad (procedimiento).
 
 ## Esquema
 
@@ -103,7 +116,7 @@ Un campo que no aplica es `""` (nunca se omite ni se inventa). Derivaciones a pl
 
 ## Ejemplos y plantilla
 
-- `_templates/preset.yaml` es la **plantilla** que usa `crear-perfil.mjs`. No se valida como perfil.
+- `_templates/perfil.yaml` es la **plantilla** que usa `crear-perfil.mjs`. No se valida como perfil.
 - La plantilla usa marcadores de generación (`{{ID}}`, `{{LANGUAGE}}`, …) que no son placeholders de
   perfil: los resuelve `crear-perfil.mjs`. El borrador nace con `TODO` en runtime/rutas; complétalos.
 - En `_examples/` hay dos perfiles **ilustrativos**: muestran la forma del YAML, no un catálogo.
@@ -111,8 +124,8 @@ Un campo que no aplica es `""` (nunca se omite ni se inventa). Derivaciones a pl
 
 | Archivo | Ilustra |
 |---|---|
-| `_templates/preset.yaml` | Esqueleto para generar un preset |
+| `_templates/perfil.yaml` | Esqueleto para generar un perfil |
 | `_examples/java-gradle.yaml` | Toolchain JVM (Gradle, Checkstyle, PIT, CRAP) |
 | `_examples/node-ts.yaml` | Toolchain Node/TS (lint, typecheck, cobertura) |
 
-El proyecto crea su preset con `crear-perfil.mjs`; `_examples/` solo sirve de referencia.
+El proyecto crea su perfil con `crear-perfil.mjs`; `_examples/` solo sirve de referencia.

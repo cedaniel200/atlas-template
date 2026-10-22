@@ -122,7 +122,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 |---|---|
 | 🧭 **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
 | 🤖 **Agentes** | `analyst`, `engineer` (cada stack genera `engineer-<stack>`), `reviewer`, `qa-analyst`, `doc-writer` en `.atlas/agents/`; opcionales: `mentor` y `business-strategist` (los activa el bootstrap) |
-| 🧱 **Perfiles** | Se generan bajo demanda con `crear-perfil.mjs` desde `_templates/preset.yaml`; no hay catálogo |
+| 🧱 **Perfiles** | Se generan bajo demanda con `crear-perfil.mjs` desde `_templates/perfil.yaml`; no hay catálogo |
 | 🎒 **Packs** | Esqueletos con `crear-pack.mjs`; solo existen si el proyecto los necesita |
 | 🧩 **Skills** | 17 skills core portables en `.agents/skills/` + packs opcionales en `.atlas/packs/` |
 | 🚀 **Ritual** | [`../.atlas/BOOTSTRAP.md`](../.atlas/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
@@ -145,7 +145,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 │   ├── PLACEHOLDERS.md  # contrato de placeholders (perfil/proyecto, N/A)
 │   ├── PROJECT-README.md # plantilla del README del proyecto
 │   ├── agents/          # 5 prompts core + 2 opcionales (+ engineer-<stack> generado)
-│   ├── profiles/        # presets bajo demanda (_templates/ + _examples/)
+│   ├── profiles/        # perfiles bajo demanda (_templates/ + _examples/)
 │   ├── packs/           # packs opcionales bajo demanda (_templates/ + activos)
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
@@ -159,6 +159,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 ├── openspec/            # config, specs, changes, schemas
 ├── adr/
 ├── .githooks/           # hooks de git (gitleaks)
+├── .github/assets/      # imagen social del repositorio (no es parte del arnés)
 ├── SECURITY.md          # confidencialidad y responsabilidad
 └── LICENSE              # MIT
 ```

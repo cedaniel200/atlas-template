@@ -16,7 +16,7 @@ Lo consume `.atlas/BOOTSTRAP.md` en la primera sesión.
 | `docs/` | ✅ sí | Documentación interna del arnés (`en/` canónico, `es/` traducción) |
 | `hosts/<host>/` | ✅ sí | Plantillas de adaptador por herramienta |
 | `profiles/<stack>.yaml` | ✅ sí | **Datos** por stack: comandos, rutas, calidad |
-| `profiles/_templates/` | ✅ sí | Plantilla de preset; no se valida como perfil |
+| `profiles/_templates/` | ✅ sí | Plantilla de perfil; no se valida como perfil |
 | `packs/<pack>/` | ✅ sí | **Procedimiento** opcional (skills/agentes), fuera de discovery |
 | `packs/_templates/` | ✅ sí | Esqueleto de pack; no se activa |
 | `scripts/` | ✅ sí | Helpers portables (solo Node/shell): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `medir-contexto.mjs` (diagnóstico de mantenimiento) y `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
@@ -91,7 +91,7 @@ Lo consume `.atlas/BOOTSTRAP.md` en la primera sesión.
 
 | `ownership` | Ejemplos | Al actualizar ATLAS |
 |---|---|---|
-| `managed` | skills, prompts, plantillas de preset/pack | Se reemplaza **solo si el hash coincide** con el manifiesto; si no, se escribe `<archivo>.new` y se reporta conflicto |
+| `managed` | skills, prompts, plantillas de perfil/pack | Se reemplaza **solo si el hash coincide** con el manifiesto; si no, se escribe `<archivo>.new` y se reporta conflicto |
 | `generated` | adaptador de host, wrappers `opsx-*` | Se regenera siempre |
 | `owned` | `AGENTS.md`, `config.yaml`, specs, ADRs, `docs/` | **Nunca se sobrescribe**; solo se sugieren secciones nuevas |
 

@@ -19,6 +19,9 @@ Antes de crear un pack, clasifica el conocimiento:
 
 > Si el "pack" solo contendría comandos y rutas, **no es un pack: es un perfil**.
 
+**Ejemplo:** `bootRun`, el puerto y `health` van en el perfil/stack; cómo probar un controller o
+proteger un endpoint va en un pack.
+
 **Un pack nunca es requisito** para que ATLAS funcione. Sin pack, el agente usa el perfil y el
 proceso del núcleo; con pack, gana profundidad.
 
