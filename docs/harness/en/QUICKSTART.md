@@ -1,6 +1,8 @@
 # QUICKSTART — new project
 
-> For projects starting from scratch with **ATLAS**. If you already have code, use [`ADOPTION.md`](ADOPTION.md).
+> **ATLAS** is the template for AI-driven development with SDD: specs first, gated agents and a
+> setup that saves you from starting from scratch.
+> For new projects; if you already have code, use [`ADOPTION.md`](ADOPTION.md).
 
 ---
 

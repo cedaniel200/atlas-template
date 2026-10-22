@@ -1,6 +1,8 @@
 # QUICKSTART — proyecto nuevo
 
-> Para proyectos que empiezan de cero con **ATLAS**. Si ya tienes código, usa [`ADOPTION.md`](ADOPTION.md).
+> **ATLAS** es la plantilla para desarrollo impulsado por IA con SDD: especificaciones primero,
+> agentes con gates y arranque sin montar nada desde cero.
+> Para proyectos nuevos; si ya tienes código, usa [`ADOPTION.md`](ADOPTION.md).
 
 ---
 

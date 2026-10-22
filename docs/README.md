@@ -1,7 +1,21 @@
 # ATLAS — OpenSpec + Agentes
 
-> **ATLAS** (*Agnostic Template for LLM Agent Systems*) es una plantilla **autocontenida** para proyectos con OpenSpec y agentes especializados.
-> Agnóstica de dominio, de arquitectura y de herramienta anfitriona (OpenCode, Claude Code, Codex).
+> **ATLAS** (*Agnostic Template for LLM Agent Systems*) es una plantilla para **desarrollo de software
+> impulsado por IA con SDD (Spec-Driven Development)**: el agente trabaja sobre especificaciones,
+> decisiones y gates, no sobre improvisación.
+>
+> Te ahorra montar desde cero el contrato del proyecto, el esquema de OpenSpec, los roles de agente,
+> las skills, los perfiles de stack y el ritual de arranque: usas la plantilla, respondes un
+> cuestionario y empiezas a construir.
+>
+> Es **agnóstica** de dominio, arquitectura y herramienta anfitriona (OpenCode, Claude Code, Codex), y
+> **eficiente por diseño**: contexto acotado, procedimientos bajo demanda y validaciones automáticas
+> antes de cada merge.
+>
+> **En la práctica:**
+> - **SDD**: primero `proposal → specs → design → ADR → tasks`; después código.
+> - **Roles con gates**: analyst → engineer → QA → reviewer → doc-writer.
+> - **Multi-stack y multi-host**: un perfil por stack; el mismo arnés en tres herramientas.
 >
 > **Idioma:** Español · [English](harness/en/QUICKSTART.md)
 >
