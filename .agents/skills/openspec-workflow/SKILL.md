@@ -56,6 +56,11 @@ findings.
 Before QA: does the code implement the approved design? Did the scope change? Are the new ADRs
 coherent? If there is drift, fix the design **before** spending QA and review iterations.
 
+- Did the refactor introduce weak types (bare strings, booleans or magic numbers carrying semantics)
+  or incohesive helpers only to satisfy a size, complexity or CRAP threshold?
+- Is the behavior or observability change (logs, metrics, traces) covered by a test, and is the
+  refactor declared in the change report and `design.md`?
+
 ### 6. Review
 
 Code review against the declared architecture and security, plus quantitative gates. No critical

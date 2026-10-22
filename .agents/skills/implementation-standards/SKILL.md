@@ -40,6 +40,14 @@ license: MIT
 - **Never** reference `openspec/specs/` (they are deltas that get archived).
 - **Never** reference roadmaps, planning documents or other projects as the justification.
 - If no ADR anchors the decision, the comment is **self-contained**: decision and reason, here and now.
+- **Limits**: doc comment ≤ 3 lines; inline comment ≤ 2; decision block ≤ 6 and links to the ADR or
+  document that holds the detail.
+- **Do not repeat**: the same doc comment in N methods is duplication. Document it **once** on the class
+  or the collaborator that owns the behavior.
+- **Do not describe the "what"**: the name and types already say it. No signature or change history
+  (git owns that).
+- If it does not fit, the detail belongs in an ADR or functional documentation; the comment references it.
+- A comment does **not** justify a lint threshold or a degraded design.
 
 ## Quality controls are signals, not goals
 
@@ -49,6 +57,18 @@ license: MIT
 - If a touched file has pre-existing lint violations, resolve them; do not leave debt "because it was
   not mine".
 - If a limit is close, **refactor** or **document why** in the commit.
+
+## Thresholds are analysis triggers, not a design excuse
+
+- When a file/method size, complexity or CRAP threshold fires: **first remove duplication** (repeated
+  boilerplate for logging, transactions or instrumentation is the usual cause), then extract
+  **cohesive, typed collaborators**, and finally split responsibilities. A documented suppression is
+  the **last** resort.
+- **Do not** introduce bare strings, booleans or magic numbers to carry semantics (names, modes, kinds).
+  Model them with an **enum, value object or interface** in its own file; that type also counts toward
+  size.
+- If the refactor was not planned in `design.md`, **declare it** in the change report (and in
+  `design.md` if structural). No invisible refactors.
 
 ## Technical debt: simplification first
 
