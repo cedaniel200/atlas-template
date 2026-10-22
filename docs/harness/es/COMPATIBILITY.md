@@ -46,7 +46,7 @@ Los comandos `opsx-*` **no** se mantienen a mano: `openspec update --tools <host
 
 | ID | Limitación | Impacto | Mitigación |
 |---|---|---|---|
-| C‑1 | Codex no tiene subagentes | No hay `engineer`/`qa-analyst` como agentes separados | `AGENTS.md` define el protocolo de roles; el anuncio de rol sigue vigente |
+| C‑1 | Codex no tiene subagentes | No hay `engineer`/`qa-analyst` como agentes separados; los opcionales tampoco se pueden instalar | `AGENTS.md` define el protocolo de roles; el anuncio de rol sigue vigente |
 | C‑2 | `disable-model-invocation` no está en la especificación Agent Skills | Algunos hosts pueden autoinvocar una skill que debería ser manual | Se documenta; si un pack la usa, se marca como dependiente del host |
 | C‑3 | Symlinks en Windows requieren modo desarrollador | `.claude/skills` roto en Windows | Copia estática + re-ejecutar el bootstrap al añadir skills |
 | C‑4 | `openspec init` puede reescribir `AGENTS.md` y escribir skills en `.opencode/skills` (ruta nativa de OpenCode, con prioridad sobre `.agents/skills`) | Pérdida del contrato / skills canónicas sombreadas por ID | Backup + `diff` + fusión manual. Si hay IDs duplicados, el proyecto elige: conservar la copia del CLI (sombreado) o eliminar solo esos IDs (canónico). Tradeoff asumido (`.template/BOOTSTRAP.md` § 0.4) |

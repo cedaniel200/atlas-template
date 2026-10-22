@@ -136,6 +136,11 @@ Los adaptadores los genera `renderizar-adaptadores.mjs` desde `.template/agents/
 Multi-stack: el `engineer` se renderiza por stack (`engineer-<stack>`). Codex no tiene subagentes:
 los roles se emulan con este archivo y el anuncio de rol.
 
+**Roles opcionales** (solo si el bootstrap los activa; ver `state.optional_agents`): `mentor`
+(enseñanza agnóstica de los conceptos y patrones del proyecto, explicación del código y material
+didáctico) y `business-strategist` (modelo de negocio, propuesta de valor, segmentos, pricing y
+canales en `docs/business/`). No forman parte del ciclo de desarrollo: se invocan cuando se necesiten.
+
 ---
 
 ## Workflow

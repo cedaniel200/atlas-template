@@ -170,6 +170,33 @@ if (stacks.length > 0) {
   }
 }
 
+const agentesOpcionales = Array.isArray(estado.optional_agents) ? estado.optional_agents : [];
+if (agentesOpcionales.length > 0) {
+  const host = estado.host;
+  const directorio = host === 'opencode' ? '.opencode/agent' : host === 'claude' ? '.claude/agents' : null;
+  if (!directorio) {
+    errores.push(`state.optional_agents: el host ${host ?? '(sin host)'} no soporta subagentes`);
+  }
+  for (const rol of agentesOpcionales) {
+    const canonico = join('.template/agents', `${rol}.md`);
+    try {
+      const texto = await leer(canonico);
+      if (!texto.trimStart().startsWith('<!-- optional-role -->')) {
+        errores.push(`${canonico}: no está marcado como rol opcional`);
+      }
+    } catch {
+      errores.push(`${canonico}: no existe el prompt del agente opcional ${rol}`);
+    }
+    if (directorio) {
+      try {
+        await access(join(directorio, `${rol}.md`));
+      } catch {
+        errores.push(`${directorio}/${rol}.md: falta el adaptador del agente opcional ${rol}`);
+      }
+    }
+  }
+}
+
 const agentsMdSkills = await leer('AGENTS.md');
 const registroSkills = seccion(agentsMdSkills, '## Skill Registry');
 const nombresRegistro = new Set(

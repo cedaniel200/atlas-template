@@ -12,9 +12,20 @@ instruction set, and the bootstrap generates the adapter each tool needs.
 | `reviewer` | `reviewer.md` | Read-only code review |
 | `qa-analyst` | `qa-analyst.md` | Functional testing |
 | `doc-writer` | `doc-writer.md` | Technical documentation |
+| `mentor` (optional) | `mentor.md` | Agnostic teaching of the project's concepts and patterns, code explanation and learning material |
+| `business-strategist` (optional) | `business-strategist.md` | Business model, value proposition, segments, pricing and channels (`docs/business/`) |
 
-Optional roles live in packs (`.template/packs/<pack>/agents/`) and are copied here only when the pack
-is activated.
+## Optional roles
+
+Built-in optional roles start with `<!-- optional-role -->`. The bootstrap asks for them **one by one**
+(Round 4) and records the accepted ids in `state.optional_agents`. The renderer only emits their
+adapters when they are enabled, and the marker never reaches the adapter.
+
+They are **not part of the delivery cycle**: they stay available to be invoked when needed. Codex has
+no subagents, so they cannot be installed there.
+
+Optional roles can also come from packs (`.template/packs/<pack>/agents/`), copied here only when the
+pack is activated.
 
 ## Naming
 

@@ -54,6 +54,7 @@ El ritual pregunta, por rondas:
 | **1 — Identidad y stacks** | Nombre, descripción, stack(s), estructura, package base; una fila por stack (multi-stack) |
 | **2 — Comandos y calidad** | Build, run, test, lint, cobertura, mutación, CRAP, entorno de QA |
 | **3 — Arquitectura, dominio y límites** | Postura, dominio, no tocar, git, documentación, memoria, OpenSpec, orquestación, contribución y README |
+| **4 — Agentes opcionales** | `mentor` y `business-strategist`, uno por uno: opcionales y fuera del ciclo de desarrollo |
 
 Si no sabes un comando, responde `TBD`: el agente lo anota en `AGENTS.md` § Pendientes. **Nunca se inventa uno.**
 
