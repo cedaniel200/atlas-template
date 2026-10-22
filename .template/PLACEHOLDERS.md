@@ -99,6 +99,21 @@ Todos deben quedar definidos (valor o `N/A`).
 | `qa.health_path` | `HEALTH_URL = http://localhost:<APP_PORT><HEALTH_PATH>` (o `N/A` si no hay health) |
 | `qa.metrics_path` | `METRICS_PATH` |
 
+### Regla de vacío (mecánica)
+
+Un campo vacío en el perfil **no se compone**: se traduce en `N/A` en el proyecto.
+
+| Perfil | Proyecto |
+|---|---|
+| `qa.health_path: ""` o `qa.app_port: ""` | `HEALTH_URL = N/A` — **nunca** se compone `http://localhost:<puerto>` con path vacío |
+| `qa.app_port: ""` | `APP_PORT = N/A` |
+| `qa.metrics_path: ""` | `METRICS_PATH = N/A` |
+| `qa.service_name: ""` | `SERVICE_NAME = N/A` |
+| `commands.<x>: ""` | `<X>_COMMAND = N/A` |
+
+`N/A` **no es vacío**: es un valor del contrato que el agente interpreta como "no aplica" (omite el paso
+y lo declara).
+
 ---
 
 ## Regla de verificación

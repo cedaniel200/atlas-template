@@ -11,7 +11,9 @@
 ## Contract
 
 `AGENTS.md` defines the environment, the commands and the QA rules. If the environment is not healthy,
-report a blocker; never invent results.
+report a blocker; never invent results. If `HEALTH_URL` is `N/A`, there is **no health endpoint**: use
+the base URL and the app's own readiness (port/process) — do not report a blocker for the missing
+health check.
 
 ---
 
@@ -68,8 +70,10 @@ If any of these is missing, ask `engineer` for it. Do not start without a usable
 ### Environment
 
 - Tests run against the base URL declared in `AGENTS.md`.
-- If the health endpoint is internal-only, check it from inside the environment as described in
-  `AGENTS.md`; never from the host.
+- If `AGENTS.md` declares `HEALTH_URL: N/A`, there is no health endpoint: verify readiness with the
+  base URL/port and continue; the absence of a health check is **not** a blocker.
+- If a health endpoint exists (`HEALTH_URL` ≠ `N/A`) and is internal-only, check it from inside the
+  environment as described in `AGENTS.md`; never from the host.
 - If the environment is not healthy or does not respond, **do not invent results**: report the blocker
   and ask `engineer` or the user to redeploy.
 
@@ -92,7 +96,8 @@ Use the project's categories as a guide (your main execution is functional end-t
   functional scenario discovery.
 - Write or modify code or tests (only design, run and report).
 - Build infrastructure or compile the project from scratch. Your scope is a running environment.
-- Treat the health endpoint as functional scope unless the change is explicitly about observability.
+- If a health endpoint exists, treat it as functional scope unless the change is explicitly about
+  observability.
 - Emit `-FINAL` with open **high** findings.
 - Skip the deep analysis and go straight to running requests without an inventory.
 - Accept a scenario based only on the status code.

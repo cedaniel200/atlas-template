@@ -71,7 +71,10 @@ Se resuelven al **instanciar** el perfil (respuestas del cuestionario). Lista ce
 | `METRICS_PATH` | `qa.metrics_path` |
 
 Un campo que no aplica es `""` (nunca se omite ni se inventa). Derivaciones a placeholders de proyecto:
-`HEALTH_URL = http://localhost:<APP_PORT><HEALTH_PATH>` (o `N/A` si el stack no tiene health).
+`HEALTH_URL = http://localhost:<APP_PORT><HEALTH_PATH>`.
+
+**Vacío ≠ compuesto:** si `health_path` o `app_port` es `""`, el proyecto recibe `HEALTH_URL = N/A`
+(nunca se compone una URL con path vacío). Igual para `metrics_path`/`service_name` → `N/A`.
 
 ## Reglas
 

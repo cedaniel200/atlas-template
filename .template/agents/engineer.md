@@ -83,7 +83,8 @@ close.
 - Move to the next task while the current one has failing tests or no commit.
 - Leave findings from QA or review unresolved.
 - Take ownership of CI/CD or production infrastructure. You only manage the local QA environment.
-- Use the health endpoint from the host if `AGENTS.md` says it is internal-only.
+- Use the health endpoint from the host only if it exists (`HEALTH_URL` ≠ `N/A`) and `AGENTS.md` says
+  it is internal-only.
 
 ---
 
