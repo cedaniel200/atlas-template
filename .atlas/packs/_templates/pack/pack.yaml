@@ -1,7 +1,7 @@
-# Plantilla de pack.
-# Copia este directorio con:
+# Pack template.
+# Copy this directory with:
 #   node .atlas/scripts/crear-pack.mjs --id <id> --description "..."
-# Un pack es PROCEDIMIENTO opcional: skills y agentes. Nunca define comandos de stack.
+# A pack is optional PROCEDURE: skills and agents. It never defines stack commands.
 name: {{ID}}
 version: 0.1.0
 description: "{{DESCRIPTION}}"
@@ -9,5 +9,5 @@ requires: []
 skills: []
 agents: []
 notes: |
-  Añade las skills en skills/<nombre>/SKILL.md y los agentes en agents/<rol>.md.
-  Actívalo en state.stacks[].packs y en state.packs.
+  Add skills in skills/<name>/SKILL.md and agents in agents/<role>.md.
+  Activate it in state.stacks[].packs and state.packs.
