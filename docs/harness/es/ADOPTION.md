@@ -18,10 +18,11 @@ Copia del template solo lo que falte:
 
 | Archivo | Si ya existe |
 |---|---|
-| `AGENTS.md` | **No sobrescribir**; fusionar por diff |
+| `AGENTS.md` | **Base del template**: backup, reemplazar por el `AGENTS.md` del template y migrar el contenido propio a `docs/project-context.md` |
 | `openspec/config.yaml` | Fusionar `context:` y `rules:` |
 | `openspec/specs/`, `adr/` | Conservar los del proyecto |
 | `.agents/skills/`, `.template/agents/` | Conservar las propias; añadir las del template con prefijo o como pack |
+| `README.md` | **Conservar**; el bootstrap pregunta si añadir las secciones que falten de `.template/PROJECT-README.md` |
 | `docs/README.md` | Fusionar: conservar el índice del proyecto y enlazar las secciones del arnés |
 | Adaptadores (`.opencode/`, `.claude/`) | Preservar; adaptar solo lo que colisione |
 
@@ -49,7 +50,7 @@ El bootstrap detecta **brownfield** y hace inventario antes de tocar nada.
 | Agentes y skills propios | Qué se conserva y qué se adapta |
 | `.env`, secretos | Solo nombres; **nunca valores** |
 
-El resultado se escribe en `docs/template-adoption.md`:
+El resultado se escribe en `.template/adoption-report.md` (y se resume en `docs/template-adoption.md` si el proyecto lo usa):
 
 ```markdown
 # Adopción del arnés
@@ -85,6 +86,8 @@ backup → diff → fusión → confirmación del usuario
 | Archivo del proyecto más completo | Se conserva el del proyecto; se anota en el reporte |
 | Archivo del template más completo | Se propone el reemplazo con diff |
 | Ambos con contenido | Fusión manual; nunca automática |
+| `AGENTS.md` del proyecto | Se reemplaza por la **base del template** (backup); el contenido propio se migra a `docs/project-context.md` |
+| `README.md` del proyecto | Se conserva; solo se añaden las secciones faltantes si el usuario lo acepta |
 
 **Nunca** se sobrescriben specs, ADRs ni reglas de negocio existentes.
 

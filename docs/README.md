@@ -34,6 +34,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est√
 | **Arn√©s interno** | [`.template/docs/es/`](../.template/docs/es/README.md) | Quien mantiene o extiende el template |
 | **Uso** | [`harness/es/`](harness/es/QUICKSTART.md) | Quien adopta el template en su proyecto |
 | **Proyecto** | `docs/architecture/`, `docs/api/`, `docs/functional/`, `docs/guides/` | El equipo del proyecto |
+| **Contexto del proyecto** | `docs/project-context.md` | El equipo del proyecto |
 
 ---
 
