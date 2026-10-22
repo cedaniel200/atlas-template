@@ -26,7 +26,9 @@ metadata: <opcional, mapa de strings>
    - Sin sintaxis de comandos slash; los wrappers se generan por host.
    - Breve; el detalle largo va a un archivo de referencia hermano.
 4. Registrarla en `AGENTS.md` § Skill Registry.
-5. Si viene de otro repositorio, conservar su licencia y añadirla a `THIRD-PARTY-NOTICES.md`.
+5. Regenera el manifiesto (`node .template/scripts/generar-manifiesto.mjs --host <host>`) y valida
+   (`node .template/scripts/validar-manifiesto.mjs`).
+6. Si viene de otro repositorio, conservar su licencia y añadirla a `THIRD-PARTY-NOTICES.md`.
 
 ---
 

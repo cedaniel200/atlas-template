@@ -26,7 +26,9 @@ metadata: <optional string map>
    - No slash-command syntax; wrappers are generated per host.
    - Keep it short; move long detail to a sibling reference file.
 4. Register it in `AGENTS.md` § Skill Registry.
-5. If it comes from another repository, preserve its license and add it to `THIRD-PARTY-NOTICES.md`.
+5. Regenerate the manifest (`node .template/scripts/generar-manifiesto.mjs --host <host>`) and validate
+   (`node .template/scripts/validar-manifiesto.mjs`).
+6. If it comes from another repository, preserve its license and add it to `THIRD-PARTY-NOTICES.md`.
 
 ---
 
