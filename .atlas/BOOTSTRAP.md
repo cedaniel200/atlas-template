@@ -354,6 +354,7 @@ Advancing to `propose` is not allowed until **everything** is green.
 - [ ] Active host adapter present (agents and commands)
 - [ ] Optional agents: only those chosen in `state.optional_agents` have an adapter
 - [ ] Stacks: each one has `engineer-<stack>.md` and no `engineer.md` remains
+- [ ] Template legal: if moved, `.atlas/legal/` has the five files and the root is free; if the project has its own, they remain at the root
 - [ ] No template contamination: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.atlas --exclude-dir=node_modules .` → no results
 - [ ] `.atlas/manifest.json` generated
 - [ ] `git status` clean and phases committed
