@@ -272,6 +272,7 @@ No los presentes como recomendados ni los actives por defecto.
 | `CLAUDE.md` | Verificar el stub de una línea: `@AGENTS.md` |
 | Adaptadores | Agentes y comandos del host detectado |
 | `.atlas/docs/` | Si no se contribuye, mover a `.atlas/archive/docs/` y quitar la fila del índice |
+| `.atlas/legal/` | Legal del template movido desde la raíz (ver abajo) |
 | `.atlas/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
 
 ### Generación de adaptadores y manifiesto
@@ -291,8 +292,14 @@ No los presentes como recomendados ni los actives por defecto.
 - **AGENTS.md (brownfield)**: `node .atlas/scripts/adoptar-agents.mjs --template <pristine> --apply`
   (backup + base del template + contenido propio a `docs/project-context.md`); después rellena los
   placeholders de la base en esta Fase 2. No es un merge de iguales.
+- **Legal del template**: en `greenfield` (o si el usuario acepta en brownfield), mueve el legal del
+  template a `.atlas/legal/`:
+  `node .atlas/scripts/mover-legal.mjs --apply`. Mueve `LICENSE`, `SECURITY.md`, `SECURITY.es.md`,
+  `THIRD-PARTY-NOTICES.md` y `THIRD-PARTY-NOTICES.es.md`, y actualiza los enlaces de `docs/README.md`
+  y `docs/README.en.md`. **No genera una licencia del proyecto**: si la quiere, la pide explícitamente.
+  En brownfield, si el proyecto ya tiene sus legales, no los muevas.
 - **Manifiesto**: `node .atlas/scripts/generar-manifiesto.mjs --host <host>`. Aplica las reglas de
-  ownership y origen (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs;
+  ownership y origen (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs/legal;
   generated: adaptadores/commands/opencode.json/CLAUDE.md), calcula `sha256` y escribe
   `.atlas/manifest.json`. **Contrato: 64 hex en minúsculas, sin nombre de archivo** (lo aplica el script).
   **Ejecútalo al final de la Fase 2**, después de placeholders, docs y contribución; si cambias un archivo después, vuelve a ejecutarlo.

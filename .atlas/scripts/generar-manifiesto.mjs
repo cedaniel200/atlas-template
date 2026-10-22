@@ -7,7 +7,7 @@
 //   owned     AGENTS.md, README.md, openspec/config.yaml, .env.example, .gitignore,
 //             .gitattributes, .editorconfig, docs/**, adr/**, openspec/specs/**
 //   managed   .agents/skills/**, .atlas/agents/**, openspec/schemas/**,
-//             .atlas/profiles/_templates/**, .atlas/profiles/_examples/**, .atlas/packs/**
+//             .atlas/legal/**, .atlas/profiles/_templates/**, .atlas/profiles/_examples/**, .atlas/packs/**
 //   generated .opencode/agent/**, .claude/agents/**, .opencode/commands/**,
 //             .claude/commands/**, .codex/prompts/**, opencode.json, CLAUDE.md
 //
@@ -49,6 +49,11 @@ const REGLAS = [
   },
   {
     patron: /^\.agents\/skills\/|^\.atlas\/agents\/|^openspec\/schemas\//,
+    ownership: 'managed',
+    origin: () => 'core',
+  },
+  {
+    patron: /^\.atlas\/legal\//,
     ownership: 'managed',
     origin: () => 'core',
   },

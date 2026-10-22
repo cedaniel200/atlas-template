@@ -19,7 +19,8 @@ Lo consume `.atlas/BOOTSTRAP.md` en la primera sesión.
 | `profiles/_templates/` | ✅ sí | Plantilla de perfil; no se valida como perfil |
 | `packs/<pack>/` | ✅ sí | **Procedimiento** opcional (skills/agentes), fuera de discovery |
 | `packs/_templates/` | ✅ sí | Esqueleto de pack; no se activa |
-| `scripts/` | ✅ sí | Helpers portables (solo Node/shell): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `medir-contexto.mjs` (diagnóstico de mantenimiento) y `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
+| `legal/` | ✅ sí | Legal del template movido al configurar un proyecto (LICENSE, SECURITY, THIRD-PARTY) |
+| `scripts/` | ✅ sí | Helpers portables (solo Node/shell): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `mover-legal.mjs`, `medir-contexto.mjs` (diagnóstico de mantenimiento) y `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
 | `adapters/<host>/` | ❌ no (gitignored) | Artefactos desplazados por `prune` (estado local) |
 | `archive/` | ❌ no (gitignored) | Documentación interna archivada cuando el proyecto no contribuye (`.atlas/docs/`) |
 | `backups/<timestamp>/` | ❌ no (gitignored) | Copia previa a una fusión en modo brownfield |
