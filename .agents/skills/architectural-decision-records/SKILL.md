@@ -68,8 +68,10 @@ After the user answers, update `preferences.md` with the selected `preferred-sty
 
 ## Example
 
+> Illustrative only: relational, NoSQL or a combination are all valid; what matters is the reasoning.
+
 ```markdown
-# ADR-012: Use PostgreSQL for Orders
+# ADR-012: Choose the storage for orders
 
 ## Status
 
@@ -77,22 +79,25 @@ Accepted
 
 ## Context
 
-Orders need relational constraints, consistency, and reporting joins. The team operates PostgreSQL well.
+Orders need transactional consistency, reporting joins and predictable access patterns. The team
+already operates a relational database well, and the catalog may need flexible schemas.
 
 ## Considered Options
 
-- PostgreSQL: integrity, SQL reporting, familiar operations; migrations required.
-- MongoDB: flexible schema; weaker fit for consistency and joins.
+- Relational database: integrity, SQL reporting, familiar operations; migrations required.
+- Document database (NoSQL): flexible schema, horizontal scaling; weaker fit for multi-entity consistency.
+- Combination (polyglot): relational for orders, document for the catalog; two operational models.
 
 ## Decision
 
-We will use PostgreSQL because consistency, joins, and operational familiarity matter more than schema flexibility.
+Use a relational database for orders because consistency and reporting matter more than schema
+flexibility. Keep the document store option open for the catalog if its schema keeps changing.
 
 ## Consequences
 
-- Positive: Integrity and reporting align with needs.
-- Negative: Schema changes need migrations.
-- Follow-up: Define migration practice.
+- Positive: integrity and reporting align with needs.
+- Negative: schema changes need migrations.
+- Follow-up: define migration practice and revisit the catalog decision.
 ```
 
 ## Common Mistakes

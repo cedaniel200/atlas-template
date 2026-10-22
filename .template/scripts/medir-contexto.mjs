@@ -184,7 +184,7 @@ const fuenteAgentes = adaptadores.length > 0 ? 'adaptadores del host' : 'prompts
 const agentes = adaptadores.length > 0
   ? await medirPatrones(['.opencode/agent/*.md', '.claude/agents/*.md'])
   : await medirPatrones([AGENTES], ['.template/agents/README.md']);
-log(`\n## Por agente (base + prompt + skills que menciona) — fuente: ${fuenteAgentes}`);
+log(`\n## Por agente (base + prompt + núcleo de skills) — fuente: ${fuenteAgentes}`);
 const porAgente = [];
 for (const agente of agentes.sort((a, b) => a.ruta.localeCompare(b.ruta))) {
   const mencionadas = [...agente.texto.matchAll(/`([a-z0-9-]+)`/g)]
@@ -208,7 +208,7 @@ const techo =
   tokensBase +
   Math.ceil(todasLasSkills.reduce((total, fila) => total + fila.caracteres, 0) / PROXY) +
   Math.ceil(agentes.reduce((total, fila) => total + fila.caracteres, 0) / PROXY);
-log(`\n## Techo (todo el arnés cargado a la vez)\n  ~${techo} tok`);
+log(`\n## Techo (todo el arnés cargado a la vez, incl. referencias on-demand)\n  ~${techo} tok`);
 
 const cota = (tokens) => Math.ceil(tokens * 1.15);
 log('\n## Resumen (tokens, cota superior +15%)');
