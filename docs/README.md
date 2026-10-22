@@ -149,7 +149,8 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 │   ├── packs/           # packs opcionales bajo demanda (_templates/ + activos)
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/           # plantillas de adaptador por host
-│   ├── scripts/         # sha256 + validadores + crear-perfil + crear-pack + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── scripts/         # sha256 + validadores + crear-perfil + crear-pack + mover-legal + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── legal/           # legal del template en proyectos configurados
 │   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/
 │   ├── README.md        # este índice (portada de ATLAS)

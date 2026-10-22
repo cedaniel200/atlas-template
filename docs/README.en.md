@@ -151,7 +151,8 @@ The agent reads [`../AGENTS.md`](../AGENTS.md), sees `.atlas/state.json` is `pen
 │   ├── packs/           # optional on-demand packs (_templates/ + active)
 │   ├── docs/en|es/      # harness documentation (contributor)
 │   ├── hosts/           # host adapter templates
-│   ├── scripts/         # sha256 + validators + crear-perfil + crear-pack + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── scripts/         # sha256 + validators + crear-perfil + crear-pack + mover-legal + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── legal/           # template legal in configured projects
 │   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/
 │   ├── README.md        # Spanish landing page
