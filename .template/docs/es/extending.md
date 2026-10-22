@@ -160,9 +160,15 @@ disclosure progresiva; `AGENTS.md` → mover referencia a docs enlazados.
 ## Añadir un stack
 
 1. Añade una fila a `state.stacks` (`id`, `profile`, `paths`, comandos, `packs`).
-2. Rellena `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); la primera fila es el default.
+2. Rellena `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); incluye `Install`, `Build`, `Run`, `Test`, `Lint` y `Quality`.
 3. Ejecuta `renderizar-adaptadores.mjs`: se genera `engineer-<id>` por stack.
 4. Activa los packs del stack (`state.stacks[].packs`) y copia solo sus skills/agentes.
 
 Los packs opcionales viven en [`.template/packs/`](../../packs/README.md) y no consumen contexto hasta
 que se activan. Un stack sin pack usa el perfil y el proceso del núcleo.
+
+## Core vs pack
+
+- **Core**: `.agents/skills/` (workflow; se instala siempre).
+- **Pack**: `.template/packs/<id>/` (tecnología o procedimiento; solo se copia si está activo en `state.stacks[].packs`).
+- **Versión**: el pack en `pack.yaml`; el core sigue la versión del template.

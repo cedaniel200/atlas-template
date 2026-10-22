@@ -137,6 +137,24 @@ if (stacks.length > 0) {
   }
 }
 
+const agentsMdSkills = await leer('AGENTS.md');
+const registroSkills = seccion(agentsMdSkills, '## Skill Registry');
+const nombresRegistro = new Set(
+  [...registroSkills.matchAll(/^\|\s*`([a-z0-9-]+)`\s*\|/gm)].map((coincidencia) => coincidencia[1]),
+);
+for (const entrada of await readdir('.agents/skills', { withFileTypes: true })) {
+  if (!entrada.isDirectory()) continue;
+  const skill = join('.agents/skills', entrada.name, 'SKILL.md');
+  try {
+    await access(skill);
+  } catch {
+    continue;
+  }
+  if (!nombresRegistro.has(entrada.name)) {
+    errores.push(`${skill}: no está en AGENTS.md § Skill Registry`);
+  }
+}
+
 if (!configurado) {
   const sinUso = [...proyectoContrato].filter((nombre) => !usadosProyecto.has(nombre)).sort();
   for (const nombre of sinUso) {
