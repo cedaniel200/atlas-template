@@ -68,7 +68,11 @@ El resultado se escribe en `.template/adoption-report.md` (y se resume en `docs/
 
 ```bash
 node .template/scripts/inventariar-adopcion.mjs --template <ruta-template-pristino>
+node .template/scripts/adoptar-agents.mjs --template <ruta-template-pristino> --apply
 ```
+
+El segundo hace backup del `AGENTS.md` existente, copia la base del template y mueve el contenido
+anterior a `docs/project-context.md`. Después el bootstrap rellena los placeholders de la base.
 
 Clasifica cada archivo del template en `nuevo` / `igual` / `distinto`, copia los `distinto` a
 `.template/backups/adopcion-<timestamp>/` y escribe `.template/adoption-report.md` con la tabla.

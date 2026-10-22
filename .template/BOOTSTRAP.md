@@ -181,7 +181,9 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 5. Perfil de stack: `java-gradle`, `node-ts`, u otro (se crea uno nuevo si no existe).
 6. **Stacks** (multi-stack): si el proyecto mezcla tecnologías (p. ej. Python back + JS front + mobile),
    pide una fila por stack: `id`, `profile`, `paths`, comandos y `packs`. El **primero** es el default
-   (rellena § Comandos); los demás van a § Stacks. Un solo stack = una fila.
+   (rellena § Comandos); los demás van a § Stacks. La tabla de § Stacks incluye los comandos
+   (`Install`, `Build`, `Run`, `Test`, `Lint`, `Quality`) para que el contrato sea autocontenido.
+   Un solo stack = una fila.
 
 ## Ronda 2 — Comandos y calidad
 
@@ -211,7 +213,8 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 8. **Orquestación**: orquestada (default) o manual.
 9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas:
    `mkdir -p .template/archive && mv .template/docs .template/archive/docs`; en `docs/README.md`
-   elimina la fila "Arnés interno" y los enlaces a `.template/docs/`.
+   elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina el bullet "Skills y agentes"
+   (apunta a `.template/docs/`) y cualquier enlace a `.template/docs/`.
 10. **README**: si el proyecto ya tiene `README.md`, ¿añadir las secciones que falten de
     `.template/PROJECT-README.md`? (solo añade; nunca sobrescribe).
 
@@ -248,8 +251,9 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
   "¿Añadir las secciones que falten de `.template/PROJECT-README.md`?". Dry-run:
   `node .template/scripts/combinar-readme.mjs --proyecto .`; si acepta, `--apply`. Registra
   `state.readme` (`generated|preserved|appended`).
-- **AGENTS.md (brownfield)**: backup; usa el `AGENTS.md` del template como **base**; mueve el contenido
-  propio a `docs/project-context.md` y enlázalo. No es un merge de iguales.
+- **AGENTS.md (brownfield)**: `node .template/scripts/adoptar-agents.mjs --template <pristine> --apply`
+  (backup + base del template + contenido propio a `docs/project-context.md`); después rellena los
+  placeholders de la base en esta Fase 2. No es un merge de iguales.
 - **Manifiesto**: `node .template/scripts/generar-manifiesto.mjs --host <host>`. Aplica las reglas de
   ownership y origen (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs;
   generated: adaptadores/commands/opencode.json/CLAUDE.md), calcula `sha256` y escribe

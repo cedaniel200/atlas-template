@@ -65,8 +65,7 @@
 
 | Variable | Default | Descripción |
 |---|---|---|
-| `DB_USER` | — | Usuario de PostgreSQL (requerido para MCP postgres) |
-| `DB_PASSWORD` | — | Password de PostgreSQL (requerido para MCP postgres) |
+| `<VAR>` | — | <descripción; se rellena con las variables detectadas> |
 
 ---
 
