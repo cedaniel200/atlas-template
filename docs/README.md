@@ -186,3 +186,5 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
   responsabilidad del usuario.
 - 📄 Software entregado **“AS IS”**, sin garantía. Ver [`../SECURITY.es.md`](../SECURITY.es.md),
   [`../LICENSE`](../LICENSE) y [`../THIRD-PARTY-NOTICES.es.md`](../THIRD-PARTY-NOTICES.es.md).
+- 🗂️ En el repo del template, el legal vive en la raíz porque GitHub lo reconoce; al configurar un
+  proyecto, el ritual lo mueve a `.atlas/legal/` y deja la raíz libre para el legal del proyecto.

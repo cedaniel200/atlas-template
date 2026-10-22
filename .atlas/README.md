@@ -11,7 +11,7 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `manifest.json` | ✅ yes | **Outputs**: generated files, hash and ownership (base for updates) |
 | `BOOTSTRAP.md` | ✅ yes | First-session ritual |
 | `PLACEHOLDERS.md` | ✅ yes | Closed placeholder contract: profile/project layers, states (`N/A`) and derivations |
-| `PROJECT-README.md` | ✅ yes | Project README template (copied to `README.md` on adoption) |
+| `PROJECT-README.md` | ✅ yes | Project README template (copied to `README.md` on adoption; content in `language.user`) |
 | `agents/` | ✅ yes | Canonical role prompts; the bootstrap generates adapters from here |
 | `docs/` | ✅ yes | Internal harness documentation (`en/` canonical, `es/` translation) |
 | `hosts/<host>/` | ✅ yes | Per-tool adapter templates |

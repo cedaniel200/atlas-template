@@ -188,3 +188,5 @@ The agent reads [`../AGENTS.md`](../AGENTS.md), sees `.atlas/state.json` is `pen
   responsibility.
 - 📄 Software delivered **“AS IS”**, without warranty. See [`../SECURITY.md`](../SECURITY.md),
   [`../LICENSE`](../LICENSE) and [`../THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md).
+- 🗂️ In the template repo, legal files live at the root because GitHub recognizes them; when configuring
+  a project, the ritual moves them to `.atlas/legal/` and leaves the root free for the project's legal files.
