@@ -1,138 +1,138 @@
-# Contrato de placeholders
+# Placeholder contract
 
-> **Lista cerrada.** Un placeholder que no está en este documento **no existe** y no puede usarse.
-> Todo placeholder del contrato debe quedar **definido** en el proyecto, con un **valor** o con **`N/A`**.
-> Este documento es la fuente única; `AGENTS.md` y `profiles/README.md` lo referencian.
+> **Closed list.** A placeholder that is not in this document **does not exist** and cannot be used.
+> Every placeholder in the contract must be **defined** in the project, with a **value** or **`N/A`**.
+> This document is the single source; `AGENTS.md` and `profiles/README.md` reference it.
 
-## Los dos sistemas
+## The two systems
 
-| Sistema | Qué aporta | Dónde |
+| System | What it provides | Where |
 |---|---|---|
-| **Perfil** | **Datos** del stack: comandos, rutas, puerto, umbral | `.atlas/profiles/` |
-| **Pack** | **Procedimiento** opcional (skills/agentes) que no cabe en un comando | `.atlas/packs/` |
+| **Profile** | **Data** about the stack: commands, paths, port, threshold | `.atlas/profiles/` |
+| **Pack** | Optional **procedure** (skills/agents) that does not fit in a command | `.atlas/packs/` |
 
-Un pack **nunca** es requisito. Lo que todo proyecto necesita son los **placeholders del contrato**,
-que se resuelven con el perfil elegido + las respuestas del cuestionario.
+A pack is **never** a requirement. What every project needs are the **contract placeholders**,
+resolved with the chosen profile plus the questionnaire answers.
 
-## Los tres estados
+## The three states
 
-| Estado | Significado | Qué hace el agente |
+| State | Meaning | What the agent does |
 |---|---|---|
-| **Valor concreto** | Existe y aplica | Lo usa |
-| **`N/A`** | Existe en el contrato, pero el stack no lo tiene | **Omite el paso y lo declara**; nunca ejecuta `N/A` |
-| **No definido** | No está en el contrato → no existe | **No lo usa**; si lo necesita, se detiene y pide ampliar el contrato |
+| **Concrete value** | It exists and applies | Uses it |
+| **`N/A`** | It exists in the contract, but the stack does not have it | **Skips the step and declares it**; never runs `N/A` |
+| **Undefined** | It is not in the contract → it does not exist | **Does not use it**; if needed, stops and asks to extend the contract |
 
 ---
 
-## 1. Placeholders de perfil
+## 1. Profile placeholders
 
-Se resuelven al **instanciar** el perfil (respuestas del cuestionario). En el YAML, un campo que no
-aplica es `""` (nunca se omite ni se inventa).
+They are resolved when the profile is **instantiated** (questionnaire answers). In the YAML, a field
+that does not apply is `""` (never omitted or invented).
 
-| Placeholder | Campo del perfil | ¿Obligatorio? | ¿Puede ser `""`? |
+| Placeholder | Profile field | Required? | Can it be `""`? |
 |---|---|---|---|
-| `PACKAGE_MANAGER` | `stack.package_manager` | sí | no |
-| `RUN_APP_COMMAND` | `commands.run` | no | sí |
-| `SERVICE_NAME` | `qa.service_name` | no | sí |
-| `APP_PORT` | `qa.app_port` | no | sí |
-| `HEALTH_PATH` | `qa.health_path` | no | sí |
-| `METRICS_PATH` | `qa.metrics_path` | no | sí |
+| `PACKAGE_MANAGER` | `stack.package_manager` | yes | no |
+| `RUN_APP_COMMAND` | `commands.run` | no | yes |
+| `SERVICE_NAME` | `qa.service_name` | no | yes |
+| `APP_PORT` | `qa.app_port` | no | yes |
+| `HEALTH_PATH` | `qa.health_path` | no | yes |
+| `METRICS_PATH` | `qa.metrics_path` | no | yes |
 
 ---
 
-## 2. Placeholders de proyecto
+## 2. Project placeholders
 
-Se escriben en `AGENTS.md`, `openspec/config.yaml`, `README.md` y los consumen los prompts.
-Todos deben quedar definidos (valor o `N/A`).
+They are written to `AGENTS.md`, `openspec/config.yaml`, `README.md` and consumed by the prompts.
+All of them must be defined (value or `N/A`).
 
-| Placeholder | Origen | ¿Puede ser `N/A`? |
+| Placeholder | Origin | Can it be `N/A`? |
 |---|---|---|
-| `PROJECT_NAME` | respuesta | no |
-| `ONE_LINE_DESCRIPTION` | respuesta | no |
-| `STACK_SUMMARY` | perfil + respuesta | no |
-| `DOMAIN_SUMMARY` | respuesta | no |
-| `PACKAGE_BASE` | respuesta | sí |
-| `LANGUAGE_USER` | respuesta | no |
-| `LANGUAGE_AGENT` | respuesta | no |
-| `ARCHITECTURE_SUMMARY` | respuesta | no |
-| `ARCHITECTURE_NOTES` | respuesta | sí |
-| `PROJECT_STRUCTURE` | perfil | no |
-| `C4_CONTEXT` | respuesta | sí |
-| `ADRS_NOTE` | respuesta | sí |
-| `LICENSE` | respuesta | sí |
-| `QUICK_START` | perfil + respuesta | no |
-| `DEV_COMMANDS` | perfil | no |
-| `INSTALL_COMMAND` | perfil | sí |
-| `BUILD_COMMAND` | perfil | sí |
-| `RUN_APP_COMMAND` | perfil | sí |
-| `TEST_COMMAND` | perfil | sí |
-| `LINT_MAIN_COMMAND` | perfil | sí |
-| `LINT_TEST_COMMAND` | perfil | sí |
-| `STATIC_ANALYSIS_COMMAND` | perfil | sí |
-| `QUALITY_COMMAND` | perfil | sí |
-| `COVERAGE_COMMAND` | perfil | sí |
-| `MUTATION_COMMAND` | perfil | sí |
-| `CRAP_COMMAND` | perfil | sí |
-| `CRAP_THRESHOLD` | perfil | sí |
-| `QA_ENVIRONMENT` | respuestas | sí |
-| `SERVICE_NAME` | perfil | sí |
-| `APP_PORT` | perfil | sí |
-| `HEALTH_URL` | derivado | sí |
-| `STACKS_TABLE` | derivado de `state.stacks` (tabla Markdown) | sí (sin stacks) |
-| `STACK_CONTEXT` | derivado de `state.stacks[i]` (bloque del agente) | sí (single-stack) |
-| `METRICS_PATH` | perfil | sí |
-| `DO_NOT_TOUCH` | respuesta | sí |
-| `MEMORY` | respuesta | sí |
-| `OPENSPEC_COMMANDS_POLICY` | respuesta | no |
-| `ORCHESTRATION_POLICY` | respuesta | no |
-| `TBD_ITEMS` | respuestas | sí |
+| `PROJECT_NAME` | answer | no |
+| `ONE_LINE_DESCRIPTION` | answer | no |
+| `STACK_SUMMARY` | profile + answer | no |
+| `DOMAIN_SUMMARY` | answer | no |
+| `PACKAGE_BASE` | answer | yes |
+| `LANGUAGE_USER` | answer | no |
+| `LANGUAGE_AGENT` | answer | no |
+| `ARCHITECTURE_SUMMARY` | answer | no |
+| `ARCHITECTURE_NOTES` | answer | yes |
+| `PROJECT_STRUCTURE` | profile | no |
+| `C4_CONTEXT` | answer | yes |
+| `ADRS_NOTE` | answer | yes |
+| `LICENSE` | answer | yes |
+| `QUICK_START` | profile + answer | no |
+| `DEV_COMMANDS` | profile | no |
+| `INSTALL_COMMAND` | profile | yes |
+| `BUILD_COMMAND` | profile | yes |
+| `RUN_APP_COMMAND` | profile | yes |
+| `TEST_COMMAND` | profile | yes |
+| `LINT_MAIN_COMMAND` | profile | yes |
+| `LINT_TEST_COMMAND` | profile | yes |
+| `STATIC_ANALYSIS_COMMAND` | profile | yes |
+| `QUALITY_COMMAND` | profile | yes |
+| `COVERAGE_COMMAND` | profile | yes |
+| `MUTATION_COMMAND` | profile | yes |
+| `CRAP_COMMAND` | profile | yes |
+| `CRAP_THRESHOLD` | profile | yes |
+| `QA_ENVIRONMENT` | answers | yes |
+| `SERVICE_NAME` | profile | yes |
+| `APP_PORT` | profile | yes |
+| `HEALTH_URL` | derived | yes |
+| `STACKS_TABLE` | derived from `state.stacks` (Markdown table) | yes (no stacks) |
+| `STACK_CONTEXT` | derived from `state.stacks[i]` (agent block) | yes (single-stack) |
+| `METRICS_PATH` | profile | yes |
+| `DO_NOT_TOUCH` | answer | yes |
+| `MEMORY` | answer | yes |
+| `OPENSPEC_COMMANDS_POLICY` | answer | no |
+| `ORCHESTRATION_POLICY` | answer | no |
+| `TBD_ITEMS` | answers | yes |
 
-> `RUN_APP_COMMAND`, `SERVICE_NAME`, `APP_PORT` y `METRICS_PATH` existen en **las dos** capas: el perfil
-> los aporta como dato y el proyecto los recibe como placeholder.
+> `RUN_APP_COMMAND`, `SERVICE_NAME`, `APP_PORT` and `METRICS_PATH` exist in **both** layers: the profile
+> provides them as data and the project receives them as placeholders.
 
-### Derivaciones (perfil → proyecto)
+### Derivations (profile → project)
 
-| Perfil | Proyecto |
+| Profile | Project |
 |---|---|
 | `commands.install` / `build` / `run` / `test` / `lint` / … | `*_COMMAND` |
 | `quality.crap_threshold` | `CRAP_THRESHOLD` |
 | `qa.service_name` | `SERVICE_NAME` |
 | `qa.app_port` | `APP_PORT` |
-| `qa.health_path` | `HEALTH_URL = http://localhost:<APP_PORT><HEALTH_PATH>` (o `N/A` si no hay health) |
+| `qa.health_path` | `HEALTH_URL = http://localhost:<APP_PORT><HEALTH_PATH>` (or `N/A` when there is no health) |
 | `qa.metrics_path` | `METRICS_PATH` |
 
-### Regla de vacío (mecánica)
+### Empty rule (mechanics)
 
-Un campo vacío en el perfil **no se compone**: se traduce en `N/A` en el proyecto.
+An empty field in the profile is **not composed**: it becomes `N/A` in the project.
 
-| Perfil | Proyecto |
+| Profile | Project |
 |---|---|
-| `qa.health_path: ""` o `qa.app_port: ""` | `HEALTH_URL = N/A` — **nunca** se compone `http://localhost:<puerto>` con path vacío |
+| `qa.health_path: ""` or `qa.app_port: ""` | `HEALTH_URL = N/A` — **never** compose `http://localhost:<port>` with an empty path |
 | `qa.app_port: ""` | `APP_PORT = N/A` |
 | `qa.metrics_path: ""` | `METRICS_PATH = N/A` |
 | `qa.service_name: ""` | `SERVICE_NAME = N/A` |
 | `commands.<x>: ""` | `<X>_COMMAND = N/A` |
 
-`N/A` **no es vacío**: es un valor del contrato que el agente interpreta como "no aplica" (omite el paso
-y lo declara).
+`N/A` **is not empty**: it is a contract value the agent interprets as "not applicable" (it skips the
+step and declares it).
 
 ---
 
-## Regla de verificación
+## Verification rule
 
-`node .atlas/scripts/validar-contrato.mjs` comprueba que:
+`node .atlas/scripts/validar-contrato.mjs` checks that:
 
-1. Todo `{{...}}` usado en `AGENTS.md`, `openspec/config.yaml`, `.atlas/PROJECT-README.md`,
-   `.atlas/agents/` y `.agents/skills/` está en la lista de **proyecto**.
-2. Todo `{{...}}` usado en los perfiles está en la lista de **perfil**.
-3. La tabla de `AGENTS.md` § Placeholders no declara claves fuera del contrato.
+1. Every `{{...}}` used in `AGENTS.md`, `openspec/config.yaml`, `.atlas/PROJECT-README.md`,
+   `.atlas/agents/` and `.agents/skills/` is in the **project** list.
+2. Every `{{...}}` used in profiles is in the **profile** list.
+3. The `AGENTS.md` § Placeholders table does not declare keys outside the contract.
 
-Si falla, **no se inventa**: se amplía este contrato y se documenta el origen del valor.
+If it fails, **do not invent**: extend this contract and document where the value comes from.
 ---
 
 ## 3. Stacks (multi-stack)
 
-`state.stacks` es la fuente única. Cada stack:
+`state.stacks` is the single source. Each stack:
 
 ```json
 {
@@ -149,16 +149,16 @@ Si falla, **no se inventa**: se amplía este contrato y se documenta el origen d
 }
 ```
 
-- `id` es obligatorio y único; el adaptador es `engineer-<id>`.
-- `profile` referencia `.atlas/profiles/<id>.yaml` (o un perfil del proyecto).
-- `packs` son los packs activos de ese stack; `state.packs` es la unión.
-- Cada stack se renderiza como `engineer-<id>`, incluso si solo hay uno.
-- `AGENTS.md` § Stacks se rellena desde `state.stacks` (`{{STACKS_TABLE}}`).
+- `id` is required and unique; the adapter is `engineer-<id>`.
+- `profile` references `.atlas/profiles/<id>.yaml` (or a project profile).
+- `packs` are the active packs for that stack; `state.packs` is the union.
+- Every stack is rendered as `engineer-<id>`, even when there is only one.
+- `AGENTS.md` § Stacks is filled from `state.stacks` (`{{STACKS_TABLE}}`).
 
-La tabla de `§ Stacks` incluye los comandos para que el contrato sea autocontenido:
+The `§ Stacks` table includes the commands so the contract is self-contained:
 
 ```markdown
-| Stack | Perfil | Rutas | Install | Build | Run | Test | Lint | Quality | Packs |
+| Stack | Profile | Paths | Install | Build | Run | Test | Lint | Quality | Packs |
 |---|---|---|---|---|---|---|---|---|---|
 | `python` | `python` | `backend/` | `pip install -r requirements.txt` | — | `uvicorn app:app` | `pytest` | `ruff check .` | `ruff check . && pytest` | — |
 ```

@@ -86,8 +86,8 @@ try {
 const configurado = estado.status === 'configured';
 
 const contrato = await leer(CONTRATO);
-const perfilContrato = nombresDeTabla(seccion(contrato, '## 1. Placeholders de perfil'));
-const proyectoContrato = nombresDeTabla(seccion(contrato, '## 2. Placeholders de proyecto'));
+const perfilContrato = nombresDeTabla(seccion(contrato, '## 1. Profile placeholders'));
+const proyectoContrato = nombresDeTabla(seccion(contrato, '## 2. Project placeholders'));
 
 if (perfilContrato.size === 0 || proyectoContrato.size === 0) {
   console.error(`❌ no se pudieron leer las tablas del contrato (${CONTRATO})`);
