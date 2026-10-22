@@ -92,6 +92,9 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles
 
 ## Gobernanza de skills
 
+- **Estructura (disclosure progresiva):** `SKILL.md` = **núcleo** (cuándo, pasos, reglas, checklist e
+  **índice de referencias**); `references/*.md` = ejemplos, anti-patrones y checklists largos que se
+  leen **solo cuando hacen falta**. El núcleo debe decir **cuándo** leer cada referencia.
 - **Idioma:** cuerpo y `description` en **inglés** (`language.agent`). La `description` incluye ejemplos
   de disparo en **varios idiomas** (`update the template`, `actualiza el arnés`), porque el usuario puede
   pedirlo en cualquier idioma: el agente debe casar la **intención**, no la frase exacta.
@@ -143,8 +146,8 @@ Qué mide (estimación **estática**, sin conversación ni tool outputs):
 | Base de sesión | AGENTS.md + descripciones de skills + config del host |
 | Arranque mínimo | BOOTSTRAP + AGENTS + PLACEHOLDERS + perfiles + host |
 | Arranque completo | lo anterior + los 5 prompts de agente |
-| Por agente | base + prompt + skills que menciona |
-| Techo | todo el arnés cargado a la vez |
+| Por agente | base + prompt + **núcleo** (`SKILL.md`) de las skills que menciona |
+| Techo | todo el arnés cargado a la vez (**incluye** las referencias on-demand) |
 
 **Cómo leerlo:** proxy `~4 caracteres/token` (en español hasta ~3,5 → +15%). Presupuesto orientativo:
 **base ≤ 4k**, **por agente ≤ 12k**. Si crece, ataca primero el mayor contribuyente: skills largas →

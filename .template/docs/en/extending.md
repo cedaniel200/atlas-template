@@ -92,6 +92,9 @@ A profile is **data**, not procedure. See `.template/profiles/README.md` for the
 
 ## Skill governance
 
+- **Structure (progressive disclosure):** `SKILL.md` = **core** (when, steps, rules, checklist and a
+  **reference index**); `references/*.md` = examples, anti-patterns and long checklists read **only
+  when needed**. The core must say **when** to read each reference.
 - **Language:** body and `description` in **English** (`language.agent`). The `description` includes
   trigger examples in **several languages** (`update the template`, `actualiza el arnés`), because the
   user may ask in any language: the agent must match the **intent**, not the exact wording.
@@ -143,8 +146,8 @@ What it measures (**static** estimate, no conversation or tool outputs):
 | Session base | AGENTS.md + skill descriptions + host config |
 | Minimum bootstrap | BOOTSTRAP + AGENTS + PLACEHOLDERS + profiles + host |
 | Full bootstrap | the above + the 5 agent prompts |
-| Per agent | base + prompt + skills it mentions |
-| Ceiling | the whole harness loaded at once |
+| Per agent | base + prompt + **core** (`SKILL.md`) of the skills it mentions |
+| Ceiling | the whole harness loaded at once (**includes** on-demand references) |
 
 **How to read it:** `~4 chars/token` proxy (Spanish may reach ~3.5 → +15%). Target budget:
 **base ≤ 4k**, **per agent ≤ 12k**. If it grows, attack the biggest contributor first: long skills →
