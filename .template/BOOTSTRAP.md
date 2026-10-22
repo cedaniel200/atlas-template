@@ -120,7 +120,7 @@ Codex. Si la señal de entorno y la evidencia de archivos discrepan, **pregunta*
 | `opencode.json` | crear desde `.template/hosts/opencode/` | ignorar | ignorar |
 | `.template/agents/` | fuente canónica | fuente canónica | fuente canónica |
 | Adaptador de agentes | `.opencode/agent/<rol>.md` | `.claude/agents/<rol>.md` | *(no hay subagentes)* |
-| Skills | `.agents/skills/` (nativo) | `.claude/skills` → symlink a `.agents/skills` | `.agents/skills/` (nativo) |
+| Skills | `.agents/skills/` (canónico) + `.opencode/skills/` (nativo, con prioridad) | `.claude/skills` → symlink a `.agents/skills` | `.agents/skills/` (nativo) |
 | `CLAUDE.md` | conservar | debe contener solo `@AGENTS.md` | conservar |
 
 **`prune` (opt-in, nunca por defecto):** si el usuario lo pide, mueve los artefactos de hosts no activos
@@ -148,9 +148,13 @@ cp AGENTS.md /tmp/agents.bootstrap.bak
 openspec init --tools <opencode|claude|codex>
 diff /tmp/agents.bootstrap.bak AGENTS.md && echo "AGENTS.md intacto" || echo "⚠️ revisar y fusionar"
 
-# openspec init puede duplicar las skills de OpenSpec en .opencode/skills/.
-# El canonico es .agents/skills/: elimina la copia duplicada.
-rm -rf .opencode/skills
+# .opencode/skills/ es la ruta nativa de OpenCode y tiene prioridad sobre
+# .agents/skills/. No la borres: puede alojar skills propias del equipo.
+# Recomendación: las skills compartidas viven en .agents/skills/ (canónico);
+# evita IDs duplicados entre ambas rutas porque gana la de .opencode/skills/.
+ls .agents/skills | sort > /tmp/skills-agents.txt
+ls .opencode/skills 2>/dev/null | sort > /tmp/skills-opencode.txt
+comm -12 /tmp/skills-agents.txt /tmp/skills-opencode.txt  # IDs duplicados, si hay
 ```
 
 Salida esperada: `.opencode/commands/opsx-*` · `.claude/commands/opsx/*` · `.codex/prompts/*`.

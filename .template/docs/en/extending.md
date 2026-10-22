@@ -7,6 +7,9 @@
 ## Add a skill
 
 1. Create `.agents/skills/<name>/SKILL.md`.
+   > `.opencode/skills/` is OpenCode's native path and takes precedence over `.agents/skills/`.
+   > Use it only for host-specific skills; shared skills belong in `.agents/skills/` so they are
+   > not shadowed by a duplicate ID.
 2. Frontmatter:
 
 ```yaml

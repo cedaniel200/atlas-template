@@ -98,7 +98,7 @@ The `analyst` asks at the start whether to orchestrate the cycle or let you invo
 | `Schema not found` | Missing `openspec/schemas/` | Restore the vendored schema |
 | Skills do not appear | Wrong path or host not restarted | Check `.agents/skills/*/SKILL.md` and restart |
 | `AGENTS.md` changed after `openspec init` | The CLI rewrote it | Restore the backup and merge manually |
-| `openspec init` duplicates skills | The CLI copies skills to `.opencode/skills` | The ritual removes them; the canonical path is `.agents/skills/` |
+| `openspec init` writes skills to `.opencode/skills` | OpenCode's native path, with precedence over `.agents/skills` | Do not delete it: it can host team skills. Keep shared skills in `.agents/skills/` and avoid duplicate IDs |
 | The gate fails | Commands or sections still `TBD` | Complete them in `AGENTS.md` |
 
 ---

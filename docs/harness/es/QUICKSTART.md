@@ -97,7 +97,7 @@ El `analyst` te pregunta al inicio si orquesta el ciclo o prefieres invocar cada
 | `Schema not found` | Falta `openspec/schemas/` | Restaura el schema vendorizado |
 | Las skills no aparecen | Ruta incorrecta o falta reiniciar | Verifica `.agents/skills/*/SKILL.md` y reinicia la herramienta |
 | `AGENTS.md` cambió tras `openspec init` | El CLI lo reescribió | Restaura el backup y fusiona a mano |
-| `openspec init` duplica skills | El CLI copia skills a `.opencode/skills` | El ritual las elimina; el canónico es `.agents/skills/` |
+| `openspec init` escribe skills en `.opencode/skills` | Ruta nativa de OpenCode, con prioridad sobre `.agents/skills` | No la borres: puede alojar skills del equipo. Mantén las compartidas en `.agents/skills/` y evita IDs duplicados |
 | El gate no pasa | Comandos o secciones en `TBD` | Complétalos en `AGENTS.md` |
 
 ---

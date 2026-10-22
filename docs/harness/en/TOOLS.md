@@ -10,7 +10,7 @@
 | Capability | OpenCode | Claude Code | Codex |
 |---|---|---|---|
 | Instructions | `AGENTS.md` + `opencode.json` | `CLAUDE.md` → `@AGENTS.md` | `AGENTS.md` |
-| Skills | `.agents/skills/` | `.claude/skills` (symlink) | `.agents/skills/` |
+| Skills | `.agents/skills/` (canonical) and `.opencode/skills/` (native, takes precedence) | `.claude/skills` (symlink) | `.agents/skills/` |
 | Agents | `.opencode/agent/` | `.claude/agents/` | *(no subagents)* |
 | OpenSpec commands | `.opencode/commands/` | `.claude/commands/opsx/` | `.codex/prompts/` |
 | MCP | `opencode.json` → `mcp` | Claude configuration | Codex configuration |
