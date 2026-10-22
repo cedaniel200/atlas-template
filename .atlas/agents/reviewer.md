@@ -98,7 +98,20 @@ Read the reports the implementer or CI already produced:
 - **Mutation**: a very low mutation score in touched classes → 🟡 MEDIUM.
 - **Comments**: code comments reference ADRs (`adr/NNNN-...`) or functional documentation — never
   OpenSpec specs, roadmaps or other projects. If no ADR anchors the decision, the comment must be
-  self-contained → otherwise 🟢 LOW.
+  self-contained → otherwise 🟢 LOW. Within the extension/value limits (doc comment ≤ 3 lines,
+  inline ≤ 2, decision block ≤ 6 with a link). Repeated doc comments in N methods or comments that
+  restate the "what" → 🟢 LOW.
+
+### Phase 2.6 — Design degradation signals (check the diff)
+
+- **Weak types**: new signatures (private included) with bare strings, booleans or magic numbers
+  carrying semantics (names, modes, kinds) → require enum/value object/interface or justification.
+- **Observability**: if the change touches instrumentation (logs, metrics, traces), require a test that
+  fixes the contract (names and attributes); a silent rename must break CI.
+- **Thresholds**: if a file or method shrinks via a helper, verify the helper has cohesion and types
+  (not a wildcard string that only names things).
+- **Undeclared refactor**: if the diff includes a refactor not in `design.md`, require it in the
+  engineer report with its reason.
 
 ### Phase 2.7 — Design judgment
 
