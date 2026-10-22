@@ -5,6 +5,14 @@
 
 ---
 
+## Naming
+
+**ATLAS** is the product name. “Template” remains a **common noun** for the scaffold and for the
+`template_version` / `template_source` keys and the `--template` flag. Do not rename those keys or the
+flag: they are the state, manifest and CLI contract.
+
+---
+
 ## What the harness is
 
 A portable set of instructions, procedures and OpenSpec configuration that turns a coding agent into a

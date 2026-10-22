@@ -5,6 +5,14 @@
 
 ---
 
+## Nomenclatura
+
+**ATLAS** es el nombre del producto. “Template/plantilla” se mantiene como **sustantivo común** para
+el andamio y para las claves `template_version` / `template_source` y el flag `--template`.
+No renombres esas claves ni el flag: son contrato de estado, manifiesto y CLI.
+
+---
+
 ## Qué es el arnés
 
 Un conjunto portable de instrucciones, procedimientos y configuración de OpenSpec que convierte a un
