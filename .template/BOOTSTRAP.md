@@ -201,8 +201,9 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 7. **Comandos OpenSpec**: `user` (siempre el humano), `agent` (siempre el agente) o `ask` (preguntar en
    cada sesión). Default: `ask`.
 8. **Orquestación**: orquestada (default) o manual.
-9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas, `.template/docs/`
-   se puede retirar (se mueve a `.template/archive/` y se quita del índice).
+9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas:
+   `mkdir -p .template/archive && mv .template/docs .template/archive/docs`; en `docs/README.md`
+   elimina la fila "Arnés interno" y los enlaces a `.template/docs/`.
 
 > Si el usuario responde “lo que sea”, elige el default de su stack **y dilo** para que lo corrija.
 > Las respuestas se escriben directamente en `AGENTS.md`; no se inventan comandos.
@@ -221,8 +222,8 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 | `docs/` | Renombrar carpetas si el usuario eligió otros nombres y actualizar `AGENTS.md` |
 | `CLAUDE.md` | Verificar el stub de una línea: `@AGENTS.md` |
 | Adaptadores | Agentes y comandos del host detectado |
-| `.template/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
 | `.template/docs/` | Si no se contribuye, mover a `.template/archive/docs/` y quitar la fila del índice |
+| `.template/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
 
 ### Generación de adaptadores y manifiesto
 
@@ -230,13 +231,11 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
   `node .template/scripts/renderizar-adaptadores.mjs --host <host>`. El script sustituye los
   placeholders desde `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
   `name` + `description`; Codex: sin subagentes). **No copies el cuerpo a mano.**
-- **Manifiesto**: calcula el `sha256` de cada archivo generado con el helper portable del template:
-  `sh .template/scripts/sha256.sh <archivo>` (macOS, Linux, Git Bash, WSL) o
-  `powershell -NoProfile -File .template/scripts/sha256.ps1 <archivo>` (Windows/PowerShell 5.1+).
-  **Contrato: 64 hex en minúsculas, solo el hash, sin nombre de archivo.** No uses
-  `certutil` ni `Get-FileHash` directamente: emiten mayúsculas y otro formato, y el
-  manifiesto deja de ser comparable (falso drift al actualizar). Escribe
-  `.template/manifest.json` con `origin`, `sha256` y `ownership`.
+- **Manifiesto**: `node .template/scripts/generar-manifiesto.mjs --host <host>`. Aplica las reglas de
+  ownership y origen (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs;
+  generated: adaptadores/commands/opencode.json/CLAUDE.md), calcula `sha256` y escribe
+  `.template/manifest.json`. **Contrato: 64 hex en minúsculas, sin nombre de archivo** (lo aplica el script).
+  **Ejecútalo al final de la Fase 2**, después de placeholders, docs y contribución; si cambias un archivo después, vuelve a ejecutarlo.
 - **Shell**: el ritual usa comandos POSIX (`sh`, `grep`, `diff`, `mkdir`). En Windows ejecútalo
   desde **Git Bash o WSL** (recomendado). Si el host ejecuta PowerShell, al menos el hash debe
   salir del helper `.ps1`; si no hay shell POSIX ni PowerShell, **detente** y pídelo al usuario —
@@ -282,7 +281,7 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `openspec context` → sin warnings
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
 - [ ] Adaptador del host activo presente (agentes y comandos)
-- [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" .` → sin resultados
+- [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.template --exclude-dir=node_modules .` → sin resultados
 - [ ] `.template/manifest.json` generado
 - [ ] `git status` limpio y las fases commiteadas
 
