@@ -7,19 +7,51 @@
 
 ---
 
+## Flujo del template
+
+```text
+Humano + analyst — explore → propose (proposal, design, specs, ADR, tasks)
+        ↓
+engineer — implementación (uno por stack si es multi-stack)
+        ↓
+qa-analyst — QA funcional (entorno Docker + QA Context)
+        ↓
+reviewer — revisión de código (máx. 3 iteraciones con hallazgos críticos)
+        ↓
+analyst — cierre de ciclo y consistencia diseño → código
+        ↓
+doc-writer — documentación técnica y funcional
+        ↓
+analyst — consistencia documental
+        ↓
+PR — el humano revisa, hace merge y archiva la spec
+```
+
+Las correcciones de QA y reviewer vuelven a `engineer` (tope global: **5 iteraciones** entre ambos).
+Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el humano aprueba cada artefacto.
+
+**Roles de soporte (opcionales, fuera del ciclo de entrega):**
+
+| Rol | Para qué sirve |
+|---|---|
+| `mentor` | Enseñar DDD y arquitectura, explicar el código y generar material didáctico |
+| `business-strategist` | Modelo de negocio, propuesta de valor, segmentos, pricing y canales (`docs/business/`) |
+
+> No forman parte del ciclo de entrega: se añaden como agentes o packs propios del proyecto.
+
+---
+
 ## Empieza aquí
 
-| Si… | Ve a |
-|---|---|
-| Empiezas un proyecto **nuevo** | [`harness/es/QUICKSTART.md`](harness/es/QUICKSTART.md) |
-| Ya tienes un proyecto | [`harness/es/ADOPTION.md`](harness/es/ADOPTION.md) |
-| Quieres actualizar el arnés | [`harness/es/UPDATE.md`](harness/es/UPDATE.md) |
-| Quieres configurar MCP o memoria | [`harness/es/TOOLS.md`](harness/es/TOOLS.md) |
-| Te interesan los gates y CRAP | [`harness/es/QUALITY.md`](harness/es/QUALITY.md) |
-| No entiendes un término | [`harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
-| Extender el arnés (skills/agentes/packs) | [`.template/docs/es/extending.md`](../.template/docs/es/extending.md) · [`.template/packs/README.md`](../.template/packs/README.md) |
+### 1. Crea el proyecto desde el template
 
-Para arrancar, abre el proyecto con tu herramienta y di:
+- **GitHub:** usa **Use this template** (recomendado).
+- **Manual:** descarga o clona este repositorio y coloca su contenido en la **raíz del proyecto**
+  (donde vivirá `AGENTS.md`).
+
+### 2. Arranca el ritual
+
+Abre el proyecto con tu herramienta y di:
 
 > **“Configura este proyecto”**
 
@@ -28,6 +60,18 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 
 > El `README.md` del proyecto se genera desde `.template/PROJECT-README.md`; este `docs/README.md` es la portada del template (no hay README raíz por decisión).
 
+### 3. Elige tu guía
+
+| Si… | Ve a |
+|---|---|
+| Empiezas un proyecto **nuevo** | [`docs/harness/es/QUICKSTART.md`](harness/es/QUICKSTART.md) |
+| Ya tienes un proyecto | [`docs/harness/es/ADOPTION.md`](harness/es/ADOPTION.md) |
+| Quieres actualizar el arnés | [`docs/harness/es/UPDATE.md`](harness/es/UPDATE.md) |
+| Quieres configurar MCP o memoria | [`docs/harness/es/TOOLS.md`](harness/es/TOOLS.md) |
+| Te interesan los gates y CRAP | [`docs/harness/es/QUALITY.md`](harness/es/QUALITY.md) |
+| No entiendes un término | [`docs/harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
+| Extender el arnés (skills/agentes/packs) | [`.template/docs/es/extending.md`](../.template/docs/es/extending.md) · [`.template/packs/README.md`](../.template/packs/README.md) |
+
 ---
 
 ## Capas de documentación
@@ -35,7 +79,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 | Capa | Dónde | Para quién |
 |---|---|---|
 | **Arnés interno** | [`.template/docs/es/`](../.template/docs/es/README.md) | Quien mantiene o extiende el template |
-| **Uso** | [`harness/es/`](harness/es/QUICKSTART.md) | Quien adopta el template en su proyecto |
+| **Uso** | [`docs/harness/es/`](harness/es/QUICKSTART.md) | Quien adopta el template en su proyecto |
 | **Proyecto** | `docs/architecture/`, `docs/api/`, `docs/functional/`, `docs/guides/` | El equipo del proyecto |
 | **Contexto del proyecto** | `docs/project-context.md` | El equipo del proyecto |
 
