@@ -68,8 +68,10 @@ After the user answers, update `preferences.md` with the selected `preferred-sty
 
 ## Example
 
+> Illustrative only: replace the technologies with your project's stack.
+
 ```markdown
-# ADR-012: Use PostgreSQL for Orders
+# ADR-012: Use a relational database for Orders
 
 ## Status
 
@@ -77,16 +79,16 @@ Accepted
 
 ## Context
 
-Orders need relational constraints, consistency, and reporting joins. The team operates PostgreSQL well.
+Orders need relational constraints, consistency, and reporting joins. The team already operates a relational database well.
 
 ## Considered Options
 
-- PostgreSQL: integrity, SQL reporting, familiar operations; migrations required.
-- MongoDB: flexible schema; weaker fit for consistency and joins.
+- Relational database: integrity, SQL reporting, familiar operations; migrations required.
+- Document database: flexible schema; weaker fit for consistency and joins.
 
 ## Decision
 
-We will use PostgreSQL because consistency, joins, and operational familiarity matter more than schema flexibility.
+We will use a relational database because consistency, joins, and operational familiarity matter more than schema flexibility.
 
 ## Consequences
 
