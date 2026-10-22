@@ -83,7 +83,8 @@ close.
 - Move to the next task while the current one has failing tests or no commit.
 - Leave findings from QA or review unresolved.
 - Take ownership of CI/CD or production infrastructure. You only manage the local QA environment.
-- Use the health endpoint from the host if `AGENTS.md` says it is internal-only.
+- Use the health endpoint from the host only if it exists (`HEALTH_URL` ≠ `N/A`) and `AGENTS.md` says
+  it is internal-only.
 
 ---
 
@@ -115,8 +116,10 @@ it: lower the layer or validate against the real engine. Document the decision i
    - **Commit**: `git add <files> && git commit -m "<type>: <task description>"`.
 4. **Continuous verification**: run `{{TEST_COMMAND}}` and the quality sensors often.
 5. **Mutation (optional, recommended)**: run `{{MUTATION_COMMAND}}` scoped to the changed classes.
+   If the value is `N/A`, **skip this step** and state it in the report.
 6. **Prepare QA**: follow the QA section of `AGENTS.md`; create the QA Context (base URL, test user,
-   **access token and refresh token**, seeded data, scenario inventory). Prefer creating data through the
+   **access token and refresh token**, seeded data, scenario inventory). If `HEALTH_URL` is `N/A`,
+   state that there is no health endpoint. Prefer creating data through the
    API; if you use SQL directly, respect the business invariants and state which ones were respected and
    which were not.
 7. **Invoke `qa-analyst`** — you or the user — with the complete QA Context.

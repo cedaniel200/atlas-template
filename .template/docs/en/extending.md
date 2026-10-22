@@ -105,10 +105,16 @@ A profile is **data**, not procedure. See `.template/profiles/README.md` for the
 ```bash
 # skills
 for f in .agents/skills/*/SKILL.md; do sed -n '1,5p' "$f"; done
-# agent references
+# agent references (informational: never fails)
 grep -rn "ddd-\|opencode\|claude" .template/agents/ .agents/skills/ || true
-# profiles
-python3 -c "import yaml,glob;[yaml.safe_load(open(f)) for f in glob.glob('.template/profiles/*.yaml')]"
+# profiles (gate): structural with no dependencies; `npm i yaml` adds real parsing
+node .template/scripts/validar-perfiles.mjs
+# placeholder contract (gate)
+node .template/scripts/validar-contrato.mjs
 # contract
 openspec doctor && openspec context
 ```
+
+> **Declared dependencies only.** Every harness check uses Git, Node 20+, OpenSpec CLI and a POSIX
+> shell. If it needs another tool, it must **detect it and warn**; never assume it.
+> A check that cannot run must not pretend it passed.

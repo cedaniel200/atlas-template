@@ -185,7 +185,7 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 | Mutación | PIT/Stryker/mutmut/… |
 | **CRAP** | Umbral por método; default **6** (ver `docs/harness/<lang>/QUALITY.md`) |
 | Secretos | gitleaks (tool‑agnóstico) |
-| Entorno de QA | Docker sí/no, servicio, puerto, health, métricas |
+| Entorno de QA | Docker sí/no, servicio, puerto, health, métricas (sin health o puerto → `N/A`) |
 
 ## Ronda 3 — Arquitectura, dominio y límites
 
@@ -270,6 +270,10 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `AGENTS.md` tiene `## Preferencias` con `language`, comandos OpenSpec y orquestación
 - [ ] `AGENTS.md` tiene `## Arquitectura`
 - [ ] No quedan `{{...}}` en `AGENTS.md`, `openspec/config.yaml` y `README.md`
+- [ ] Contrato de placeholders consistente: `node .template/scripts/validar-contrato.mjs`
+- [ ] Perfiles válidos: `node .template/scripts/validar-perfiles.mjs`
+- [ ] Hooks de git activos: `git config core.hooksPath .githooks` (si falta gitleaks, el hook avisa y no bloquea)
+- [ ] Sin health/puerto: si `qa.health_path` o `qa.app_port` están vacíos, `HEALTH_URL` es `N/A` (no se compone una URL con path vacío)
 - [ ] `openspec doctor` → root ok
 - [ ] `openspec schema which spec-driven-with-adr` → `Source: project`
 - [ ] `openspec context` → sin warnings

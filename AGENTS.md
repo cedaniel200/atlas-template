@@ -206,7 +206,10 @@ Las skills de packs (`.template/packs/`) solo existen cuando el pack está activ
 
 ## Placeholders
 
-Los prompts de `.template/agents/` usan estos placeholders. **Este archivo es el único lugar donde se definen.**
+Los prompts de `.template/agents/` usan **placeholders de proyecto**; esta tabla les da el valor.
+El contrato completo —lista cerrada, capa de perfil y de proyecto, y los tres estados— está en
+[`.template/PLACEHOLDERS.md`](.template/PLACEHOLDERS.md). **Un placeholder que no esté en el contrato
+no existe y no puede usarse.**
 
 | Placeholder | Valor |
 |---|---|
@@ -220,7 +223,9 @@ Los prompts de `.template/agents/` usan estos placeholders. **Este archivo es el
 | `HEALTH_URL` | {{HEALTH_URL}} |
 | `METRICS_PATH` | {{METRICS_PATH}} |
 
-Si el stack no usa un concepto, el valor es `N/A` (nunca se deja el placeholder sin resolver).
+**`N/A` significa "existe pero no aplica":** el agente **omite el paso y lo declara**; nunca ejecuta
+`N/A`. Si el stack no usa un concepto (mutación, health…), el valor es `N/A` — nunca se deja el
+placeholder sin resolver.
 
 ---
 
