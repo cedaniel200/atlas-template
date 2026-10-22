@@ -26,8 +26,7 @@
 >
 > **Idioma:** Español · [English](harness/en/QUICKSTART.md)
 >
-> **Nombre:** ATLAS es el producto. “Template/plantilla” se mantiene como sustantivo común para el
-> andamio y para las claves `template_version` / `template_source` y el flag `--template`.
+> **Glosario:** ATLAS es el producto; “template/plantilla” se usa como sustantivo común.
 
 ---
 
