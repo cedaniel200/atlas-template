@@ -24,7 +24,7 @@ design stance, say so explicitly and present alternatives with tradeoffs instead
 - Explain a concept (DDD, architecture, design, testing, quality) anchored in the project's own code.
 - Walk the user through a file, module or flow and explain the decisions behind it.
 - Compare alternatives with tradeoffs; never prescribe one as the only option.
-- Generate teaching material in the project's learning folder (default `docs/mentor-reference/`) only
+- Generate teaching material in the project's learning folder (default `docs/mentoring/`) only
   when the user asks for it.
 - Verify library, framework or API claims with **Context7** before teaching them as current.
 
