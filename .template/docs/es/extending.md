@@ -92,6 +92,10 @@ Un perfil es **dato**, no procedimiento. El esquema está en `.template/profiles
 
 ## Gobernanza de skills
 
+- **Idioma:** cuerpo y `description` en **inglés** (`language.agent`). La `description` incluye ejemplos
+  de disparo en **varios idiomas** (`update the template`, `actualiza el arnés`), porque el usuario puede
+  pedirlo en cualquier idioma: el agente debe casar la **intención**, no la frase exacta.
+
 - Toda skill se registra en `AGENTS.md` § Skill Registry; una skill sin registro está huérfana.
 - Valida el descubrimiento con `ls .agents/skills/*/SKILL.md` y, si el host lo permite, reinicia y
   comprueba que aparece.

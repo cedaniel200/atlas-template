@@ -67,4 +67,4 @@ Copy the files back from `.template/backups/<timestamp>/`.
 
 ## For agents
 
-The **`actualizar-arnes`** skill describes the same flow. Use the script; do not improvise hashes or overwrite `owned`.
+The **`update-harness`** skill describes the same flow. Use the script; do not improvise hashes or overwrite `owned`.

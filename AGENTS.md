@@ -181,6 +181,9 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 
 ## Skill Registry
 
+> Los **triggers** pueden expresarse en cualquier idioma; cada skill declara ejemplos de disparo
+> en su `description` (cuerpo y descripción en inglés, `language.agent`).
+
 | Skill | Ruta | Trigger |
 |---|---|---|
 | `openspec-explore` | `.agents/skills/openspec-explore/` | Explorar una idea antes de proponer |
@@ -199,7 +202,7 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 | `conventional-commits` | `.agents/skills/conventional-commits/` | Cada commit |
 | `session-startup` | `.agents/skills/session-startup/` | Inicio de sesión |
 | `session-end` | `.agents/skills/session-end/` | Cierre de sesión |
-| `actualizar-arnes` | `.agents/skills/actualizar-arnes/` | Actualizar el template/arnés a una versión nueva |
+| `update-harness` | `.agents/skills/update-harness/` | Actualizar el template/arnés a una versión nueva (cualquier idioma) |
 
 Las skills de packs (`.template/packs/`) solo existen cuando el pack está activado.
 
