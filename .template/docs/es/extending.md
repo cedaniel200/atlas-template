@@ -111,6 +111,8 @@ grep -rn "ddd-\|opencode\|claude" .template/agents/ .agents/skills/ || true
 node .template/scripts/validar-perfiles.mjs
 # contrato de placeholders (gate)
 node .template/scripts/validar-contrato.mjs
+# coste de contexto (informativo: detecta archivos que engordan el arnés)
+node .template/scripts/medir-contexto.mjs
 # contrato
 openspec doctor && openspec context
 ```
