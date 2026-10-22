@@ -307,12 +307,12 @@ Reglas:
 
 - Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
   `grep -r "{{" AGENTS.md openspec/config.yaml README.md` debe devolver **vacío**.
-- **Idioma (humano)**: `AGENTS.md`, el `README.md` del proyecto y `docs/README.md` se escriben en
-  `language.user`. Si no es español, **traduce** `docs/README.md`, usa las guías de
+- **Idioma (agente)**: `AGENTS.md`, `.atlas/docs/en/`, `.atlas/agents/` y `.agents/skills/` se
+  escriben en `language.agent` (inglés por defecto); son el contrato y el procedimiento del agente.
+- **Idioma (humano)**: el `README.md` del proyecto y `docs/README.md` se escriben en `language.user`.
+  Si no es español, **traduce** `docs/README.md`, usa las guías de
   `docs/harness/<language.user>/` y actualiza sus enlaces a `docs/harness/<language.user>/` y
   `.atlas/docs/<language.user>/`; no dejes enlaces a `es/` en un proyecto en inglés.
-- **Idioma (agente)**: `.atlas/docs/en/`, `.atlas/agents/` y `.agents/skills/` siguen en
-  `language.agent` (inglés por defecto); no se traducen por proyecto.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adaptadores, comandos, CLAUDE.md).
 - Si el usuario dio términos de dominio, sustituye los ejemplos `<entity>` de las skills.
