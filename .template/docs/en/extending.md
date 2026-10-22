@@ -109,6 +109,8 @@ for f in .agents/skills/*/SKILL.md; do sed -n '1,5p' "$f"; done
 grep -rn "ddd-\|opencode\|claude" .template/agents/ .agents/skills/ || true
 # profiles (gate): structural with no dependencies; `npm i yaml` adds real parsing
 node .template/scripts/validar-perfiles.mjs
+# placeholder contract (gate)
+node .template/scripts/validar-contrato.mjs
 # contract
 openspec doctor && openspec context
 ```

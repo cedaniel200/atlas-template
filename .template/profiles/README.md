@@ -56,6 +56,23 @@ notes: |
   Ajustes manuales o advertencias del perfil.
 ```
 
+## Placeholders de perfil
+
+Se resuelven al **instanciar** el perfil (respuestas del cuestionario). Lista cerrada en
+[`../PLACEHOLDERS.md`](../PLACEHOLDERS.md).
+
+| Placeholder | Campo |
+|---|---|
+| `PACKAGE_MANAGER` | `stack.package_manager` |
+| `RUN_APP_COMMAND` | `commands.run` |
+| `SERVICE_NAME` | `qa.service_name` |
+| `APP_PORT` | `qa.app_port` |
+| `HEALTH_PATH` | `qa.health_path` |
+| `METRICS_PATH` | `qa.metrics_path` |
+
+Un campo que no aplica es `""` (nunca se omite ni se inventa). Derivaciones a placeholders de proyecto:
+`HEALTH_URL = http://localhost:<APP_PORT><HEALTH_PATH>` (o `N/A` si el stack no tiene health).
+
 ## Reglas
 
 - **Solo datos.** Nada de instrucciones para el agente (eso son skills).

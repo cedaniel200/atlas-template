@@ -59,11 +59,12 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 │   └── skills/          # 16 skills portables
 ├── .template/
 │   ├── BOOTSTRAP.md     # ritual de primera sesión
+│   ├── PLACEHOLDERS.md  # contrato de placeholders (perfil/proyecto, N/A)
 │   ├── PROJECT-README.md # plantilla del README del proyecto
 │   ├── agents/          # 5 prompts canónicos
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/ profiles/ packs/
-│   ├── scripts/         # helpers portables (sha256 + validar-perfiles.mjs)
+│   ├── scripts/         # helpers portables (sha256 + validadores)
 │   └── state.json manifest.json
 ├── docs/
 │   ├── README.md        # este índice
