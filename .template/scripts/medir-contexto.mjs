@@ -144,7 +144,8 @@ const skills = await medirPatrones([SKILLS]);
 let descripciones = 0;
 for (const fila of skills) descripciones += frontmatter(fila.texto).length;
 
-const base = await medirPatrones(['AGENTS.md', 'CLAUDE.md', '.template/hosts/opencode/opencode.json']);
+const hostConfig = (await expandir('opencode.json')).length > 0 ? 'opencode.json' : '.template/hosts/opencode/opencode.json';
+const base = await medirPatrones(['AGENTS.md', 'CLAUDE.md', hostConfig]);
 const baseConSkills = [
   ...base,
   {
@@ -161,8 +162,15 @@ imprimir('Arranque mínimo del ritual (sin leer prompts de agente)', arranqueMin
 imprimir('Arranque completo (si además lee los 5 prompts)', arranque);
 const tokensBase = imprimir('Contexto base de sesión (siempre)', baseConSkills);
 
-const agentes = await medirPatrones([AGENTES], ['.template/agents/README.md']);
-console.log('\n## Por agente (base + prompt + skills que menciona)');
+const adaptadores = [
+  ...(await expandir('.opencode/agent/*.md')),
+  ...(await expandir('.claude/agents/*.md')),
+];
+const fuenteAgentes = adaptadores.length > 0 ? 'adaptadores del host' : 'prompts canónicos';
+const agentes = adaptadores.length > 0
+  ? await medirPatrones(['.opencode/agent/*.md', '.claude/agents/*.md'])
+  : await medirPatrones([AGENTES], ['.template/agents/README.md']);
+console.log(`\n## Por agente (base + prompt + skills que menciona) — fuente: ${fuenteAgentes}`);
 for (const agente of agentes.sort((a, b) => a.ruta.localeCompare(b.ruta))) {
   const mencionadas = [...agente.texto.matchAll(/`([a-z0-9-]+)`/g)]
     .map((coincidencia) => coincidencia[1])
@@ -175,7 +183,7 @@ for (const agente of agentes.sort((a, b) => a.ruta.localeCompare(b.ruta))) {
   }
   const tokens = tokensBase + Math.ceil((agente.caracteres + caracteresSkills) / PROXY);
   console.log(
-    `  ${agente.ruta.replace('.template/agents/', '').padEnd(20)} ~${String(tokens).padStart(6)} tok  (${unicas.length} skills)`,
+    `  ${agente.ruta.split('/').at(-1).padEnd(20)} ~${String(tokens).padStart(6)} tok  (${unicas.length} skills)`,
   );
 }
 
