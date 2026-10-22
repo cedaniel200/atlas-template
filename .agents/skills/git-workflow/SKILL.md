@@ -53,6 +53,9 @@ step; it never accumulates work.
 gh pr create --base "$BASE" --head feature/<change> --title "<type>: <change>"
 ```
 
+> `gh` (GitHub CLI) es **opcional**: si no está instalado, abre el PR desde la web con los mismos
+> datos (base, head, título y cuerpo). No bloquea el flujo.
+
 4. The user reviews and merges.
 
 ### 4. Post-merge
