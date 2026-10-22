@@ -1,19 +1,21 @@
 #!/usr/bin/env node
-// validar-contrato.mjs — comprueba que los placeholders usados pertenecen al contrato.
+// validar-contrato.mjs — comprueba que los placeholders usados pertenecen al contrato
+// y que cada stack de `state.stacks` referencia un perfil real del proyecto.
 //
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
 // Fuente única del contrato: .template/PLACEHOLDERS.md
 //
 // Uso: node .template/scripts/validar-contrato.mjs
-// Salida: 0 = ok; 1 = placeholders fuera del contrato.
+// Salida: 0 = ok; 1 = hallazgos (placeholders fuera del contrato o stacks inconsistentes).
 
 import { access, readdir, readFile } from 'node:fs/promises';
-import { join, relative } from 'node:path';
+import { basename, join, relative } from 'node:path';
 
 const CONTRATO = '.template/PLACEHOLDERS.md';
 const CONSUMIDORES_PROYECTO = ['AGENTS.md', 'openspec/config.yaml', '.template/PROJECT-README.md'];
 const DIRECTORIOS_PROYECTO = ['.template/agents', '.agents/skills'];
 const PERFILES = '.template/profiles';
+const PERFILES_EJEMPLO = '_examples';
 
 async function leer(ruta) {
   return readFile(ruta, 'utf8');
@@ -31,6 +33,29 @@ async function archivosDe(dir, extension) {
     }
   }
   return encontrados;
+}
+
+// Los perfiles de _examples/ son ilustrativos: no cuentan como perfiles del proyecto.
+async function perfilesDisponibles(dir = PERFILES) {
+  const ids = new Set();
+  let entradas;
+  try {
+    entradas = await readdir(dir, { withFileTypes: true });
+  } catch {
+    return ids;
+  }
+  for (const entrada of entradas) {
+    const ruta = join(dir, entrada.name);
+    if (entrada.isDirectory()) {
+      if (entrada.name === PERFILES_EJEMPLO) continue;
+      for (const id of await perfilesDisponibles(ruta)) ids.add(id);
+    } else if (entrada.isFile() && entrada.name.endsWith('.yaml')) {
+      ids.add(basename(entrada.name, '.yaml'));
+      const nombre = (await leer(ruta)).match(/^name:\s*["']?([^"'\s#]+)["']?\s*$/m);
+      if (nombre) ids.add(nombre[1]);
+    }
+  }
+  return ids;
 }
 
 function nombresUsados(texto) {
@@ -109,11 +134,19 @@ const stacks = Array.isArray(estado.stacks) ? estado.stacks : [];
 if (stacks.length > 0) {
   const agentsMd = await leer('AGENTS.md');
   const seccionStacks = seccion(agentsMd, '## Stacks');
+  const perfiles = await perfilesDisponibles();
   for (const stack of stacks) {
     if (!stack.id) {
       errores.push('state.stacks: cada stack necesita `id`');
     } else if (!seccionStacks.includes(`\`${stack.id}\``)) {
       errores.push(`AGENTS.md § Stacks: falta el stack ${stack.id}`);
+    }
+    if (!stack.profile) {
+      errores.push(`state.stacks[${stack.id ?? '?'}]: falta \`profile\``);
+    } else if (!perfiles.has(stack.profile)) {
+      errores.push(
+        `state.stacks[${stack.id ?? '?'}].profile: no existe el perfil ${stack.profile} en ${PERFILES} (los ejemplos de ${PERFILES_EJEMPLO}/ no cuentan)`,
+      );
     }
   }
 
