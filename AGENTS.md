@@ -24,6 +24,8 @@
 | [Workflow](#workflow) | Pipeline y gates |
 | [Reglas de oro](#reglas-de-oro) | Normas transversales |
 | [Skill Registry](#skill-registry) | Skills con ruta y trigger |
+| [Stacks](#stacks) | Stacks del proyecto (single/multi) |
+| [Extending](#extending) | Cómo extender skills, agentes y packs |
 | [Placeholders](#placeholders) | Valores que leen los prompts |
 | [Mapa de documentos](#mapa-de-documentos) | Dónde encontrar cada cosa |
 | [Pendientes](#pendientes) | `TBD` del bootstrap |
@@ -74,6 +76,16 @@
 
 ---
 
+> Multi-stack: estos comandos son del **stack por defecto** (primera fila de § Stacks); cada
+> `engineer-<stack>` usa su fila.
+
+## Stacks
+
+> Un stack = un perfil + una ruta + sus comandos + sus packs. Single-stack: una fila.
+> Multi-stack: una fila por tecnología; el renderer genera `engineer-<stack>` por fila.
+
+{{STACKS_TABLE}}
+
 ## Estructura
 
 ```
@@ -115,7 +127,7 @@ Además:
 | Rol | Prompt canónico | Función |
 |---|---|---|
 | `analyst` | `.template/agents/analyst.md` | Análisis y planificación |
-| `engineer` | `.template/agents/engineer.md` | Implementación con TDD |
+| `engineer` | `.template/agents/engineer.md` | Implementación con TDD (single-stack; multi-stack genera `engineer-<stack>`) |
 | `reviewer` | `.template/agents/reviewer.md` | Revisión de código (solo lectura) |
 | `qa-analyst` | `.template/agents/qa-analyst.md` | Pruebas funcionales |
 | `doc-writer` | `.template/agents/doc-writer.md` | Documentación técnica y funcional |
@@ -207,6 +219,12 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 Las skills de packs (`.template/packs/`) solo existen cuando el pack está activado.
 
 ---
+
+## Extending
+
+- Skills y agentes: [`.template/docs/es/extending.md`](.template/docs/es/extending.md).
+- Packs opcionales: [`.template/packs/README.md`](.template/packs/README.md).
+- Contexto específico del proyecto: [`docs/project-context.md`](docs/project-context.md).
 
 ## Placeholders
 
