@@ -78,6 +78,8 @@ Todos deben quedar definidos (valor o `N/A`).
 | `SERVICE_NAME` | perfil | sí |
 | `APP_PORT` | perfil | sí |
 | `HEALTH_URL` | derivado | sí |
+| `STACKS_TABLE` | derivado de `state.stacks` (tabla Markdown) | sí (sin stacks) |
+| `STACK_CONTEXT` | derivado de `state.stacks[i]` (bloque del agente) | sí (single-stack) |
 | `METRICS_PATH` | perfil | sí |
 | `DO_NOT_TOUCH` | respuesta | sí |
 | `MEMORY` | respuesta | sí |
@@ -126,3 +128,29 @@ y lo declara).
 3. La tabla de `AGENTS.md` § Placeholders no declara claves fuera del contrato.
 
 Si falla, **no se inventa**: se amplía este contrato y se documenta el origen del valor.
+---
+
+## 3. Stacks (multi-stack)
+
+`state.stacks` es la fuente única. Cada stack:
+
+```json
+{
+  "id": "python",
+  "profile": "python",
+  "paths": ["backend/"],
+  "install": "pip install -r requirements.txt",
+  "build": "",
+  "run": "uvicorn app:app --reload",
+  "test": "pytest",
+  "lint": "ruff check .",
+  "quality": "ruff check . && pytest",
+  "packs": []
+}
+```
+
+- `id` es obligatorio y único; el adaptador es `engineer-<id>`.
+- `profile` referencia `.template/profiles/<id>.yaml` (o un perfil del proyecto).
+- `packs` son los packs activos de ese stack; `state.packs` es la unión.
+- Single-stack: un elemento; el renderer genera `engineer.md`. Multi-stack: uno por tecnología.
+- `AGENTS.md` § Stacks se rellena desde `state.stacks` (`{{STACKS_TABLE}}`).

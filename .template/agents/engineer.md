@@ -15,6 +15,10 @@
 `AGENTS.md` defines the commands, structure, architecture and **do-not-touch** rules. If a section is
 missing, stop and ask.
 
+## Stack context
+
+{{STACK_CONTEXT}}
+
 OpenSpec commands: follow the preference in `AGENTS.md` (§ Preferences): `user`, `agent` or `ask` (ask
 at each session start). `archive` and `sync` always require explicit approval.
 

@@ -18,7 +18,9 @@
     "notes": null
   },
   "profile": null,
+  "stacks": [],
   "packs": [],
+  "readme": null,
   "preferences": {
     "openspec_commands": "ask",
     "orchestration": "orchestrated"

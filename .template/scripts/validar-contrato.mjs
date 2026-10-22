@@ -7,7 +7,7 @@
 // Uso: node .template/scripts/validar-contrato.mjs
 // Salida: 0 = ok; 1 = placeholders fuera del contrato.
 
-import { readdir, readFile } from 'node:fs/promises';
+import { access, readdir, readFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 
 const CONTRATO = '.template/PLACEHOLDERS.md';
@@ -51,12 +51,13 @@ function nombresDeTabla(texto) {
   return new Set([...texto.matchAll(patron)].map((coincidencia) => coincidencia[1]));
 }
 
-let configurado = false;
+let estado = {};
 try {
-  configurado = JSON.parse(await leer('.template/state.json')).status === 'configured';
+  estado = JSON.parse(await leer('.template/state.json'));
 } catch {
   // template sin estado: se asume no configurado
 }
+const configurado = estado.status === 'configured';
 
 const contrato = await leer(CONTRATO);
 const perfilContrato = nombresDeTabla(seccion(contrato, '## 1. Placeholders de perfil'));
@@ -100,6 +101,38 @@ for (const archivo of await archivosDe(PERFILES, '.yaml')) {
   for (const nombre of nombresUsados(await leer(archivo))) {
     if (!perfilContrato.has(nombre)) {
       errores.push(`${relative('.', archivo)}: {{${nombre}}} no está en el contrato de perfil`);
+    }
+  }
+}
+
+const stacks = Array.isArray(estado.stacks) ? estado.stacks : [];
+if (stacks.length > 0) {
+  const agentsMd = await leer('AGENTS.md');
+  const seccionStacks = seccion(agentsMd, '## Stacks');
+  for (const stack of stacks) {
+    if (!stack.id) {
+      errores.push('state.stacks: cada stack necesita `id`');
+    } else if (!seccionStacks.includes(`\`${stack.id}\``)) {
+      errores.push(`AGENTS.md § Stacks: falta el stack ${stack.id}`);
+    }
+  }
+
+  const packsDeStacks = new Set(stacks.flatMap((stack) => (Array.isArray(stack.packs) ? stack.packs : [])));
+  const packsEstado = new Set((estado.packs ?? []).map((pack) => (typeof pack === 'string' ? pack : pack.name)));
+  for (const pack of packsDeStacks) {
+    if (!packsEstado.has(pack)) errores.push(`state.packs: falta el pack ${pack} (declarado en un stack)`);
+  }
+
+  const host = estado.host;
+  const directorio = host === 'opencode' ? '.opencode/agent' : host === 'claude' ? '.claude/agents' : null;
+  if (directorio) {
+    for (const stack of stacks) {
+      const esperado = stacks.length > 1 ? `engineer-${stack.id}.md` : 'engineer.md';
+      try {
+        await access(join(directorio, esperado));
+      } catch {
+        errores.push(`${directorio}/${esperado}: falta el adaptador del stack ${stack.id}`);
+      }
     }
   }
 }

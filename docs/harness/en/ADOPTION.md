@@ -18,10 +18,11 @@ Copy only what is missing from the template:
 
 | File | If it already exists |
 |---|---|
-| `AGENTS.md` | **Do not overwrite**; merge with a diff |
+| `AGENTS.md` | **Template base**: backup, replace with the template's `AGENTS.md`, migrate project content to `docs/project-context.md` |
 | `openspec/config.yaml` | Merge `context:` and `rules:` |
 | `openspec/specs/`, `adr/` | Keep the project's |
 | `.agents/skills/`, `.template/agents/` | Keep the project's; add the template's with a prefix or as a pack |
+| `README.md` | **Keep it**; the bootstrap asks whether to append the missing sections from `.template/PROJECT-README.md` |
 | `docs/README.md` | Merge: keep the project's index and link the harness sections |
 | Adapters (`.opencode/`, `.claude/`) | Preserve; adapt only what collides |
 
@@ -44,12 +45,12 @@ The bootstrap detects **brownfield** and inventories before touching anything.
 | Build/tooling | Profile and real commands |
 | Tests, lint, coverage, mutation | Quality menu |
 | CI and deployment | QA environment |
-| `AGENTS.md`, `CLAUDE.md`, `.cursorrules` | Existing rules to merge |
+| `AGENTS.md`, `CLAUDE.md`, `.cursorrules` | Existing rules to migrate to `docs/project-context.md` |
 | `openspec/` | Existing specs, changes and config |
 | Project agents and skills | What to keep and what to adapt |
 | `.env`, secrets | Names only; **never values** |
 
-The result is written to `docs/template-adoption.md`:
+The result is written to `.template/adoption-report.md` (and summarized in `docs/template-adoption.md` if the project uses it):
 
 ```markdown
 # Harness adoption
@@ -85,6 +86,8 @@ backup → diff → merge → user confirmation
 | Project file is more complete | Keep the project's; note it in the report |
 | Template file is more complete | Propose replacement with a diff |
 | Both have content | Manual merge; never automatic |
+| Project `AGENTS.md` | Replace with the **template base** (backup); project content moves to `docs/project-context.md` |
+| Project `README.md` | Keep it; only append missing sections if the user accepts |
 
 **Never** overwrite existing specs, ADRs or business rules.
 

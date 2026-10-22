@@ -60,6 +60,7 @@ if (!template) {
 const marca = new Date().toISOString().replace(/[:.]/g, '-');
 const backup = join(proyecto, '.template/backups', `adopcion-${marca}`);
 const clases = { nuevo: [], igual: [], distinto: [] };
+const notas = [];
 
 for (const rel of await recorrer(template)) {
   const destino = join(proyecto, rel);
@@ -77,6 +78,13 @@ for (const rel of await recorrer(template)) {
     await mkdir(dirname(copia), { recursive: true });
     await copyFile(destino, copia);
   }
+}
+
+if (await existe(join(proyecto, 'AGENTS.md'))) {
+  notas.push('`AGENTS.md` existente: se reemplaza por la base del template (backup) y el contenido propio se migra a `docs/project-context.md`.');
+}
+if ((await existe(join(proyecto, 'README.md'))) && !(await existe(join(template, 'README.md')))) {
+  notas.push('`README.md` existente: se conserva; el bootstrap preguntará si añadir las secciones faltantes de `.template/PROJECT-README.md`.');
 }
 
 if (!dryRun) {
@@ -98,8 +106,9 @@ if (!dryRun) {
     '',
     '| Archivo | Acción sugerida |',
     '|---|---|',
-    ...clases.distinto.map((rel) => `| \`${rel}\` | Revisar y fusionar; backup en \`${backup}\` |`),
+    ...clases.distinto.map((rel) => `| \`${rel}\` | ${rel === 'AGENTS.md' ? `Reemplazar por la base del template + migrar customizaciones a \`docs/project-context.md\`; backup en \`${backup}\`` : `Revisar y fusionar; backup en \`${backup}\``} |`),
     '',
+    ...(notas.length > 0 ? ['## Notas de adopción', '', ...notas.map((nota) => `- ${nota}`), ''] : []),
     '## Nuevos',
     '',
     ...clases.nuevo.map((rel) => `- \`${rel}\``),
