@@ -159,9 +159,15 @@ progressive disclosure; `AGENTS.md` → move reference material to linked docs.
 ## Add a stack
 
 1. Add a row to `state.stacks` (`id`, `profile`, `paths`, commands, `packs`).
-2. Fill `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); the first row is the default.
+2. Fill `AGENTS.md` § Stacks (`{{STACKS_TABLE}}`); include `Install`, `Build`, `Run`, `Test`, `Lint` and `Quality`.
 3. Run `renderizar-adaptadores.mjs`: `engineer-<id>` is generated per stack.
 4. Activate the stack's packs (`state.stacks[].packs`) and copy only their skills/agents.
 
 Optional packs live in [`.template/packs/`](../../packs/README.md) and consume no context until
 activated. A stack without a pack uses the profile and the core process.
+
+## Core vs pack
+
+- **Core**: `.agents/skills/` (workflow; always installed).
+- **Pack**: `.template/packs/<id>/` (technology or procedure; copied only when active in `state.stacks[].packs`).
+- **Version**: the pack in `pack.yaml`; the core follows the template version.

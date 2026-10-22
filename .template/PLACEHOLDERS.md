@@ -154,3 +154,11 @@ Si falla, **no se inventa**: se amplía este contrato y se documenta el origen d
 - `packs` son los packs activos de ese stack; `state.packs` es la unión.
 - Single-stack: un elemento; el renderer genera `engineer.md`. Multi-stack: uno por tecnología.
 - `AGENTS.md` § Stacks se rellena desde `state.stacks` (`{{STACKS_TABLE}}`).
+
+La tabla de `§ Stacks` incluye los comandos para que el contrato sea autocontenido:
+
+```markdown
+| Stack | Perfil | Rutas | Install | Build | Run | Test | Lint | Quality | Packs |
+|---|---|---|---|---|---|---|---|---|---|
+| `python` | `python` | `backend/` | `pip install -r requirements.txt` | — | `uvicorn app:app` | `pytest` | `ruff check .` | `ruff check . && pytest` | — |
+```
