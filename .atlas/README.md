@@ -1,73 +1,73 @@
-# `.atlas/` — estado y material del ritual
+# `.atlas/` — ritual state and material
 
-Este directorio es el **único** lugar del repo que sabe que el proyecto todavía no está configurado.
-Lo consume `.atlas/BOOTSTRAP.md` en la primera sesión.
+This directory is the **only** place in the repo that knows the project is not configured yet.
+It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 
-## Estructura
+## Structure
 
-| Ruta | Versionado | Propósito |
+| Path | Versioned | Purpose |
 |---|---|---|
-| `state.json` | ✅ sí | **Inputs**: estado del ritual y decisiones tomadas |
-| `manifest.json` | ✅ sí | **Outputs**: archivos generados, hash y propiedad (base para actualizar) |
-| `BOOTSTRAP.md` | ✅ sí | Ritual de primera sesión |
-| `PLACEHOLDERS.md` | ✅ sí | Contrato cerrado de placeholders: capas perfil/proyecto, estados (`N/A`) y derivaciones |
-| `PROJECT-README.md` | ✅ sí | Plantilla del README del proyecto (se copia a `README.md` al adoptar) |
-| `agents/` | ✅ sí | Prompts canónicos de rol; el bootstrap genera los adaptadores desde aquí |
-| `docs/` | ✅ sí | Documentación interna del arnés (`en/` canónico, `es/` traducción) |
-| `hosts/<host>/` | ✅ sí | Plantillas de adaptador por herramienta |
-| `profiles/<stack>.yaml` | ✅ sí | **Datos** por stack: comandos, rutas, calidad |
-| `profiles/_templates/` | ✅ sí | Plantilla de perfil; no se valida como perfil |
-| `packs/<pack>/` | ✅ sí | **Procedimiento** opcional (skills/agentes), fuera de discovery |
-| `packs/_templates/` | ✅ sí | Esqueleto de pack; no se activa |
-| `legal/` | ✅ sí | Legal del template movido al configurar un proyecto (LICENSE, SECURITY, THIRD-PARTY) |
-| `scripts/` | ✅ sí | Helpers portables (solo Node/shell): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `mover-legal.mjs`, `medir-contexto.mjs` (diagnóstico de mantenimiento) y `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
-| `adapters/<host>/` | ❌ no (gitignored) | Artefactos desplazados por `prune` (estado local) |
-| `archive/` | ❌ no (gitignored) | Documentación interna archivada cuando el proyecto no contribuye (`.atlas/docs/`) |
-| `backups/<timestamp>/` | ❌ no (gitignored) | Copia previa a una fusión en modo brownfield |
+| `state.json` | ✅ yes | **Inputs**: ritual state and decisions taken |
+| `manifest.json` | ✅ yes | **Outputs**: generated files, hash and ownership (base for updates) |
+| `BOOTSTRAP.md` | ✅ yes | First-session ritual |
+| `PLACEHOLDERS.md` | ✅ yes | Closed placeholder contract: profile/project layers, states (`N/A`) and derivations |
+| `PROJECT-README.md` | ✅ yes | Project README template (copied to `README.md` on adoption) |
+| `agents/` | ✅ yes | Canonical role prompts; the bootstrap generates adapters from here |
+| `docs/` | ✅ yes | Internal harness documentation (`en/` canonical, `es/` translation) |
+| `hosts/<host>/` | ✅ yes | Per-tool adapter templates |
+| `profiles/<stack>.yaml` | ✅ yes | **Data** per stack: commands, paths, quality |
+| `profiles/_templates/` | ✅ yes | Profile template; not validated as a profile |
+| `packs/<pack>/` | ✅ yes | Optional **procedure** (skills/agents), outside discovery |
+| `packs/_templates/` | ✅ yes | Pack skeleton; not activated |
+| `legal/` | ✅ yes | Template legal moved when configuring a project (LICENSE, SECURITY, THIRD-PARTY) |
+| `scripts/` | ✅ yes | Portable helpers (Node/shell only): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `mover-legal.mjs`, `medir-contexto.mjs` (maintenance diagnostic) and `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
+| `adapters/<host>/` | ❌ no (gitignored) | Artifacts displaced by `prune` (local state) |
+| `archive/` | ❌ no (gitignored) | Internal documentation archived when the project does not contribute (`.atlas/docs/`) |
+| `backups/<timestamp>/` | ❌ no (gitignored) | Copy before a brownfield merge |
 
-### La diferencia importa
+### The difference matters
 
-- **Perfil = dato.** Comandos, rutas, herramientas, umbrales. Se puede añadir uno nuevo en ~40 líneas
-  de YAML y cualquier stack queda soportado.
-- **Pack = procedimiento.** Conocimiento que **no** se reduce a un comando (patrones, checklists,
-  configuración). Es opcional: ATLAS funciona sin packs.
+- **Profile = data.** Commands, paths, tools, thresholds. A new one can be added in ~40 lines of YAML
+  and any stack becomes supported.
+- **Pack = procedure.** Knowledge that **cannot** be reduced to a command (patterns, checklists,
+  configuration). It is optional: ATLAS works without packs.
 
 ## `state.json` — inputs
 
-| Campo | Valores | Significado |
+| Field | Values | Meaning |
 |---|---|---|
-| `bootstrap_version` | entero | Versión del ritual con la que se configuró |
-| `template_version` | semver | Versión de ATLAS usada como base |
-| `template_source` | `{url, commit}` | Origen para actualizaciones reproducibles |
-| `status` | `pending` \| `configured` | Si es `configured`, el ritual no se repite |
-| `mode` | `greenfield` \| `brownfield` \| `null` | Cómo se adoptó ATLAS |
-| `host` | `opencode` \| `claude` \| `codex` \| `null` | Herramienta anfitriona |
-| `host_source` | `env` \| `user` \| `files` \| `null` | Cómo se determinó |
-| `language.user` | `es` \| `en` \| otro \| `null` | Idioma de la documentación de usuario |
-| `language.agent` | `en` (por defecto) | Idioma de skills y prompts |
-| `architecture.stance` | `null` \| texto libre | Postura elegida: `layered`, `hexagonal`, `ddd`, `custom`… |
-| `architecture.notes` | texto \| `null` | Reglas de frontera que declara el proyecto |
-| `profile` | id de perfil \| `null` | Perfil de stack aplicado |
-| `packs` | lista | Packs activados |
-| `stacks` | lista | Stacks del proyecto: `id`, `profile`, `paths`, comandos y `packs` |
-| `readme` | `generated` \| `preserved` \| `appended` \| `null` | Política aplicada al `README.md` del proyecto |
-| `optional_agents` | lista | Roles opcionales activados (`mentor`, `business-strategist`) |
-| `preferences.openspec_commands` | `user` \| `agent` \| `ask` | Quién ejecuta los comandos OpenSpec |
-| `preferences.orchestration` | `orchestrated` \| `manual` | Si el analyst encadena las fases o el usuario las invoca |
-| `quality.crap_threshold` | entero | Umbral CRAP por método (default `6`) |
-| `docs.*` | rutas | Carpetas de documentación (nombres en inglés; contenido en `language.user`) |
-| `phase` | `0`–`3` | Última fase completada |
-| `displaced` | lista | Rutas movidas a `adapters/` |
-| `override_reason` | texto \| `null` | Motivo si el usuario saltó el gate de validación |
-| `configured_at` | ISO-8601 \| `null` | Fecha de configuración |
+| `bootstrap_version` | integer | Ritual version used for setup |
+| `template_version` | semver | ATLAS version used as the base |
+| `template_source` | `{url, commit}` | Origin for reproducible updates |
+| `status` | `pending` \| `configured` | If `configured`, the ritual is not repeated |
+| `mode` | `greenfield` \| `brownfield` \| `null` | How ATLAS was adopted |
+| `host` | `opencode` \| `claude` \| `codex` \| `null` | Host tool |
+| `host_source` | `env` \| `user` \| `files` \| `null` | How it was determined |
+| `language.user` | `es` \| `en` \| other \| `null` | User documentation language |
+| `language.agent` | `en` (default) | Skills and prompt language |
+| `architecture.stance` | `null` \| free text | Chosen stance: `layered`, `hexagonal`, `ddd`, `custom`… |
+| `architecture.notes` | text \| `null` | Boundary rules declared by the project |
+| `profile` | profile id \| `null` | Stack profile applied |
+| `packs` | list | Activated packs |
+| `stacks` | list | Project stacks: `id`, `profile`, `paths`, commands and `packs` |
+| `readme` | `generated` \| `preserved` \| `appended` \| `null` | Policy applied to the project `README.md` |
+| `optional_agents` | list | Activated optional roles (`mentor`, `business-strategist`) |
+| `preferences.openspec_commands` | `user` \| `agent` \| `ask` | Who runs OpenSpec commands |
+| `preferences.orchestration` | `orchestrated` \| `manual` | Whether the analyst chains phases or the user invokes them |
+| `quality.crap_threshold` | integer | CRAP threshold per method (default `6`) |
+| `docs.*` | paths | Documentation folders (English names; content in `language.user`) |
+| `phase` | `0`–`3` | Last completed phase |
+| `displaced` | list | Paths moved to `adapters/` |
+| `override_reason` | text \| `null` | Reason if the user skipped the validation gate |
+| `configured_at` | ISO-8601 \| `null` | Setup date |
 
-## `manifest.json` — outputs y actualizaciones
+## `manifest.json` — outputs and updates
 
 ```json
 {
   "template_version": "0.1.0",
   "generated_at": "2026-10-21T12:00:00Z",
-  "note": "Generado por el bootstrap. No editar a mano.",
+  "note": "Generated by the bootstrap. Do not edit by hand.",
   "files": {
     ".agents/skills/conventional-commits/SKILL.md": {
       "origin": "core",
@@ -88,34 +88,35 @@ Lo consume `.atlas/BOOTSTRAP.md` en la primera sesión.
 }
 ```
 
-### Propiedad de archivos
+### File ownership
 
-| `ownership` | Ejemplos | Al actualizar ATLAS |
+| `ownership` | Examples | On ATLAS update |
 |---|---|---|
-| `managed` | skills, prompts, plantillas de perfil/pack | Se reemplaza **solo si el hash coincide** con el manifiesto; si no, se escribe `<archivo>.new` y se reporta conflicto |
-| `generated` | adaptador de host, wrappers `opsx-*` | Se regenera siempre |
-| `owned` | `AGENTS.md`, `config.yaml`, specs, ADRs, `docs/` | **Nunca se sobrescribe**; solo se sugieren secciones nuevas |
+| `managed` | skills, prompts, profile/pack templates | Replaced **only if the hash matches** the manifest; otherwise `<file>.new` is written and a conflict is reported |
+| `generated` | host adapter, `opsx-*` wrappers | Always regenerated |
+| `owned` | `AGENTS.md`, `config.yaml`, specs, ADRs, `docs/` | **Never overwritten**; only new sections are suggested |
 
-### Algoritmo de actualización (v1)
+### Update algorithm (v1)
 
 ```
-1. Leer state.json (inputs) y manifest.json (base)
-2. Obtener ATLAS en `template_source.commit`
-3. Regenerar en un directorio temporal con los MISMOS inputs
-4. Por archivo del manifiesto:
-     owned     -> omitir
-     generated -> sobrescribir
-     managed   -> hash(actual) == hash(base) ? sobrescribir : escribir .new + conflicto
-5. Reporte: actualizados / conflictos / omitidos
+1. Read state.json (inputs) and manifest.json (base)
+2. Fetch ATLAS at `template_source.commit`
+3. Regenerate in a temporary directory with the SAME inputs
+4. Per manifest file:
+     owned     -> skip
+     generated -> overwrite
+     managed   -> hash(current) == hash(base) ? overwrite : write .new + conflict
+5. Report: updated / conflicts / skipped
 ```
 
-La actualización por hash **nunca destruye** trabajo del usuario: los archivos modificados se
-reportan como conflicto en lugar de sobrescribirse.
+Hash-based updates **never destroy** user work: modified files are reported as conflicts instead of
+being overwritten.
 
-## Reglas
+## Rules
 
-1. **Nada se borra.** Lo que no aplica se desplaza a `adapters/` (recuperable con `git revert`).
-2. **La raíz nace neutra.** No hay configuración de ninguna herramienta en la raíz hasta que el
-   bootstrap la genera desde `hosts/`.
-3. **Un commit por fase.** El ritual deja rastro explícito en el historial.
-4. **Un pack nunca es requisito** para que ATLAS funcione.
+1. **Nothing is deleted.** Anything that does not apply is moved to `adapters/` (recoverable with
+   `git revert`).
+2. **The root is born neutral.** No tool configuration exists at the root until the bootstrap
+   generates it from `hosts/`.
+3. **One commit per phase.** The ritual leaves an explicit trace in history.
+4. **A pack is never a requirement** for ATLAS to work.

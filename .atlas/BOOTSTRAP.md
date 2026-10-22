@@ -1,395 +1,398 @@
-# BOOTSTRAP.md — Ritual de primera sesión de ATLAS
+# BOOTSTRAP.md — ATLAS first-session ritual
 
-> **Se ejecuta una vez por proyecto, antes de escribir código.**
-> Estado: `.atlas/state.json` (`pending` → `configured`).
-> Si `status` es `configured`, **no leer ni repetir** este archivo; ofrece reconfiguración explícita.
+> **Runs once per project, before writing code.**
+> State: `.atlas/state.json` (`pending` → `configured`).
+> If `status` is `configured`, **do not read or repeat** this file; offer explicit reconfiguration.
 >
-> Este archivo lo ejecuta el agente. El humano responde las preguntas y aprueba cada fase.
+> The agent runs this file. The human answers the questions and approves each phase.
 
 ---
 
-## Reglas del ritual
+## Ritual rules
 
-1. **No escribir código de negocio** en ninguna fase.
-2. **No borrar nada.** Lo que no aplique se mueve a `.atlas/adapters/<host>/`.
-3. **Idempotente**: cada fase se puede repetir sin duplicar efectos.
-4. **Un commit por fase**, con el prefijo indicado.
-5. **Si una fase falla, no se avanza** a la siguiente.
-6. **No inventar comandos, rutas ni versiones.** Lo desconocido se marca `TBD` y se lista en
-   `AGENTS.md` § Pendientes.
+1. **Do not write business code** in any phase.
+2. **Do not delete anything.** Anything that does not apply is moved to `.atlas/adapters/<host>/`.
+3. **Idempotent**: each phase can be repeated without duplicating effects.
+4. **One commit per phase**, with the indicated prefix.
+5. **If a phase fails, do not advance** to the next.
+6. **Do not invent commands, paths or versions.** Unknown values are marked `TBD` and listed in
+   `AGENTS.md § Pending`.
 
 ---
 
-# Fase −2 — Aislamiento (antes de tocar nada)
+# Phase −2 — Isolation (before touching anything)
 
-El bootstrap escribe archivos: **nunca se ejecuta sobre una rama con trabajo sin commitear**.
+The bootstrap writes files: **it never runs on a branch with uncommitted work**.
 
-1. `git status --porcelain` debe estar vacío. Si no, detenerse y pedir commit o stash.
-2. Detectar la rama por defecto:
+1. `git status --porcelain` must be empty. If not, stop and ask for a commit or stash.
+2. Detect the default branch:
 
    ```bash
    BASE=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's#^origin/##')
    [ -n "$BASE" ] || BASE=$(git branch --show-current)
    ```
 
-   Si el repo no tiene remoto, `BASE` cae a la rama actual.
+   If the repo has no remote, `BASE` falls back to the current branch.
 
-3. Elegir la rama:
+3. Choose the branch:
 
-   | Situación | Rama |
+   | Situation | Branch |
    |---|---|
-   | Greenfield sin historial de producto | La rama por defecto (o `chore/bootstrap` si el repo ya existe) |
-   | Brownfield | `chore/bootstrap` (o un worktree `.worktrees/bootstrap`) |
-   | Repo compartido o duda | `chore/bootstrap` siempre |
+   | Greenfield without product history | The default branch (or `chore/bootstrap` if the repo already exists) |
+   | Brownfield | `chore/bootstrap` (or a `.worktrees/bootstrap` worktree) |
+   | Shared repo or doubt | `chore/bootstrap` always |
 
-4. Crear la rama si aplica:
+4. Create the branch if applicable:
 
    ```bash
    git checkout -b chore/bootstrap
    ```
 
-5. Un commit por fase. **Sin push ni PR** salvo petición explícita del usuario.
-6. Al terminar: indicar la rama usada y pedir revisión; **el merge lo hace el usuario**.
+5. One commit per phase. **No push or PR** unless the user explicitly asks.
+6. When done: state the branch used and ask for review; **the user performs the merge**.
 
-> **Excepción declarada:** el bootstrap es la única tarea que no sigue la regla “un worktree por cambio”.
-> Usa su propia rama de configuración para no contaminar el trabajo del proyecto.
+> **Declared exception:** the bootstrap is the only task that does not follow the "one worktree per
+> change" rule. It uses its own setup branch so it does not contaminate project work.
 
 ---
 
-# Fase −1 — Modo de adopción
+# Phase −1 — Adoption mode
 
-## −1.1 Detectar
+## −1.1 Detect
 
-| Señal | Modo |
+| Signal | Mode |
 |---|---|
-| Hay código, build, tests, CI o historial de git con commits de producto | **Brownfield** (proyecto existente) |
-| Repo vacío o solo con el template | **Greenfield** (desde cero) |
+| Code, build, tests, CI or git history with product commits | **Brownfield** (existing project) |
+| Empty repo or only the template | **Greenfield** (from scratch) |
 
-Confirma con el usuario antes de seguir.
+Confirm with the user before continuing.
 
-## −1.2 Inventario (solo lectura, brownfield)
+## −1.2 Inventory (read-only, brownfield)
 
-Inspecciona y registra el inventario en `.atlas/adoption-report.md` (guía: `docs/harness/<lang>/ADOPTION.md`):
+Inspect and record the inventory in `.atlas/adoption-report.md` (guide: `docs/harness/<lang>/ADOPTION.md`):
 
-| Se detecta | Acción |
+| Detected | Action |
 |---|---|
-| Build/tooling (`pom.xml`, `build.gradle`, `package.json`, `pyproject.toml`, `go.mod`…) | Pre-rellenar perfil y comandos |
-| Tests, lint, CI, Docker | Pre-rellenar el menú de calidad y QA |
-| `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, reglas de agentes | **Fusionar con diff**, nunca sobrescribir |
-| `openspec/` existente | Fusionar `context:` y `rules:`; no reemplazar specs |
-| `.opencode/agent/`, `.claude/agents/`, `.agents/skills/` propios | Preservar; adaptar solo lo que colisione |
-| `.env`, secretos, credenciales | Detectar y **no** copiar valores |
+| Build/tooling (`pom.xml`, `build.gradle`, `package.json`, `pyproject.toml`, `go.mod`…) | Pre-fill profile and commands |
+| Tests, lint, CI, Docker | Pre-fill the quality and QA menu |
+| `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, agent rules | **Merge with diff**, never overwrite |
+| Existing `openspec/` | Merge `context:` and `rules:`; do not replace specs |
+| Project-owned `.opencode/agent/`, `.claude/agents/`, `.agents/skills/` | Preserve; adapt only what collides |
+| `.env`, secrets, credentials | Detect and **do not** copy values |
 
-## −1.3 Política de conflicto
+## −1.3 Conflict policy
 
 ```text
-backup en .atlas/backups/<timestamp>/ → diff → fusión → confirmación del usuario
+backup in .atlas/backups/<timestamp>/ → diff → merge → user confirmation
 ```
 
-Nunca se sobrescribe un archivo del proyecto sin diff y aprobación. Greenfield y brownfield convergen en
-la Fase 1, con las respuestas pre-rellenadas en brownfield.
+A project file is never overwritten without diff and approval. Greenfield and brownfield converge in
+Phase 1, with answers pre-filled in brownfield.
 
-**Commit:** `chore(bootstrap): detectar modo <greenfield|brownfield>`
+**Commit:** `chore(bootstrap): detect <greenfield|brownfield> mode`
 
 ---
 
-# Fase 0 — Herramienta anfitriona (obligatoria)
+# Phase 0 — Host tool (mandatory)
 
-## 0.1 Detección
+## 0.1 Detection
 
 ```bash
-env | grep -E '^(OPENCODE|CODEX_[A-Z_]+|CLAUDECODE|CLAUDE_CODE)=' || echo "SIN_SEÑAL"
+env | grep -E '^(OPENCODE|CODEX_[A-Z_]+|CLAUDECODE|CLAUDE_CODE)=' || echo "NO_SIGNAL"
 ```
 
-| Señal | Herramienta |
+| Signal | Tool |
 |---|---|
 | `OPENCODE` | **OpenCode** |
-| `CODEX_CI`, `CODEX_THREAD_ID` o `CODEX_SANDBOX` | **Codex** |
-| `CLAUDECODE` o `CLAUDE_CODE` | **Claude Code** |
-| sin señal | **Preguntar** |
+| `CODEX_CI`, `CODEX_THREAD_ID` or `CODEX_SANDBOX` | **Codex** |
+| `CLAUDECODE` or `CLAUDE_CODE` | **Claude Code** |
+| no signal | **Ask** |
 
-Evidencia secundaria (solo desempate): `opencode.json` → OpenCode; `.claude/` → Claude Code; `.codex/` →
-Codex. Si la señal de entorno y la evidencia de archivos discrepan, **pregunta**.
+Secondary evidence (tie-breaker only): `opencode.json` → OpenCode; `.claude/` → Claude Code; `.codex/` →
+Codex. If the environment signal and file evidence disagree, **ask**.
 
-## 0.2 Adaptación
+## 0.2 Adaptation
 
-**Por defecto es aditiva**: no se mueve nada; solo se crea el adaptador que falta.
+**It is additive by default**: nothing is moved; only the missing adapter is created.
 
-| Acción | OpenCode | Claude Code | Codex |
+| Action | OpenCode | Claude Code | Codex |
 |---|---|---|---|
-| `opencode.json` | crear desde `.atlas/hosts/opencode/` | ignorar | ignorar |
-| `.atlas/agents/` | fuente canónica | fuente canónica | fuente canónica |
-| Adaptador de agentes | `.opencode/agent/<rol>.md` | `.claude/agents/<rol>.md` | *(no hay subagentes)* |
-| Skills | `.agents/skills/` (canónico) + `.opencode/skills/` (nativo, con prioridad) | `.claude/skills` → symlink a `.agents/skills` | `.agents/skills/` (nativo) |
-| `CLAUDE.md` | conservar | debe contener solo `@AGENTS.md` | conservar |
+| `opencode.json` | create from `.atlas/hosts/opencode/` | ignore | ignore |
+| `.atlas/agents/` | canonical source | canonical source | canonical source |
+| Agent adapter | `.opencode/agent/<role>.md` | `.claude/agents/<role>.md` | *(no subagents)* |
+| Skills | `.agents/skills/` (canonical) + `.opencode/skills/` (native, takes precedence) | `.claude/skills` → symlink to `.agents/skills` | `.agents/skills/` (native) |
+| `CLAUDE.md` | preserve | must contain only `@AGENTS.md` | preserve |
 
-**`prune` (opt-in, nunca por defecto):** si el usuario lo pide, mueve los artefactos de hosts no activos
-a `.atlas/adapters/<host>/` y regístralo en `state.json.displaced`. Se recupera con `git revert`.
+**`prune` (opt-in, never by default):** if the user asks, move non-active host artifacts to
+`.atlas/adapters/<host>/` and record it in `state.json.displaced`. Recover with `git revert`.
 
 ## 0.3 Skills
 
-| Host | Acción | Verificación |
+| Host | Action | Verification |
 |---|---|---|
-| OpenCode / Codex | ninguna | `ls .agents/skills/*/SKILL.md` |
+| OpenCode / Codex | none | `ls .agents/skills/*/SKILL.md` |
 | Claude Code | `ln -s ../.agents/skills .claude/skills` | `readlink .claude/skills` |
-| Claude Code sin symlink (Windows) | copiar y avisar de que es estática | `diff -r .agents/skills .claude/skills` |
+| Claude Code without symlink (Windows) | copy and warn that it is static | `diff -r .agents/skills .claude/skills` |
 
-**Packs**: no se copian por defecto. Copia solo `.atlas/packs/<id>/skills` y
-`.atlas/packs/<id>/agents` de los packs activos en `state.stacks[].packs`; el resto no consume
-contexto. `state.packs` es la unión de los packs de todos los stacks. Registra las skills del pack en
-`AGENTS.md` § Skill Registry y su `{name, version}` en `state.packs`.
+**Packs**: not copied by default. Copy only `.atlas/packs/<id>/skills` and
+`.atlas/packs/<id>/agents` for packs active in `state.stacks[].packs`; the rest consumes no context.
+`state.packs` is the union of all stacks' packs. Register pack skills in
+`AGENTS.md` § Skill Registry and their `{name, version}` in `state.packs`.
 
-## 0.4 Comandos
+## 0.4 Commands
 
-No se escriben a mano: los genera OpenSpec.
+They are not written by hand: OpenSpec generates them.
 
 ```bash
 cp AGENTS.md /tmp/agents.bootstrap.bak
 openspec init --tools <opencode|claude|codex>
-diff /tmp/agents.bootstrap.bak AGENTS.md && echo "AGENTS.md intacto" || echo "⚠️ revisar y fusionar"
+diff /tmp/agents.bootstrap.bak AGENTS.md && echo "AGENTS.md unchanged" || echo "⚠️ review and merge"
 
-# .opencode/skills/ es la ruta nativa de OpenCode y tiene prioridad sobre
-# .agents/skills/. No borres el directorio: puede alojar skills propias del equipo.
+# .opencode/skills/ is OpenCode's native path and takes precedence over
+# .agents/skills/. Do not delete the directory: it can host team-owned skills.
 ls .agents/skills | sort > /tmp/skills-agents.txt
 ls .opencode/skills 2>/dev/null | sort > /tmp/skills-opencode.txt
-comm -12 /tmp/skills-agents.txt /tmp/skills-opencode.txt  # IDs duplicados, si hay
+comm -12 /tmp/skills-agents.txt /tmp/skills-opencode.txt  # duplicate IDs, if any
 ```
 
-Salida esperada: `.opencode/commands/opsx-*` · `.claude/commands/opsx/*` · `.codex/prompts/*`.
-`openspec update` no acepta `--tools`: úsalo solo para actualizar instrucciones ya generadas.
-Si `openspec init` reescribe `AGENTS.md`, restáuralo desde el backup y fusiona solo lo nuevo.
+Expected output: `.opencode/commands/opsx-*` · `.claude/commands/opsx/*` · `.codex/prompts/*`.
+`openspec update` does not accept `--tools`: use it only to update already generated instructions.
+If `openspec init` rewrites `AGENTS.md`, restore it from the backup and merge only what is new.
 
-**Si hay IDs duplicados, decides tú.** La copia de `.opencode/skills/` gana sobre `.agents/skills/`.
-Dos salidas válidas:
+**If there are duplicate IDs, you decide.** The copy in `.opencode/skills/` wins over `.agents/skills/`.
+Two valid outcomes:
 
-| Opción | Ventaja | Coste |
+| Option | Advantage | Cost |
 |---|---|---|
-| Conservar `.opencode/skills/` | Espacio nativo del host; el equipo puede dejar ahí sus skills | Las skills canónicas del template quedan sombreadas y no reciben sus mejoras |
-| Eliminar solo los IDs duplicados (o el directorio completo) | Gana el canónico; mismo comportamiento en OpenCode, Claude y Codex | Hay que repetirlo tras cada `openspec init`; borrar el directorio se lleva también las skills del equipo |
+| Keep `.opencode/skills/` | Native host space; the team can keep its own skills there | Template canonical skills are shadowed and do not receive their improvements |
+| Delete only the duplicate IDs (or the whole directory) | The canonical wins; same behavior in OpenCode, Claude and Codex | Repeat after every `openspec init`; deleting the directory also removes team skills |
 
-Borra solo los IDs que liste `comm` si quieres conservar las skills propias. No hay opción
-"correcta": el proyecto asume el tradeoff.
+Delete only the IDs listed by `comm` if you want to keep team-owned skills. There is no "correct"
+option: the project owns the tradeoff.
 
-**Commit:** `chore(bootstrap): adaptar el entorno a <host>`
+**Commit:** `chore(bootstrap): adapt the environment to <host>`
 
 ---
 
-# Fase 1 — Interrogatorio
+# Phase 1 — Interview
 
-Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
+Run the interview in **5 rounds (0–4)**, grouping questions.
 
-## Ronda 0 — Idioma
+## Round 0 — Language
 
-| Pregunta | Valores | Dónde se guarda |
+| Question | Values | Where it is stored |
 |---|---|---|
-| Idioma del usuario (documentación, AGENTS.md, mensajes) | `es`, `en`, otro | `language.user` |
-| Idioma de skills y prompts de agente | `en` (default) o el del usuario | `language.agent` |
+| User language (documentation, AGENTS.md, messages) | `es`, `en`, other | `language.user` |
+| Skills and agent prompt language | `en` (default) or the user's | `language.agent` |
 
-## Ronda 1 — Identidad y stack
+## Round 1 — Identity and stack
 
-1. Nombre y descripción en una frase.
-2. Stack y versiones (lenguaje, framework, gestor de dependencias, runtime).
-3. Estructura de primer nivel (¿monorepo? ¿módulos?).
-4. Package base / namespace.
-5. Perfil de stack: **no hay catálogo**. Parte de `.atlas/profiles/_templates/profile.yaml`, propón
-   comandos reales y crea `.atlas/profiles/<id>.yaml` con `crear-perfil.mjs`. El usuario valida,
-   corrige o elimina. Si un ejemplo de `_examples/` encaja, úsalo como referencia, no lo copies.
-6. **Stacks** (multi-stack): si el proyecto mezcla tecnologías (p. ej. Python back + JS front + mobile),
-   pide una fila por stack: `id`, `profile`, `paths`, comandos y `packs`. El **primero** es el default
-   (rellena § Comandos); los demás van a § Stacks. La tabla de § Stacks incluye los comandos
-   (`Install`, `Build`, `Run`, `Test`, `Lint`, `Quality`) para que el contrato sea autocontenido.
-   Un solo stack = una fila.
+1. Name and one-sentence description.
+2. Stack and versions (language, framework, dependency manager, runtime).
+3. Top-level structure (monorepo? modules?).
+4. Base package / namespace.
+5. Stack profile: **there is no catalog**. Start from `.atlas/profiles/_templates/profile.yaml`, propose
+   real commands and create `.atlas/profiles/<id>.yaml` with `crear-perfil.mjs`. The user validates,
+   corrects or removes it. If an `_examples/` example fits, use it as a reference; do not copy it.
+6. **Stacks** (multi-stack): if the project mixes technologies (e.g. Python back + JS front + mobile),
+   ask for one row per stack: `id`, `profile`, `paths`, commands and `packs`. The **first** is the
+   default (fills § Commands); the rest go to § Stacks. The § Stacks table includes the commands
+   (`Install`, `Build`, `Run`, `Test`, `Lint`, `Quality`) so the contract is self-contained.
+   One stack = one row.
 
-## Ronda 2 — Comandos y calidad
+## Round 2 — Commands and quality
 
-| Categoría | Pregunta / sugerencia |
+| Category | Question / suggestion |
 |---|---|
-| Build / run / test | Comandos reales; si no se conocen, `TBD` |
-| Lint y análisis estático | Checkstyle/ESLint/ruff/… |
-| Cobertura | JaCoCo/c8/pytest-cov/… |
-| Mutación | PIT/Stryker/mutmut/… |
-| **CRAP** | Umbral por método; default **6** (ver `docs/harness/<lang>/QUALITY.md`) |
-| Secretos | gitleaks (tool‑agnóstico) |
-| Entorno de QA | Docker sí/no, servicio, puerto, health, métricas (sin health o puerto → `N/A`) |
+| Build / run / test | Real commands; if unknown, `TBD` |
+| Lint and static analysis | Checkstyle/ESLint/ruff/… |
+| Coverage | JaCoCo/c8/pytest-cov/… |
+| Mutation | PIT/Stryker/mutmut/… |
+| **CRAP** | Per-method threshold; default **6** (see `docs/harness/<lang>/QUALITY.md`) |
+| Secrets | gitleaks (tool-agnostic) |
+| QA environment | Docker yes/no, service, port, health, metrics (no health or port → `N/A`) |
 
-## Ronda 3 — Arquitectura, dominio y límites
+## Round 3 — Architecture, domain and boundaries
 
-1. **Arquitectura**: `layered`, `hexagonal`, `ddd`, `custom`, o “la que ya tenga el proyecto”. Se declara en
-   `AGENTS.md` § Arquitectura; no se impone ninguna.
-2. **Dominio**: 2–3 módulos/contextos iniciales y 5–10 términos del lenguaje del negocio.
-3. **Reglas de No Tocar**: archivos, carpetas, APIs, migraciones que el agente nunca debe modificar.
-4. **Convención Git**: ramas, PR, merge.
-5. **Documentación**: carpetas por defecto en inglés (`docs/functional`, `docs/architecture`, `docs/api`,
-   `docs/guides`); el usuario puede renombrarlas.
-6. **Memoria persistente**: Engram, otra, o ninguna. Si no sabe, **sugerir Engram**; `.engram/` no se
-   versiona por defecto.
-7. **Comandos OpenSpec**: `user` (siempre el humano), `agent` (siempre el agente) o `ask` (preguntar en
-   cada sesión). Default: `ask`.
-8. **Orquestación**: orquestada (default) o manual.
-9. **Contribución**: ¿solo vas a usar el arnés o también a contribuir? Si solo lo usas:
-   `mkdir -p .atlas/archive && mv .atlas/docs .atlas/archive/docs`; en `docs/README.md`
-   elimina la fila "Arnés interno"; en `AGENTS.md § Extending` elimina los bullets que apunten a `.atlas/docs/`
-   (apunta a `.atlas/docs/`) y cualquier enlace a `.atlas/docs/`.
-10. **README**: si el proyecto ya tiene `README.md`, ¿añadir las secciones que falten de
-    `.atlas/PROJECT-README.md`? (solo añade; nunca sobrescribe).
+1. **Architecture**: `layered`, `hexagonal`, `ddd`, `custom`, or "whatever the project already uses".
+   It is declared in `AGENTS.md` § Architecture; none is imposed.
+2. **Domain**: 2–3 initial modules/contexts and 5–10 business-language terms.
+3. **Do Not Touch Rules**: files, folders, APIs, migrations the agent must never modify.
+4. **Git convention**: branches, PR, merge.
+5. **Documentation**: default English folders (`docs/functional`, `docs/architecture`, `docs/api`,
+   `docs/guides`); the user may rename them.
+6. **Persistent memory**: Engram, another, or none. If unsure, **suggest Engram**; `.engram/` is not
+   versioned by default.
+7. **OpenSpec commands**: `user` (always the human), `agent` (always the agent) or `ask` (ask at each
+   session). Default: `ask`.
+8. **Orchestration**: orchestrated (default) or manual.
+9. **Contribution**: will you only use the harness or also contribute? If you only use it:
+   `mkdir -p .atlas/archive && mv .atlas/docs .atlas/archive/docs`; in `docs/README.md`
+   remove the "Internal harness" row; in `AGENTS.md § Extending` remove the bullets pointing to
+   `.atlas/docs/` and any link to `.atlas/docs/`.
+10. **README**: if the project already has a `README.md`, should the missing sections from
+    `.atlas/PROJECT-README.md` be added? (append only; never overwrite).
 
-## Ronda 4 — Agentes opcionales
+## Round 4 — Optional agents
 
-Pregunta **uno por uno**, en este orden. En cada pregunta di explícitamente: **(opcional)**, **qué hace**,
-**que no forma parte del ciclo de desarrollo** y que **queda disponible para invocarlo cuando se necesite**.
-No los presentes como recomendados ni los actives por defecto.
+Ask **one by one**, in this order. In each question state explicitly: **(optional)**, **what it does**,
+**that it is not part of the delivery cycle** and that **it remains available to invoke when needed**.
+Do not present them as recommended or activate them by default.
 
-| Rol | Qué hace |
+| Role | What it does |
 |---|---|
-| `mentor` | Enseña, de forma agnóstica, los conceptos y patrones que use el proyecto (DDD, arquitectura, diseño) según su contexto y stack; explica el código y genera material didáctico |
-| `business-strategist` | Modelo de negocio, propuesta de valor, segmentos, pricing y canales (`docs/business/`) |
+| `mentor` | Teaches, agnostically, the concepts and patterns the project uses (DDD, architecture, design) according to its context and stack; explains the code and generates learning material |
+| `business-strategist` | Business model, value proposition, segments, pricing and channels (`docs/business/`) |
 
-| Respuesta | Acción |
+| Answer | Action |
 |---|---|
-| Sí | Añade el id a `state.optional_agents` |
-| No | No lo añadas (default: `[]`) |
+| Yes | Add the id to `state.optional_agents` |
+| No | Do not add it (default: `[]`) |
 
-- **Codex**: no tiene subagentes. Explica que el rol no se puede instalar y omítelo; no lo añadas al estado.
-- Si el usuario duda: puede activarlo después añadiendo el id a `state.optional_agents` y regenerando
-  adaptadores.
+- **Codex**: it has no subagents. Explain that the role cannot be installed and omit it; do not add it
+  to the state.
+- If the user hesitates: they can activate it later by adding the id to `state.optional_agents` and
+  regenerating adapters.
 
-> Si el usuario responde “lo que sea”, elige el default de su stack **y dilo** para que lo corrija.
-> Las respuestas se escriben directamente en `AGENTS.md`; no se inventan comandos.
+> If the user answers "whatever", choose their stack default **and say so** so they can correct it.
+> Answers are written directly to `AGENTS.md`; commands are never invented.
 
 ---
 
-# Fase 2 — Generación
+# Phase 2 — Generation
 
-| Artefacto | Qué rellenar |
+| Artifact | What to fill |
 |---|---|
-| `AGENTS.md` | Resumen, arquitectura, comandos, **Stacks**, estructura, no tocar, preferencias, placeholders |
-| `openspec/config.yaml` | Bloque `context:` y `rules:` (reglas de diseño según la arquitectura elegida) |
-| `.atlas/PROJECT-README.md` → `README.md` del proyecto | Greenfield/sin README: generar. Brownfield con README: conservar y preguntar append |
-| `docs/project-context.md` | Contexto propio del proyecto (brownfield: migrar el `AGENTS.md` existente) |
-| `.env.example` / `.gitattributes` / `.editorconfig` | **Solo si no existen**: créalos con las convenciones del stack (variables detectadas, EOL, indentación). Si existen, consérvalos. No vienen del template. |
-| `.gitignore` | Stack, secretos, estado local (si no existe, créalo) |
-| `docs/` | Renombrar carpetas si el usuario eligió otros nombres y actualizar `AGENTS.md` |
-| `CLAUDE.md` | Verificar el stub de una línea: `@AGENTS.md` |
-| Adaptadores | Agentes y comandos del host detectado |
-| `.atlas/docs/` | Si no se contribuye, mover a `.atlas/archive/docs/` y quitar la fila del índice |
-| `.atlas/legal/` | Legal del template movido desde la raíz (ver abajo) |
-| `.atlas/manifest.json` | `origin`, `sha256` y `ownership` por archivo generado |
+| `AGENTS.md` | Summary, architecture, commands, **Stacks**, structure, do-not-touch, preferences, placeholders |
+| `openspec/config.yaml` | `context:` and `rules:` blocks (design rules for the chosen architecture) |
+| `.atlas/PROJECT-README.md` → project `README.md` | Greenfield/no README: generate. Brownfield with README: preserve and ask about append |
+| `docs/project-context.md` | Project-specific context (brownfield: migrate the existing `AGENTS.md`) |
+| `.env.example` / `.gitattributes` / `.editorconfig` | **Only if they do not exist**: create them with the stack conventions (detected variables, EOL, indentation). If they exist, preserve them. They do not come from the template. |
+| `.gitignore` | Stack, secrets, local state (create it if missing) |
+| `docs/` | Rename folders if the user chose other names and update `AGENTS.md` |
+| `CLAUDE.md` | Verify the one-line stub: `@AGENTS.md` |
+| Adapters | Agents and commands for the detected host |
+| `.atlas/docs/` | If not contributing, move to `.atlas/archive/docs/` and remove the index row |
+| `.atlas/legal/` | Template legal moved from the root (see below) |
+| `.atlas/manifest.json` | `origin`, `sha256` and `ownership` per generated file |
 
-### Generación de adaptadores y manifiesto
+### Adapter and manifest generation
 
-- **Agentes**: genera el adaptador del host con
-  `node .atlas/scripts/renderizar-adaptadores.mjs --host <host>`. El script sustituye los
-  placeholders desde `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
-  `name` + `description`; Codex: sin subagentes). **No copies el cuerpo a mano.**
-  - **Stacks**: cada stack se renderiza como `engineer-<id>` (también con uno solo). Sin stacks se
-    genera `engineer.md` de arranque y se elimina al aparecer el primero. Los demás roles son agnósticos.
-  - **Agentes opcionales**: solo se renderizan los ids de `state.optional_agents` (Ronda 4). Los prompts
-    marcados con `<!-- optional-role -->` que no estén activados se omiten.
-- **README (brownfield)**: si `README.md` existe, **no lo sobrescribas**. Pregunta:
-  "¿Añadir las secciones que falten de `.atlas/PROJECT-README.md`?". Dry-run:
-  `node .atlas/scripts/combinar-readme.mjs --proyecto .`; si acepta, `--apply`. Registra
+- **Agents**: generate the host adapter with
+  `node .atlas/scripts/renderizar-adaptadores.mjs --host <host>`. The script replaces the
+  placeholders from `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
+  `name` + `description`; Codex: no subagents). **Do not copy the body by hand.**
+  - **Stacks**: each stack is rendered as `engineer-<id>` (even with only one). Without stacks, the
+    bootstrap `engineer.md` is generated and removed when the first stack appears. The other roles are
+    stack-agnostic.
+  - **Optional agents**: only the ids in `state.optional_agents` are rendered (Round 4). Prompts
+    marked with `<!-- optional-role -->` that are not active are omitted.
+- **README (brownfield)**: if `README.md` exists, **do not overwrite it**. Ask:
+  "Should the missing sections from `.atlas/PROJECT-README.md` be added?". Dry run:
+  `node .atlas/scripts/combinar-readme.mjs --proyecto .`; if accepted, `--apply`. Record
   `state.readme` (`generated|preserved|appended`).
 - **AGENTS.md (brownfield)**: `node .atlas/scripts/adoptar-agents.mjs --template <pristine> --apply`
-  (backup + base del template + contenido propio a `docs/project-context.md`); después rellena los
-  placeholders de la base en esta Fase 2. No es un merge de iguales.
-- **Legal del template**: en `greenfield` (o si el usuario acepta en brownfield), mueve el legal del
-  template a `.atlas/legal/`:
-  `node .atlas/scripts/mover-legal.mjs --apply`. Mueve `LICENSE`, `SECURITY.md`, `SECURITY.es.md`,
-  `THIRD-PARTY-NOTICES.md` y `THIRD-PARTY-NOTICES.es.md`, y actualiza los enlaces de `docs/README.md`
-  y `docs/README.en.md`. **No genera una licencia del proyecto**: si la quiere, la pide explícitamente.
-  En brownfield, si el proyecto ya tiene sus legales, no los muevas.
-- **Manifiesto**: `node .atlas/scripts/generar-manifiesto.mjs --host <host>`. Aplica las reglas de
-  ownership y origen (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs/legal;
-  generated: adaptadores/commands/opencode.json/CLAUDE.md), calcula `sha256` y escribe
-  `.atlas/manifest.json`. **Contrato: 64 hex en minúsculas, sin nombre de archivo** (lo aplica el script).
-  **Ejecútalo al final de la Fase 2**, después de placeholders, docs y contribución; si cambias un archivo después, vuelve a ejecutarlo.
-- **Shell**: el ritual usa comandos POSIX (`sh`, `grep`, `diff`, `mkdir`). En Windows ejecútalo
-  desde **Git Bash o WSL** (recomendado). Si el host ejecuta PowerShell, al menos el hash debe
-  salir del helper `.ps1`; si no hay shell POSIX ni PowerShell, **detente** y pídelo al usuario —
-  no inventes el hash con otra herramienta.
-- **Placeholders**: el perfil y las respuestas son la fuente de valores; sustituye en `AGENTS.md`,
-  `openspec/config.yaml` y `README.md`. No dejes `{{...}}`.
+  (backup + template base + project content to `docs/project-context.md`); then fill the base
+  placeholders in this Phase 2. It is not a merge of equals.
+- **Template legal**: in `greenfield` (or if the user accepts in brownfield), move the template legal
+  to `.atlas/legal/`:
+  `node .atlas/scripts/mover-legal.mjs --apply`. It moves `LICENSE`, `SECURITY.md`, `SECURITY.es.md`,
+  `THIRD-PARTY-NOTICES.md` and `THIRD-PARTY-NOTICES.es.md`, and updates the links in `docs/README.md`
+  and `docs/README.en.md`. **It does not generate a project license**: if the user wants one, they
+  request it explicitly. In brownfield, if the project already has its own legal files, do not move them.
+- **Manifest**: `node .atlas/scripts/generar-manifiesto.mjs --host <host>`. It applies the ownership
+  and origin rules (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs/legal;
+  generated: adapters/commands/opencode.json/CLAUDE.md), computes `sha256` and writes
+  `.atlas/manifest.json`. **Contract: 64 lowercase hex characters, no file name** (enforced by the script).
+  **Run it at the end of Phase 2**, after placeholders, docs and contribution; if you change a file later, run it again.
+- **Shell**: the ritual uses POSIX commands (`sh`, `grep`, `diff`, `mkdir`). On Windows run it from
+  **Git Bash or WSL** (recommended). If the host runs PowerShell, at least the hash must come from the
+  `.ps1` helper; if there is no POSIX shell or PowerShell, **stop** and ask the user — do not invent
+  the hash with another tool.
+- **Placeholders**: the profile and the answers are the source of values; replace them in `AGENTS.md`,
+  `openspec/config.yaml` and `README.md`. Do not leave `{{...}}`.
 
-Reglas:
+Rules:
 
-- Sustituye **todos** los `{{...}}` de los archivos anteriores. Al terminar:
-  `grep -r "{{" AGENTS.md openspec/config.yaml README.md` debe devolver **vacío**.
-- **Idioma (agente)**: `AGENTS.md`, `.atlas/docs/en/`, `.atlas/agents/` y `.agents/skills/` se
-  escriben en `language.agent` (inglés por defecto); son el contrato y el procedimiento del agente.
-- **Idioma (humano)**: el `README.md` del proyecto y `docs/README.md` se escriben en `language.user`.
-  Si no es español, **traduce** `docs/README.md`, usa las guías de
-  `docs/harness/<language.user>/` y actualiza sus enlaces a `docs/harness/<language.user>/` y
-  `.atlas/docs/<language.user>/`; no dejes enlaces a `es/` en un proyecto en inglés.
+- Replace **all** `{{...}}` in the previous files. When done:
+  `grep -r "{{" AGENTS.md openspec/config.yaml README.md` must return **empty**.
+- **Language (agent)**: `AGENTS.md`, `.atlas/docs/en/`, `.atlas/agents/` and `.agents/skills/` are
+  written in `language.agent` (English by default); they are the agent's contract and procedure.
+- **Language (human)**: the project `README.md` and `docs/README.md` are written in `language.user`.
+  If it is not Spanish, **translate** `docs/README.md`, use the guides in
+  `docs/harness/<language.user>/` and update their links to `docs/harness/<language.user>/` and
+  `.atlas/docs/<language.user>/`; do not leave `es/` links in an English project.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
-  `generated` (adaptadores, comandos, CLAUDE.md).
-- Si el usuario dio términos de dominio, sustituye los ejemplos `<entity>` de las skills.
-- Los `TBD` van a `AGENTS.md` § Pendientes con el motivo.
-- **No crear `openspec/project.md`**: el contexto vive en `openspec/config.yaml`.
+  `generated` (adapters, commands, CLAUDE.md).
+- If the user provided domain terms, replace the `<entity>` examples in the skills.
+- `TBD` items go to `AGENTS.md` § Pending with the reason.
+- **Do not create `openspec/project.md`**: the context lives in `openspec/config.yaml`.
 
-**Commit:** `docs(bootstrap): completar el contexto del proyecto`
+**Commit:** `docs(bootstrap): complete the project context`
 
 ---
 
-# Fase 3 — Validación (gate bloqueante)
+# Phase 3 — Validation (blocking gate)
 
-No se permite avanzar a `propose` hasta que **todo** esté en verde.
+Advancing to `propose` is not allowed until **everything** is green.
 
-- [ ] `AGENTS.md` tiene `## Comandos` con ≥1 comando real
-- [ ] `AGENTS.md` tiene `## Estructura` y `## Reglas de No Tocar`
-- [ ] `AGENTS.md` tiene `## Preferencias` con `language`, comandos OpenSpec y orquestación
-- [ ] `AGENTS.md` tiene `## Arquitectura`
-- [ ] No quedan `{{...}}` en `AGENTS.md`, `openspec/config.yaml` y `README.md`
-- [ ] Contrato de placeholders consistente: `node .atlas/scripts/validar-contrato.mjs`
-- [ ] Perfiles válidos: `node .atlas/scripts/validar-perfiles.mjs`
-- [ ] Manifiesto consistente: `node .atlas/scripts/validar-manifiesto.mjs`
-- [ ] Adaptadores sin placeholders: `grep -rn "{{" .opencode/agent .claude/agents` → vacío (si existen)
-- [ ] Hooks de git activos: `git config core.hooksPath .githooks` (si falta gitleaks, el hook avisa y no bloquea)
-- [ ] Sin health/puerto: si `qa.health_path` o `qa.app_port` están vacíos, `HEALTH_URL` es `N/A` (no se compone una URL con path vacío)
+- [ ] `AGENTS.md` has `## Commands` with ≥1 real command
+- [ ] `AGENTS.md` has `## Structure` and `## Do Not Touch Rules`
+- [ ] `AGENTS.md` has `## Preferences` with `language`, OpenSpec commands and orchestration
+- [ ] `AGENTS.md` has `## Architecture`
+- [ ] No `{{...}}` remains in `AGENTS.md`, `openspec/config.yaml` and `README.md`
+- [ ] Placeholder contract is consistent: `node .atlas/scripts/validar-contrato.mjs`
+- [ ] Profiles are valid: `node .atlas/scripts/validar-perfiles.mjs`
+- [ ] Manifest is consistent: `node .atlas/scripts/validar-manifiesto.mjs`
+- [ ] Adapters without placeholders: `grep -rn "{{" .opencode/agent .claude/agents` → empty (if they exist)
+- [ ] Git hooks active: `git config core.hooksPath .githooks` (if gitleaks is missing, the hook warns and does not block)
+- [ ] No health/port: if `qa.health_path` or `qa.app_port` are empty, `HEALTH_URL` is `N/A` (never compose a URL with an empty path)
 - [ ] `openspec doctor` → root ok
 - [ ] `openspec schema which spec-driven-with-adr` → `Source: project`
-- [ ] `openspec context` → sin warnings
+- [ ] `openspec context` → no warnings
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
-- [ ] Adaptador del host activo presente (agentes y comandos)
-- [ ] Agentes opcionales: solo los elegidos en `state.optional_agents` tienen adaptador
-- [ ] Stacks: cada uno tiene `engineer-<stack>.md` y no queda `engineer.md`.
-- [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.atlas --exclude-dir=node_modules .` → sin resultados
-- [ ] `.atlas/manifest.json` generado
-- [ ] `git status` limpio y las fases commiteadas
+- [ ] Active host adapter present (agents and commands)
+- [ ] Optional agents: only those chosen in `state.optional_agents` have an adapter
+- [ ] Stacks: each one has `engineer-<stack>.md` and no `engineer.md` remains
+- [ ] Template legal: if moved, `.atlas/legal/` has the five files and the root is free; if the project has its own, they remain at the root
+- [ ] No template contamination: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.atlas --exclude-dir=node_modules .` → no results
+- [ ] `.atlas/manifest.json` generated
+- [ ] `git status` clean and phases committed
 
-Si algo falla: corrige y repite. Si el usuario insiste en saltar el gate:
+If something fails: fix and repeat. If the user insists on skipping the gate:
 
 ```json
-{ "status": "configured", "override_reason": "<motivo textual del usuario>" }
+{ "status": "configured", "override_reason": "<user's textual reason>" }
 ```
 
-…y avisa: *"El flujo OpenSpec queda en riesgo: proposal/specs se generarán sin contexto de proyecto."*
+…and warn: *"The OpenSpec flow is at risk: proposal/specs will be generated without project context."*
 
-Al cerrar:
+When closing:
 
 ```json
 { "status": "configured", "phase": 3, "configured_at": "<ISO-8601>" }
 ```
 
-**Commit:** `chore(bootstrap): validar el contexto del proyecto`
+**Commit:** `chore(bootstrap): validate the project context`
 
-Anuncia: **"Bootstrap completo. Ya puedes proponer un cambio."**
+Announce: **"Bootstrap complete. You can now propose a change."**
 
-**Después del bootstrap:** no repitas este ritual. Procedimiento del agente para stacks, perfiles,
-packs o agentes: `.atlas/docs/en/extending.md` (versión humana: `.atlas/docs/<language.user>/extending.md`).
+**After the bootstrap:** do not repeat this ritual. Agent procedure for stacks, profiles, packs or
+agents: `.atlas/docs/en/extending.md` (human version: `.atlas/docs/<language.user>/extending.md`).
 
 ---
 
-## Re‑ejecución y cambio de herramienta
+## Re-run and host change
 
-| Situación | Acción |
+| Situation | Action |
 |---|---|
-| `status == configured` | No repetir. Reconfigurar solo con petición explícita |
-| Cambio de herramienta | Fase 0 con el nuevo host; restaurar adaptadores desde `.atlas/adapters/` o `git revert` |
-| Repo clonado de nuevo | `.atlas/state.json` viaja en git → el ritual se salta solo |
+| `status == configured` | Do not repeat. Reconfigure only on explicit request |
+| Host change | Phase 0 with the new host; restore adapters from `.atlas/adapters/` or `git revert` |
+| Repo cloned again | `.atlas/state.json` travels in git → the ritual skips itself |
 
-## Lo que este ritual NO hace
+## What this ritual does NOT do
 
-- No instala dependencias del stack.
-- No configura MCP (es por herramienta; ver `docs/harness/<lang>/COMPATIBILITY.md`).
-- No crea specs, ADRs ni código de negocio.
-- No decide la arquitectura: la recoge y la declara.
+- It does not install stack dependencies.
+- It does not configure MCP (it is per tool; see `docs/harness/<lang>/COMPATIBILITY.md`).
+- It does not create specs, ADRs or business code.
+- It does not decide the architecture: it collects it and declares it.
