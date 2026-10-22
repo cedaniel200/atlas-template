@@ -26,15 +26,15 @@ export async function renderizarAdaptadores({
   log = console.log,
 } = {}) {
   const state = JSON.parse(await readFile(join(proyecto, '.template/state.json'), 'utf8'));
-  if (state.status !== 'configured') {
-    throw new Error('AGENTS.md no está configurado (state.status != configured): no se pueden resolver placeholders');
-  }
   const hostElegido = host ?? state.host;
   if (!['opencode', 'claude'].includes(hostElegido)) {
     throw new Error(`host no soportado: ${hostElegido} (usa opencode o claude)`);
   }
 
   const agentsMd = await readFile(join(proyecto, 'AGENTS.md'), 'utf8');
+  if (/\{\{[A-Z0-9_]+\}\}/.test(agentsMd)) {
+    throw new Error('AGENTS.md tiene placeholders sin resolver: completa la Fase 2 antes de generar adaptadores');
+  }
   const mapa = new Map();
   for (const coincidencia of agentsMd.matchAll(/^\|\s*`([A-Z0-9_]+)`\s*\|\s*(.*?)\s*\|\s*$/gm)) {
     mapa.set(coincidencia[1], coincidencia[2]);
