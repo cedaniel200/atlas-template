@@ -26,12 +26,12 @@ export async function renderizarAdaptadores({
   log = console.log,
 } = {}) {
   const state = JSON.parse(await readFile(join(proyecto, '.template/state.json'), 'utf8'));
+  if (state.status !== 'configured') {
+    throw new Error('AGENTS.md no está configurado (state.status != configured): no se pueden resolver placeholders');
+  }
   const hostElegido = host ?? state.host;
   if (!['opencode', 'claude'].includes(hostElegido)) {
     throw new Error(`host no soportado: ${hostElegido} (usa opencode o claude)`);
-  }
-  if (state.status !== 'configured') {
-    throw new Error('AGENTS.md no está configurado (state.status != configured): no se pueden resolver placeholders');
   }
 
   const agentsMd = await readFile(join(proyecto, 'AGENTS.md'), 'utf8');
