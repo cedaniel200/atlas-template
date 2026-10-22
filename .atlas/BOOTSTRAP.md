@@ -191,7 +191,9 @@ Conduce el interrogatorio en **5 rondas (0–4)**, agrupando preguntas.
 2. Stack y versiones (lenguaje, framework, gestor de dependencias, runtime).
 3. Estructura de primer nivel (¿monorepo? ¿módulos?).
 4. Package base / namespace.
-5. Perfil de stack: `java-gradle`, `node-ts`, u otro (se crea uno nuevo si no existe).
+5. Perfil de stack: **no hay catálogo**. Parte de `.atlas/profiles/_templates/preset.yaml`, propón
+   comandos reales y crea `.atlas/profiles/<id>.yaml` con `crear-perfil.mjs`. El usuario valida,
+   corrige o elimina. Si un ejemplo de `_examples/` encaja, úsalo como referencia, no lo copies.
 6. **Stacks** (multi-stack): si el proyecto mezcla tecnologías (p. ej. Python back + JS front + mobile),
    pide una fila por stack: `id`, `profile`, `paths`, comandos y `packs`. El **primero** es el default
    (rellena § Comandos); los demás van a § Stacks. La tabla de § Stacks incluye los comandos
@@ -278,8 +280,8 @@ No los presentes como recomendados ni los actives por defecto.
   `node .atlas/scripts/renderizar-adaptadores.mjs --host <host>`. El script sustituye los
   placeholders desde `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
   `name` + `description`; Codex: sin subagentes). **No copies el cuerpo a mano.**
-  - **Multi-stack**: `state.stacks` es la fuente. Con más de un stack se genera `engineer-<id>` por
-    stack (con su bloque `{{STACK_CONTEXT}}`); con uno, `engineer.md`. Los demás roles son agnósticos.
+  - **Stacks**: cada stack se renderiza como `engineer-<id>` (también con uno solo). Sin stacks se
+    genera `engineer.md` de arranque y se elimina al aparecer el primero. Los demás roles son agnósticos.
   - **Agentes opcionales**: solo se renderizan los ids de `state.optional_agents` (Ronda 4). Los prompts
     marcados con `<!-- optional-role -->` que no estén activados se omiten.
 - **README (brownfield)**: si `README.md` existe, **no lo sobrescribas**. Pregunta:
@@ -340,8 +342,7 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
 - [ ] Adaptador del host activo presente (agentes y comandos)
 - [ ] Agentes opcionales: solo los elegidos en `state.optional_agents` tienen adaptador
-- [ ] Multi-stack: `node .atlas/scripts/validar-contrato.mjs` valida `state.stacks` y los adaptadores
-      `engineer-<stack>` (o `engineer` si hay un solo stack).
+- [ ] Stacks: cada uno tiene `engineer-<stack>.md` y no queda `engineer.md`.
 - [ ] Sin contaminación de plantilla: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.atlas --exclude-dir=node_modules .` → sin resultados
 - [ ] `.atlas/manifest.json` generado
 - [ ] `git status` limpio y las fases commiteadas
@@ -363,6 +364,22 @@ Al cerrar:
 **Commit:** `chore(bootstrap): validar el contexto del proyecto`
 
 Anuncia: **"Bootstrap completo. Ya puedes proponer un cambio."**
+
+---
+
+## Extender después del bootstrap
+
+No hace falta repetir el ritual. Estas operaciones se hacen en caliente y se validan al final:
+
+| Quiero… | Procedimiento |
+|---|---|
+| Añadir un stack o perfil | `crear-perfil.mjs` → completar comandos → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
+| Añadir un agente implementador | Es el mismo `engineer` con un stack nuevo: `state.stacks` + `engineer-<id>` |
+| Añadir un pack | `crear-pack.mjs` → skills/agentes → activar en `state.stacks[].packs` y `state.packs` |
+| Quitar un stack o pack | Quitar de `state.stacks`/`state.packs` → `renderizar-adaptadores.mjs` (limpia adaptadores) → regenerar manifiesto |
+
+Guía detallada: `.atlas/docs/es/extending.md`. Validación: `validar-contrato.mjs`, `validar-perfiles.mjs`,
+`renderizar-adaptadores.mjs` y `medir-contexto.mjs`.
 
 ---
 

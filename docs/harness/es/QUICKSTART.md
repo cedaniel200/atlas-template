@@ -53,10 +53,13 @@ El ritual pregunta, por rondas:
 | Ronda | Qué |
 |---|---|
 | **0 — Idioma** | Documentación (`language.user`) e idioma de skills/prompts |
-| **1 — Identidad y stacks** | Nombre, descripción, stack(s), estructura, package base; una fila por stack (multi-stack) |
+| **1 — Identidad y stacks** | Nombre, descripción, stack(s), estructura, package base; perfil generado bajo demanda; una fila por stack |
 | **2 — Comandos y calidad** | Build, run, test, lint, cobertura, mutación, CRAP, entorno de QA |
 | **3 — Arquitectura, dominio y límites** | Postura, dominio, no tocar, git, documentación, memoria, OpenSpec, orquestación, contribución y README |
 | **4 — Agentes opcionales** | `mentor` y `business-strategist`, uno por uno: opcionales y fuera del ciclo de desarrollo |
+
+> **Sin catálogo:** el perfil se crea con `crear-perfil.mjs` desde `_templates/preset.yaml`; los packs
+> solo si los necesitas (`crear-pack.mjs`).
 
 Si no sabes un comando, responde `TBD`: el agente lo anota en `AGENTS.md` § Pendientes. **Nunca se inventa uno.**
 

@@ -4,6 +4,9 @@ Un pack agrupa **conocimiento procedimental** —skills y agentes— que no se p
 comando o una ruta. **No se descubre automáticamente**: vive fuera de `.agents/skills/` y `.atlas/agents/`,
 así que no consume contexto en sesiones donde no aplica.
 
+**No hay catálogo base.** Un pack existe solo si el proyecto lo crea con `crear-pack.mjs` a partir de
+`_templates/pack/`; el contenido lo aporta el proyecto. Se puede crear en cualquier momento.
+
 ## Regla de admisión
 
 Antes de crear un pack, clasifica el conocimiento:
@@ -32,43 +35,47 @@ proceso del núcleo; con pack, gana profundidad.
 
 ```yaml
 # pack.yaml
-name: ddd
+name: <id>
 version: 0.1.0
-description: Modelado estratégico y táctico de dominio
-provides:
-  - skills/ddd-modeling
-requires: []
-stack_hints: []
-license: MIT
+description: <texto>
+requires: []          # perfiles o packs de los que depende
+skills: []            # ids de skills incluidas
+agents: []            # roles incluidos
+notes: |
+  Ajustes o advertencias del pack.
 ```
 
-- `requires` permite validar la coherencia (un pack de Java no se activa con perfil de Python).
+- `requires` permite validar la coherencia (un pack de Java no se activa con un perfil de Python).
 - La versión del pack es independiente de la de ATLAS.
 - Cada skill conserva su `license` y se registra en `THIRD-PARTY-NOTICES.md`.
 
 ## Activación
 
-1. El bootstrap lee los `pack.yaml` y propone los que encajan con los perfiles de `state.stacks`.
+1. Cuando existan packs en `.atlas/packs/`, el bootstrap lee sus `pack.yaml` y propone los que encajan
+   con los perfiles de `state.stacks`.
 2. El usuario elige.
-3. El bootstrap copia el contenido a `.agents/skills/` y `.atlas/agents/`, registra `{name, version}` en
+3. El bootstrap copia el contenido a `.agents/skills/` y `.atlas/agents/`, registra el id en
    `state.stacks[].packs` (y en la unión `state.packs`) y las skills en `AGENTS.md` § Skill Registry.
    Solo los packs activos consumen contexto.
 
-Desactivar un pack = borrar sus archivos copiados (o restaurarlos desde este directorio).
-En una actualización, **solo se actualizan los packs activados**.
+Desactivar un pack = quitar su id de `state.stacks[].packs` y `state.packs`, y borrar sus archivos
+copiados (o restaurarlos desde este directorio). En una actualización, **solo se actualizan los packs
+activados**.
 
-## Catálogo
+## Crear un pack
 
-El catálogo base es agnóstico de tecnología. Un pack de proyecto puede declarar `stack_hints`/`requires`
-(un pack de Java no se activa con un perfil de Python).
+```bash
+node .atlas/scripts/crear-pack.mjs --id <id> --description "<texto>"
+```
 
-| Pack | Qué aporta | Requiere |
-|---|---|---|
-| `ddd` | Modelado estratégico y táctico: agregados, VOs, eventos, context mapping | — |
-| `business-modeling` | Modelo de negocio y propuesta de valor (agente `business`) | — |
-| `integrations` | Memoria persistente (Engram) y grafo de conocimiento (Graphify) | — |
+Crea el esqueleto desde `_templates/pack/` (no sobrescribe sin `--force`). La plantilla usa
+`{{ID}}`/`{{DESCRIPTION}}`; el script los resuelve. Después:
 
-Se incorporan de forma incremental; el mecanismo de activación está disponible desde esta versión.
+1. Añade skills en `skills/<nombre>/SKILL.md` y agentes en `agents/<rol>.md`, o deja el pack vacío
+   si aún no hay contenido.
+2. Actívalo en `state.stacks[].packs` y `state.packs`.
+3. Copia sus skills a `.agents/skills/` y regístralas en `AGENTS.md § Skill Registry`.
+4. Valida: `node .atlas/scripts/validar-contrato.mjs` (exige `pack.yaml` para cada pack activo).
 
 ## Lo que un pack NO es
 

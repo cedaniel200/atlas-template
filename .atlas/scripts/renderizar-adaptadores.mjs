@@ -9,10 +9,11 @@
 // los valores de AGENTS.md § Placeholders. Así el agente no tiene que resolver
 // placeholders en su propio prompt.
 //
-// Multi-stack: `state.stacks` es la fuente única. Si hay más de un stack, el
-// rol `engineer` se renderiza una vez por stack (`engineer-<id>.md`) con su
-// bloque `{{STACK_CONTEXT}}`; los demás roles son agnósticos al stack. Con un
-// solo stack se genera el `engineer.md` genérico.
+// Multi-stack: `state.stacks` es la fuente única. El rol `engineer` se renderiza
+// siempre una vez por stack (`engineer-<id>.md`) con su bloque `{{STACK_CONTEXT}}`,
+// incluso cuando solo hay un stack. Así añadir o quitar un stack no renombra los
+// adaptadores existentes. Sin stacks (antes del bootstrap) se genera `engineer.md`
+// como adaptador genérico; en cuanto hay stacks, se elimina.
 //
 // Roles opcionales: los prompts marcados con `<!-- optional-role -->` solo se
 // renderizan si su id está en `state.optional_agents` (el bootstrap pregunta
@@ -21,7 +22,7 @@
 // Uso:
 //   node .atlas/scripts/renderizar-adaptadores.mjs [--host opencode|claude] [--template <dir>] [--dry-run]
 
-import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readdir, readFile, writeFile, mkdir, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -46,6 +47,18 @@ function contextoStack(stack) {
     `- **Packs**: ${packs}`,
     '',
   ].join('\n');
+}
+
+// Los adaptadores `engineer*` son generados: al cambiar los stacks se eliminan
+// los que ya no corresponden (incluido el `engineer.md` genérico).
+async function limpiarAdaptadoresObsoletos(directorio, vigentes, log) {
+  const entradas = await readdir(directorio, { withFileTypes: true }).catch(() => []);
+  for (const entrada of entradas) {
+    if (!entrada.isFile() || !entrada.name.startsWith('engineer') || !entrada.name.endsWith('.md')) continue;
+    if (vigentes.has(entrada.name)) continue;
+    await unlink(join(directorio, entrada.name));
+    log(`🧹 ${entrada.name}: adaptador obsoleto eliminado`);
+  }
 }
 
 export async function renderizarAdaptadores({
@@ -80,7 +93,9 @@ export async function renderizarAdaptadores({
   if (!dryRun) await mkdir(destino, { recursive: true });
 
   const renderizados = [];
+  const rolesOpcionales = new Set();
   const renderizar = async (rol, archivoSalida, cuerpoCanonico, descripcionExtra = '') => {
+    const nombreAdaptador = archivoSalida.replace(/\.md$/, '');
     const sinResolver = [...new Set([...cuerpoCanonico.matchAll(PATRON)].map((m) => m[1]))].filter(
       (nombre) => nombre !== 'STACK_CONTEXT' && (!mapa.has(nombre) || mapa.get(nombre).startsWith('{{')),
     );
@@ -93,7 +108,7 @@ export async function renderizarAdaptadores({
     const frontmatter =
       hostElegido === 'opencode'
         ? `---\ndescription: ${descripcion}${descripcionExtra}\nmode: all\n---\n\n`
-        : `---\nname: ${rol}\ndescription: ${descripcion}${descripcionExtra}\n---\n\n`;
+        : `---\nname: ${nombreAdaptador}\ndescription: ${descripcion}${descripcionExtra}\n---\n\n`;
 
     const archivo = join(destino, archivoSalida);
     if (!dryRun) await writeFile(archivo, frontmatter + cuerpo, 'utf8');
@@ -107,24 +122,49 @@ export async function renderizarAdaptadores({
     let cuerpoCanonico = await readFile(join(directorioAgentes, entrada), 'utf8');
     const esOpcional = cuerpoCanonico.trimStart().startsWith(MARCA_OPCIONAL);
     if (esOpcional) {
+      rolesOpcionales.add(rol);
       if (!agentesOpcionales.has(rol)) continue;
       cuerpoCanonico = cuerpoCanonico.replace(MARCA_OPCIONAL, '').trimStart();
     }
 
-    if (rol === 'engineer' && stacks.length > 1) {
+    if (rol === 'engineer') {
+      if (stacks.length === 0) {
+        // Antes del bootstrap no hay stacks: adaptador genérico de arranque.
+        const cuerpo = cuerpoCanonico.replaceAll(
+          STACK_CONTEXT,
+          'Sin stacks configurados: usa los comandos declarados en `AGENTS.md` § Comandos.',
+        );
+        await renderizar(rol, `${rol}.md`, cuerpo);
+        continue;
+      }
+      const vigentes = new Set();
       for (const stack of stacks) {
         if (!stack.id) throw new Error('state.stacks: cada stack necesita un `id`');
+        const archivo = `${rol}-${stack.id}.md`;
+        vigentes.add(archivo);
         const cuerpo = cuerpoCanonico.replaceAll(STACK_CONTEXT, contextoStack(stack));
-        await renderizar(rol, `${rol}-${stack.id}.md`, cuerpo, ` — ${stack.id}`);
+        await renderizar(rol, archivo, cuerpo, ` — ${stack.id}`);
       }
+      if (!dryRun) await limpiarAdaptadoresObsoletos(destino, vigentes, log);
       continue;
     }
 
-    const contexto = stacks.length === 1
-      ? contextoStack(stacks[0])
-      : 'Stack único: usa los comandos declarados en `AGENTS.md` § Comandos.';
-    const cuerpo = cuerpoCanonico.replaceAll(STACK_CONTEXT, contexto);
+    const cuerpo = cuerpoCanonico.replaceAll(
+      STACK_CONTEXT,
+      'Rol agnóstico al stack: usa los comandos declarados en `AGENTS.md` § Comandos.',
+    );
     await renderizar(rol, `${rol}.md`, cuerpo);
+  }
+  if (!dryRun) {
+    for (const rol of rolesOpcionales) {
+      if (agentesOpcionales.has(rol)) continue;
+      try {
+        await unlink(join(destino, `${rol}.md`));
+        log(`🧹 ${rol}.md: rol opcional desactivado`);
+      } catch {
+        // no existía: nada que limpiar
+      }
+    }
   }
   log(`\n${renderizados.length} adaptador(es) renderizado(s) para ${hostElegido}.`);
   return renderizados;

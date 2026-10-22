@@ -1,13 +1,29 @@
-# Perfiles de stack
+# Presets de stack (perfiles)
 
-Un perfil es **datos**, no procedimiento: describe cómo se construye, se ejecuta y se valida un stack.
-El bootstrap lo usa para rellenar los placeholders de `AGENTS.md` y generar el bloque de comandos.
+Un preset es **datos**, no procedimiento: describe cómo se construye, se ejecuta y se valida un stack.
+**No hay catálogo**: el bootstrap crea solo el preset que el proyecto necesita a partir de
+`_templates/preset.yaml`, y el usuario valida los comandos.
+
+## Cómo se crea
+
+```bash
+node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje> \
+  [--runtime <runtime>] [--package-manager <gestor>] [--source <ruta>] [--tests <ruta>]
+```
+
+1. El script copia `_templates/preset.yaml` a `<id>.yaml` (no sobrescribe sin `--force`).
+2. Completa los comandos con valores reales; si no aplica, `""` + nota.
+3. Valida: `node .atlas/scripts/validar-perfiles.mjs`.
+4. Añade el stack a `state.stacks` y a `AGENTS.md § Stacks`.
+5. Regenera adaptadores: `node .atlas/scripts/renderizar-adaptadores.mjs`.
+
+Se puede hacer **en cualquier momento**, no solo en el bootstrap.
 
 ## Por qué existen
 
-Sin perfiles, cada stack obligaría a mantener un "pack" (skills duplicadas) solo para cambiar comandos.
-Con perfiles, **cualquier stack queda soportado** con ~40 líneas de YAML; los packs se reservan para
-conocimiento procedimental real.
+Sin presets, cada stack obligaría a repetir los mismos comandos en cada proyecto. Con presets,
+**cualquier stack queda soportado** con ~40 líneas de YAML; los packs se reservan para conocimiento
+procedimental real. Al generarse bajo demanda, no hay archivos que nadie use.
 
 ## Esquema
 
@@ -47,10 +63,10 @@ quality:
 
 qa:
   docker: false
-  service_name: null
-  app_port: null
-  health_path: null
-  metrics_path: null
+  service_name: ""
+  app_port: ""
+  health_path: ""
+  metrics_path: ""
 
 notes: |
   Ajustes manuales o advertencias del perfil.
@@ -85,14 +101,18 @@ Un campo que no aplica es `""` (nunca se omite ni se inventa). Derivaciones a pl
 - **Un perfil no activa packs**: solo informa la recomendación.
 - Los valores se validan ejecutando el comando, no leyendo documentación.
 
-## Ejemplos (no normativos)
+## Ejemplos y plantilla
 
-En `_examples/` hay dos perfiles **ilustrativos**: muestran la forma del YAML, no un catálogo
-soportado. Usan placeholders para todo lo que depende del framework o de la infraestructura.
+- `_templates/preset.yaml` es la **plantilla** que usa `crear-perfil.mjs`. No se valida como perfil.
+- La plantilla usa marcadores de generación (`{{ID}}`, `{{LANGUAGE}}`, …) que no son placeholders de
+  perfil: los resuelve `crear-perfil.mjs`. El borrador nace con `TODO` en runtime/rutas; complétalos.
+- En `_examples/` hay dos perfiles **ilustrativos**: muestran la forma del YAML, no un catálogo.
+  Si uno encaja, úsalo como referencia; no se copia tal cual.
 
-| Ejemplo | Ilustra |
+| Archivo | Ilustra |
 |---|---|
+| `_templates/preset.yaml` | Esqueleto para generar un preset |
 | `_examples/java-gradle.yaml` | Toolchain JVM (Gradle, Checkstyle, PIT, CRAP) |
 | `_examples/node-ts.yaml` | Toolchain Node/TS (lint, typecheck, cobertura) |
 
-Cada proyecto define su propio perfil en el cuestionario; estos archivos no se copian tal cual.
+El proyecto crea su preset con `crear-perfil.mjs`; `_examples/` solo sirve de referencia.

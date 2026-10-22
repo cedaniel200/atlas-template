@@ -43,7 +43,7 @@ metadata: <opcional, mapa de strings>
    - OpenCode: `.opencode/agent/<rol>.md` (`description`, `mode: all`).
    - Claude Code: `.claude/agents/<rol>.md` (`name`, `description`).
    - Codex: sin subagentes; el rol se emula desde `AGENTS.md`.
-   - Multi-stack: `engineer-<stack>` por stack con `STACK_CONTEXT`; `state.stacks` es la fuente.
+   - Cada stack: `engineer-<stack>` con `STACK_CONTEXT` (también con uno solo); `state.stacks` es la fuente.
 4. Si el rol es **opcional**, empieza el prompt con `<!-- optional-role -->` y regístralo en
    `state.optional_agents` (el bootstrap lo pregunta en la Ronda 4). Sin ese id no se genera su adaptador.
 5. Registrar el rol en `AGENTS.md` § Roles.
@@ -59,22 +59,24 @@ Un pack existe solo para **conocimiento procedimental que no se puede expresar c
   pack.yaml
   README.md
   skills/<nombre>/SKILL.md
-  .atlas/agents/<rol>.md
+  agents/<rol>.md
 ```
 
 ```yaml
 name: <pack>
 version: 0.1.0
 description: <qué aporta>
-provides: [skills/<nombre>]
-requires: [profile:<perfil>]
-stack_hints: [<stack>]
-license: MIT
+requires: []
+skills: [<id-skill>]
+agents: [<rol>]
+notes: |
+  Ajustes o advertencias del pack.
 ```
 
+- Créalo con `node .atlas/scripts/crear-pack.mjs --id <id> --description "<texto>"`.
 - **No** se descubre automáticamente; el bootstrap lo copia a `.agents/skills/` y `.atlas/agents/`.
 - Nunca es requisito para que el núcleo funcione.
-- Registrarlo en el catálogo de packs y en `THIRD-PARTY-NOTICES.md` si vendoriza contenido de terceros.
+- Registra el pack en `THIRD-PARTY-NOTICES.md` si vendoriza contenido de terceros.
 - Actívalo en `state.stacks[].packs` (la unión va a `state.packs`); el bootstrap copia solo los packs activos y registra sus skills en `AGENTS.md § Skill Registry`.
 - Versión: `pack.yaml`; en una actualización solo se actualizan los packs activos.
 
@@ -84,10 +86,26 @@ license: MIT
 
 Un perfil es **dato**, no procedimiento. El esquema está en `.atlas/profiles/README.md`.
 
+- Créalo con `node .atlas/scripts/crear-perfil.mjs --id <id> --language <lenguaje>`; el script parte de `_templates/preset.yaml`.
 - Solo comandos, rutas, nombres de herramientas y umbrales.
 - Sin valores de framework bajo un nombre de toolchain (por ejemplo, sin rutas de Spring en `java-gradle`).
 - Si un comando no existe, dejar `""` y anotarlo; nunca inventarlo.
 - Validar el YAML y ejecutar los comandos antes de commitear.
+
+---
+
+## Añadir un stack
+
+Un stack = perfil + ruta + comandos + packs. Se puede añadir **en cualquier momento**:
+
+1. Crea el preset si no existe (`crear-perfil.mjs`) y completa los comandos.
+2. Añade la fila a `state.stacks` y a `AGENTS.md § Stacks`.
+3. Genera el adaptador: `node .atlas/scripts/renderizar-adaptadores.mjs` → `engineer-<id>`.
+4. Valida: `validar-contrato.mjs`, `validar-perfiles.mjs` y `medir-contexto.mjs`.
+5. Regenera el manifiesto: `node .atlas/scripts/generar-manifiesto.mjs`.
+
+Quitar un stack: quita la fila, regenera adaptadores (el obsoleto se elimina) y regenera el manifiesto.
+Nunca edites `engineer-<id>.md` a mano: se regenera.
 
 ---
 

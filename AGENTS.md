@@ -81,8 +81,8 @@
 
 ## Stacks
 
-> Un stack = un perfil + una ruta + sus comandos + sus packs. Single-stack: una fila.
-> Multi-stack: una fila por tecnología; el renderer genera `engineer-<stack>` por fila.
+> Un stack = perfil + ruta + comandos + packs. Cada stack genera `engineer-<stack>` (también con uno).
+> Añadir después: `crear-perfil.mjs` → `state.stacks` + esta tabla → `renderizar-adaptadores.mjs`.
 
 {{STACKS_TABLE}}
 
@@ -127,14 +127,14 @@ Además:
 | Rol | Prompt canónico | Función |
 |---|---|---|
 | `analyst` | `.atlas/agents/analyst.md` | Análisis y planificación |
-| `engineer` | `.atlas/agents/engineer.md` | Implementación con TDD (single-stack; multi-stack genera `engineer-<stack>`) |
+| `engineer` | `.atlas/agents/engineer.md` | Implementación con TDD; cada stack genera `engineer-<stack>` |
 | `reviewer` | `.atlas/agents/reviewer.md` | Revisión de código (solo lectura) |
 | `qa-analyst` | `.atlas/agents/qa-analyst.md` | Pruebas funcionales |
 | `doc-writer` | `.atlas/agents/doc-writer.md` | Documentación técnica y funcional |
 
 Los adaptadores los genera `renderizar-adaptadores.mjs` desde `.atlas/agents/` + `AGENTS.md`.
-Multi-stack: el `engineer` se renderiza por stack (`engineer-<stack>`). Codex no tiene subagentes:
-los roles se emulan con este archivo y el anuncio de rol.
+Cada stack genera `engineer-<stack>`; sin stacks se genera `engineer.md` y se elimina al configurar.
+Codex no tiene subagentes: los roles se emulan con este archivo y el anuncio de rol.
 
 **Roles opcionales** (solo si el bootstrap los activa; ver `state.optional_agents`): `mentor`
 (enseñanza agnóstica de los conceptos y patrones del proyecto, explicación del código y material
@@ -153,7 +153,7 @@ explore → propose → apply → QA → review → cierre
 > **Excepción — bootstrap:** la configuración inicial (`.atlas/BOOTSTRAP.md`) corre en su propia rama
 > (`chore/bootstrap`), no en un worktree de cambio. Un commit por fase y el merge lo hace el usuario.
 >
-> **Multi-stack:** `state.stacks` es la fuente; el `engineer` se renderiza por stack y los `packs` se activan por stack.
+> **Stacks:** `state.stacks` es la fuente; cada stack genera `engineer-<stack>` y los `packs` se activan por stack.
 
 ### Gates
 

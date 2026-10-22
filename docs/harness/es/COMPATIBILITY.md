@@ -14,7 +14,7 @@
 | Skills | `.agents/skills/` (+ `.opencode/`, `.claude/`) | `.claude/skills/` | `.agents/skills/` | Canónico `.agents/skills/`; Claude por symlink |
 | Invocación de skill | Automática; `/nombre` si `metadata.opencode/slash` | Automática | `$nombre` o `/skills` | El cuerpo no depende de sintaxis de comando |
 | Comandos OpenSpec | `.opencode/commands/opsx-*` | `.claude/commands/opsx/*` | `.codex/prompts/*` | **Generados por `openspec update --tools <host>`** |
-| Subagentes | `.opencode/agent/*.md` | `.claude/agents/*.md` | **No existen** | Prompts canónicos en `.atlas/agents/`; adaptador por host; multi-stack: `engineer-<stack>` por stack |
+| Subagentes | `.opencode/agent/*.md` | `.claude/agents/*.md` | **No existen** | Prompts canónicos en `.atlas/agents/`; adaptador por host; cada stack: `engineer-<stack>` |
 | Roles en Codex | — | — | Un solo agente | Se emulan con `AGENTS.md` y el anuncio de rol |
 | Hooks de agente | Plugins | Hooks nativos | No disponibles | **El flujo núcleo no depende de hooks** |
 | Git hooks | `core.hooksPath` | `core.hooksPath` | `core.hooksPath` | **Tool‑agnósticos**: gitleaks funciona en los tres |
@@ -36,7 +36,7 @@ Los prompts de `.atlas/agents/<rol>.md` son la fuente canónica, **sin frontmatt
 | Claude Code | `.claude/agents/<rol>.md` | `name`, `description` |
 | Codex | — | No hay subagentes |
 
-Multi-stack: el renderer genera `engineer-<stack>.md` por stack (OpenCode/Claude) con su `STACK_CONTEXT`; Codex no tiene subagentes y usa `AGENTS.md § Stacks`.
+Cada stack genera `engineer-<stack>.md` (OpenCode/Claude) con su `STACK_CONTEXT`; Codex no tiene subagentes y usa `AGENTS.md § Stacks`.
 
 Los comandos `opsx-*` **no** se mantienen a mano: `openspec update --tools <host>` los regenera.
 
