@@ -63,6 +63,16 @@ El resultado se escribe en `docs/template-adoption.md`:
 
 ---
 
+## 3.1 Inventario automatizado (opcional)
+
+```bash
+node .template/scripts/inventariar-adopcion.mjs --template <ruta-template-pristino>
+```
+
+Clasifica cada archivo del template en `nuevo` / `igual` / `distinto`, copia los `distinto` a
+`.template/backups/adopcion-<timestamp>/` y escribe `.template/adoption-report.md` con la tabla.
+El agente decide la política de conflicto; el script **no fusiona**.
+
 ## 4. Política de conflicto
 
 ```text

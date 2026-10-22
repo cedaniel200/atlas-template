@@ -63,6 +63,16 @@ The result is written to `docs/template-adoption.md`:
 
 ---
 
+## 3.1 Automated inventory (optional)
+
+```bash
+node .template/scripts/inventariar-adopcion.mjs --template <pristine-template-path>
+```
+
+Classifies each template file as `nuevo` / `igual` / `distinto`, copies the `distinto` ones to
+`.template/backups/adopcion-<timestamp>/` and writes `.template/adoption-report.md`.
+The agent decides the conflict policy; the script **does not merge**.
+
 ## 4. Conflict policy
 
 ```text

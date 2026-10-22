@@ -226,9 +226,10 @@ Conduce el interrogatorio en **3 rondas como máximo**, agrupando preguntas.
 
 ### Generación de adaptadores y manifiesto
 
-- **Agentes**: por cada rol de `.template/agents/<rol>.md`:
-  - OpenCode: `.opencode/agent/<rol>.md` con frontmatter `description` y `mode: all` + cuerpo canónico.
-  - Claude Code: `.claude/agents/<rol>.md` con frontmatter `name` y `description` + cuerpo canónico.
+- **Agentes**: genera el adaptador del host con
+  `node .template/scripts/renderizar-adaptadores.mjs --host <host>`. El script sustituye los
+  placeholders desde `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
+  `name` + `description`; Codex: sin subagentes). **No copies el cuerpo a mano.**
 - **Manifiesto**: calcula el `sha256` de cada archivo generado con el helper portable del template:
   `sh .template/scripts/sha256.sh <archivo>` (macOS, Linux, Git Bash, WSL) o
   `powershell -NoProfile -File .template/scripts/sha256.ps1 <archivo>` (Windows/PowerShell 5.1+).
@@ -272,6 +273,8 @@ No se permite avanzar a `propose` hasta que **todo** esté en verde.
 - [ ] No quedan `{{...}}` en `AGENTS.md`, `openspec/config.yaml` y `README.md`
 - [ ] Contrato de placeholders consistente: `node .template/scripts/validar-contrato.mjs`
 - [ ] Perfiles válidos: `node .template/scripts/validar-perfiles.mjs`
+- [ ] Manifiesto consistente: `node .template/scripts/validar-manifiesto.mjs`
+- [ ] Adaptadores sin placeholders: `grep -rn "{{" .opencode/agent .claude/agents` → vacío (si existen)
 - [ ] Hooks de git activos: `git config core.hooksPath .githooks` (si falta gitleaks, el hook avisa y no bloquea)
 - [ ] Sin health/puerto: si `qa.health_path` o `qa.app_port` están vacíos, `HEALTH_URL` es `N/A` (no se compone una URL con path vacío)
 - [ ] `openspec doctor` → root ok

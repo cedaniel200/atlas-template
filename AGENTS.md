@@ -199,6 +199,7 @@ En modo `manual`, el usuario invoca cada fase; el `analyst` verifica que no se s
 | `conventional-commits` | `.agents/skills/conventional-commits/` | Cada commit |
 | `session-startup` | `.agents/skills/session-startup/` | Inicio de sesión |
 | `session-end` | `.agents/skills/session-end/` | Cierre de sesión |
+| `actualizar-arnes` | `.agents/skills/actualizar-arnes/` | Actualizar el template/arnés a una versión nueva |
 
 Las skills de packs (`.template/packs/`) solo existen cuando el pack está activado.
 

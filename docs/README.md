@@ -13,6 +13,7 @@
 |---|---|
 | Empiezas un proyecto **nuevo** | [`harness/es/QUICKSTART.md`](harness/es/QUICKSTART.md) |
 | Ya tienes un proyecto | [`harness/es/ADOPTION.md`](harness/es/ADOPTION.md) |
+| Quieres actualizar el arnés | [`harness/es/UPDATE.md`](harness/es/UPDATE.md) |
 | Quieres configurar MCP o memoria | [`harness/es/TOOLS.md`](harness/es/TOOLS.md) |
 | Te interesan los gates y CRAP | [`harness/es/QUALITY.md`](harness/es/QUALITY.md) |
 | No entiendes un término | [`harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
@@ -42,7 +43,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 |---|---|
 | **OpenSpec** | Schema `spec-driven-with-adr` vendorizado (`proposal → specs → design → adr → tasks`) |
 | **Agentes** | `analyst`, `engineer`, `reviewer`, `qa-analyst`, `doc-writer` en `.template/agents/` |
-| **Skills** | 16 skills portables en `.agents/skills/` |
+| **Skills** | 17 skills portables en `.agents/skills/` |
 | **Ritual** | [`../.template/BOOTSTRAP.md`](../.template/BOOTSTRAP.md): detecta la herramienta, interroga y genera el contexto |
 | **Compatibilidad** | [`harness/es/COMPATIBILITY.md`](harness/es/COMPATIBILITY.md): matriz por host |
 | **Estado** | [`.template/`](../.template/README.md): hosts, perfiles, packs, manifiesto y estado |
@@ -56,7 +57,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.template/state.json` est�
 ├── AGENTS.md            # contrato del proyecto
 ├── CLAUDE.md            # stub para Claude Code
 ├── .agents/
-│   └── skills/          # 16 skills portables
+│   └── skills/          # 17 skills portables
 ├── .template/
 │   ├── BOOTSTRAP.md     # ritual de primera sesión
 │   ├── PLACEHOLDERS.md  # contrato de placeholders (perfil/proyecto, N/A)

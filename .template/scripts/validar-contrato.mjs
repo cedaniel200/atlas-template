@@ -51,6 +51,13 @@ function nombresDeTabla(texto) {
   return new Set([...texto.matchAll(patron)].map((coincidencia) => coincidencia[1]));
 }
 
+let configurado = false;
+try {
+  configurado = JSON.parse(await leer('.template/state.json')).status === 'configured';
+} catch {
+  // template sin estado: se asume no configurado
+}
+
 const contrato = await leer(CONTRATO);
 const perfilContrato = nombresDeTabla(seccion(contrato, '## 1. Placeholders de perfil'));
 const proyectoContrato = nombresDeTabla(seccion(contrato, '## 2. Placeholders de proyecto'));
@@ -97,9 +104,11 @@ for (const archivo of await archivosDe(PERFILES, '.yaml')) {
   }
 }
 
-const sinUso = [...proyectoContrato].filter((nombre) => !usadosProyecto.has(nombre)).sort();
-for (const nombre of sinUso) {
-  console.warn(`⚠️  {{${nombre}}} está en el contrato de proyecto pero no se usa en ningún archivo`);
+if (!configurado) {
+  const sinUso = [...proyectoContrato].filter((nombre) => !usadosProyecto.has(nombre)).sort();
+  for (const nombre of sinUso) {
+    console.warn(`⚠️  {{${nombre}}} está en el contrato de proyecto pero no se usa en ningún archivo`);
+  }
 }
 
 console.log(
