@@ -20,9 +20,9 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `packs/<pack>/` | ✅ yes | Optional **procedure** (skills/agents), outside discovery |
 | `packs/_templates/` | ✅ yes | Pack skeleton; not activated |
 | `legal/` | ✅ yes | Template legal moved when configuring a project (LICENSE, SECURITY, THIRD-PARTY) |
-| `scripts/` | ✅ yes | Portable helpers (Node/shell only): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `mover-legal.mjs`, `medir-contexto.mjs` (maintenance diagnostic) and `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
+| `scripts/` | ✅ yes | Portable helpers (Node/shell only): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `mover-legal.mjs`, `minimizar.mjs`, `medir-contexto.mjs` (maintenance diagnostic) and `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
 | `adapters/<host>/` | ❌ no (gitignored) | Artifacts displaced by `prune` (local state) |
-| `archive/` | ❌ no (gitignored) | Internal documentation archived when the project does not contribute (`.atlas/docs/`) |
+| `archive/` | ❌ no (gitignored) | Material archived by minimization (docs, examples, inactive hosts) |
 | `backups/<timestamp>/` | ❌ no (gitignored) | Copy before a brownfield merge |
 
 ### The difference matters
@@ -57,7 +57,7 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `quality.crap_threshold` | integer | CRAP threshold per method (default `6`) |
 | `docs.*` | paths | Documentation folders (English names; content in `language.user`) |
 | `phase` | `0`–`3` | Last completed phase |
-| `displaced` | list | Paths moved to `adapters/` |
+| `displaced` | list | Paths moved to `adapters/` or `archive/` |
 | `override_reason` | text \| `null` | Reason if the user skipped the validation gate |
 | `configured_at` | ISO-8601 \| `null` | Setup date |
 

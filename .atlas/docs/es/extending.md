@@ -7,17 +7,43 @@
 
 ---
 
-## Operaciones en caliente
+## Mapa de intenciones
 
-Después del bootstrap no hace falta repetir el ritual. Se validan al final con
-`validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs` y `medir-contexto.mjs`.
+**Basta la intención, no la frase exacta**: reconoce el propósito en cualquier idioma. Si deduces la
+acción de una intención y no de una orden explícita, **pide confirmación explícita antes de ejecutar**.
 
 | Tú pides… | El agente hace… |
 |---|---|
+| Empezar o continuar un cambio (“en esta sesión trabajaremos X”, “retomemos X”, “¿cómo va X?”) | Carga contexto, revisa `openspec/changes/`, pregunta OpenSpec/orquestación y arranca explore/propose o retoma |
+| Configurar el proyecto | Ejecutar `.atlas/BOOTSTRAP.md` solo si `status=pending` |
 | Añadir un stack o perfil | `crear-perfil.mjs` → completar comandos → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
 | Añadir un agente implementador | Es el mismo `engineer` con un stack nuevo: `state.stacks` + `engineer-<id>` |
 | Añadir un pack | `crear-pack.mjs` → skills/agentes → activar en `state.stacks[].packs` y `state.packs` |
+| Minimizar ATLAS | `minimizar.mjs` con alcance cerrado |
 | Quitar un stack o pack | Quitar de `state.stacks`/`state.packs` → `renderizar-adaptadores.mjs` (limpia adaptadores) → regenerar manifiesto |
+| Actualizar ATLAS | skill `update-harness` |
+| Medir el contexto | `medir-contexto.mjs` (`--all` para todo) |
+
+Se valida al final con `validar-contrato.mjs`, `validar-perfiles.mjs`, `renderizar-adaptadores.mjs`
+y `medir-contexto.mjs`.
+
+---
+
+## Minimizar ATLAS
+
+Alcance cerrado; nunca borra, mueve a `.atlas/archive/`:
+
+```bash
+node .atlas/scripts/minimizar.mjs --dry-run --all
+node .atlas/scripts/minimizar.mjs --apply --examples --hosts
+node .atlas/scripts/minimizar.mjs --apply --docs   # solo si nada enlaza .atlas/docs/
+```
+
+- `--examples`: `_examples/`.
+- `--hosts`: plantillas de hosts no activos; conserva `state.host`.
+- `--docs`: `.atlas/docs/`; se niega si `AGENTS.md` o `docs/README*` aún lo enlazan.
+- Registra `state.displaced` y regenera el manifiesto: una actualización posterior no toca lo archivado.
+- No borra perfiles/packs activos ni genera licencia del proyecto.
 
 ---
 

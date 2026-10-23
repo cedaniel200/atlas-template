@@ -116,7 +116,26 @@ Review the full `chore/bootstrap` diff. You merge it; the agent does not push or
 
 ---
 
-## 6. First change
+## 6. What you can ask the agent
+
+Once adoption is complete, ask in your own words. If the agent infers the action from intent, **it will
+ask for explicit confirmation before acting**.
+
+| Ask… | What it does |
+|---|---|
+| “In this session we will work on X” / “continue X” | Loads context, checks `openspec/changes/` and starts or resumes explore/propose |
+| “Add a stack or profile for X” | Creates the profile, updates `state.stacks`/`AGENTS.md` and regenerates the adapter |
+| “Add an implementer for X” | Creates the stack and `engineer-<id>` |
+| “Create a pack for X” | Creates the skeleton and activates it |
+| “Minimize ATLAS” | Archives what is not used with `minimizar.mjs` |
+| “Update ATLAS” | Runs `update-harness` |
+| “Measure context” | Runs `medir-contexto.mjs` |
+
+Detail: [`.atlas/docs/en/extending.md`](../../../.atlas/docs/en/extending.md).
+
+---
+
+## 7. First change
 
 The harness is configured. From here, the flow is the one in [`QUICKSTART.md`](QUICKSTART.md):
 explore → propose → apply → QA → review → close.

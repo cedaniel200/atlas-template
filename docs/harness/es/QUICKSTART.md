@@ -81,7 +81,26 @@ Y revisa el diff de la rama de bootstrap: `AGENTS.md`, `openspec/config.yaml`, e
 
 ---
 
-## 5. Primer cambio
+## 5. Lo que puedes pedir al agente
+
+Con el ritual terminado, pídeselo con tus palabras. Si el agente deduce la acción de la intención,
+**te pedirá confirmación antes de actuar**.
+
+| Pídele… | Qué hace |
+|---|---|
+| “En esta sesión trabajaremos X” / “retomemos X” | Carga contexto, revisa `openspec/changes/` y arranca o retoma explore/propose |
+| “Añade un stack o perfil para X” | Crea el perfil, actualiza `state.stacks`/`AGENTS.md` y regenera el adaptador |
+| “Añade un implementador para X” | Crea el stack y `engineer-<id>` |
+| “Crea un pack para X” | Crea el esqueleto y lo activa |
+| “Deja ATLAS mínimo” | Archiva lo no usado con `minimizar.mjs` |
+| “Actualiza ATLAS” | Ejecuta `update-harness` |
+| “Mide el contexto” | Ejecuta `medir-contexto.mjs` |
+
+Detalle: [`.atlas/docs/es/extending.md`](../../../.atlas/docs/es/extending.md).
+
+---
+
+## 6. Primer cambio
 
 1. **Explore** — describe la idea; el `analyst` pregunta y clarifica.
 2. **Propose** — se generan `proposal`, `specs`, `design`, `adr` y `tasks`, uno a uno con tu aprobación.

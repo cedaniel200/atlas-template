@@ -91,7 +91,20 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 
 > El `README.md` del proyecto se genera desde `.atlas/PROJECT-README.md`; este `docs/README.md` es la portada de ATLAS (no hay README raíz por decisión).
 
-### 3️⃣ Elige tu guía
+### 3️⃣ Lo que puedes pedir al agente
+
+Cuando termine el ritual, pídeselo con tus palabras; si el agente deduce la acción de la intención,
+**te pedirá confirmación antes de actuar**.
+
+- Empezar o retomar un cambio: “en esta sesión trabajaremos X” / “retomemos X”.
+- Añadir un stack o perfil, un implementador o un pack.
+- Añadir un implementador para una tecnología nueva: “añade un implementador para React”.
+- Dejar ATLAS mínimo (`minimizar.mjs`).
+- Actualizar ATLAS o medir el contexto.
+
+Detalle: [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md).
+
+### 4️⃣ Elige tu guía
 
 | Si… | Ve a |
 |---|---|
@@ -149,7 +162,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 │   ├── packs/           # packs opcionales bajo demanda (_templates/ + activos)
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/           # plantillas de adaptador por host
-│   ├── scripts/         # sha256 + validadores + crear-perfil + crear-pack + mover-legal + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── scripts/         # sha256 + validadores + crear-perfil + crear-pack + mover-legal + minimizar + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
 │   ├── legal/           # legal del template en proyectos configurados
 │   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/

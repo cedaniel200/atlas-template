@@ -93,7 +93,20 @@ The agent reads [`../AGENTS.md`](../AGENTS.md), sees `.atlas/state.json` is `pen
 > The project `README.md` is generated from `.atlas/PROJECT-README.md`; this page is the ATLAS landing
 > page (there is no root README by design).
 
-### 3️⃣ Choose your guide
+### 3️⃣ What you can ask the agent
+
+Once the ritual is done, ask in your own words; if the agent infers the action from intent, **it will
+ask for explicit confirmation before acting**.
+
+- Start or continue a change: “in this session we will work on X” / “continue X”.
+- Add a stack or profile, an implementer or a pack.
+- Add an implementer for a new technology: “add an implementer for React”.
+- Minimize ATLAS (`minimizar.mjs`).
+- Update ATLAS or measure context.
+
+Detail: [`.atlas/docs/en/extending.md`](../.atlas/docs/en/extending.md).
+
+### 4️⃣ Choose your guide
 
 | If… | Go to |
 |---|---|
@@ -151,7 +164,7 @@ The agent reads [`../AGENTS.md`](../AGENTS.md), sees `.atlas/state.json` is `pen
 │   ├── packs/           # optional on-demand packs (_templates/ + active)
 │   ├── docs/en|es/      # harness documentation (contributor)
 │   ├── hosts/           # host adapter templates
-│   ├── scripts/         # sha256 + validators + crear-perfil + crear-pack + mover-legal + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── scripts/         # sha256 + validators + crear-perfil + crear-pack + mover-legal + minimizar + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
 │   ├── legal/           # template legal in configured projects
 │   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/
