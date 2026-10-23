@@ -124,7 +124,7 @@ changes.
 5. **QA and review** — `engineer` prepares the environment and the QA Context; `qa-analyst` runs the
    functional tests; `reviewer` reviews the code.
 6. **Close** — consistency, `doc-writer`, docs validation, PR (user reviews), archive approval, `archive`
-   + sync in the same PR, merge and cleanup.
+   + sync in the same PR, then the human merges and cleanup follows.
 
 ---
 
