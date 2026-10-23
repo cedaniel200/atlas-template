@@ -23,7 +23,7 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `scripts/` | ✅ yes | Portable helpers (Node/shell only): `sha256.*` (hash), `renderizar-adaptadores.mjs`, `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `mover-legal.mjs`, `minimizar.mjs`, `validar-run.mjs`, `medir-contexto.mjs` (maintenance diagnostic) and `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
 | `adapters/<host>/` | ❌ no (gitignored) | Artifacts displaced by `prune` (local state) |
 | `archive/` | ❌ no (gitignored) | Material archived by minimization (docs, examples, inactive hosts) |
-| `run/<change>/` | ❌ no (gitignored) | Ephemeral state for an experimental parallel run |
+| `run/<change>/` | ❌ no (gitignored) | Ephemeral state for an experimental parallel run (per change or `program.json`) |
 | `backups/<timestamp>/` | ❌ no (gitignored) | Copy before a brownfield merge |
 
 ### The difference matters

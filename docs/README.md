@@ -72,6 +72,19 @@ Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el hum
 
 ---
 
+## 🧵 Ejecución paralela (experimental)
+
+[![Experimental](https://img.shields.io/badge/status-experimental-orange?style=flat-square)](../.atlas/docs/es/parallel-run.md)
+
+> ⚗️ **Experimental.** No es el flujo por defecto. Se activa solo si el usuario lo pide y confirma.
+
+- **1 spec grande → N agentes**: divide el trabajo en unidades con rutas disjuntas.
+- **Varias specs grandes → programa**: cada spec con sus N agentes, dependencias y contratos congelados.
+- Requisitos: rutas globalmente disjuntas, contrato antes de backend/front y confirmación humana.
+- Protocolo y validación: [`.atlas/docs/es/parallel-run.md`](../.atlas/docs/es/parallel-run.md) · `validar-run.mjs`.
+
+---
+
 ## 🚀 Empieza aquí
 
 ### 1️⃣ Crea el proyecto desde ATLAS
@@ -97,6 +110,7 @@ Cuando termine el ritual, pídeselo con tus palabras; si el agente deduce la acc
 **te pedirá confirmación antes de actuar**.
 
 - Empezar o retomar un cambio: “en esta sesión trabajaremos X” / “retomemos X”.
+- Ejecutar dos specs independientes en paralelo (experimental): pide confirmación y sigue `parallel-run.md`.
 - Añadir un stack o perfil, un implementador o un pack.
 - Añadir un implementador para una tecnología nueva: “añade un implementador para React”.
 - Dejar ATLAS mínimo (`minimizar.mjs`).

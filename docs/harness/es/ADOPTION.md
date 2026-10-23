@@ -125,6 +125,7 @@ Con la adopción terminada, pídeselo con tus palabras. Si el agente deduce la a
 | Pídele… | Qué hace |
 |---|---|
 | “En esta sesión trabajaremos X” / “retomemos X” | Carga contexto, revisa `openspec/changes/` y arranca o retoma explore/propose |
+| “Ejecuta dos specs independientes en paralelo (experimental)” | Sigue `parallel-run.md` y pide confirmación |
 | “Añade un stack o perfil para X” | Crea el perfil, actualiza `state.stacks`/`AGENTS.md` y regenera el adaptador |
 | “Añade un implementador para X” | Crea el stack y `engineer-<id>` |
 | “Crea un pack para X” | Crea el esqueleto y lo activa |

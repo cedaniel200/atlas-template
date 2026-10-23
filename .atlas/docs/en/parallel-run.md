@@ -22,6 +22,15 @@ Do not use it for two specs that touch the same files, or for dependent work wit
 - **implementers**: one agent per unit. They only write inside their claimed paths and append progress.
 - **qa-analyst / reviewer**: run **after integration**, not per parallel agent.
 
+## Two modes
+
+- **One change, N units**: one run directory `.atlas/run/<change>/` with N units/agents.
+- **Program, N changes × N units**: `.atlas/run/program.json` plus one run directory per change.
+
+A program is the way to run several large specs in parallel, each with its own N agents.
+
+---
+
 ## State directory
 
 ```text
@@ -39,13 +48,14 @@ Do not use it for two specs that touch the same files, or for dependent work wit
 {
   "change": "demo",
   "units": [
-    { "id": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"], "depends_on": [] },
-    { "id": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"], "depends_on": [] }
+    { "id": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
+    { "id": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
   ]
 }
 ```
 
 - `id` unique; `agent` unique per unit; `paths` non-empty; `depends_on` references existing units.
+- `task` (optional but recommended) links the unit to the OpenSpec task, e.g. `1.2`.
 - No cycles.
 
 ### `claims.json`
@@ -85,6 +95,26 @@ One JSON object per line, append-only:
 Short summary for the orchestrator: what changed, tests run, open questions, and what the integrator
 must know. Required when the unit is `done`.
 
+## Program (multiple changes)
+
+`.atlas/run/program.json` coordinates several changes:
+
+```json
+{
+  "program": "demo",
+  "changes": [
+    { "id": "spec-a", "depends_on": [], "contract": "docs/api/spec-a.yaml" },
+    { "id": "spec-b", "depends_on": ["spec-a"], "contract": "docs/api/spec-b.yaml" }
+  ]
+}
+```
+
+- Each `id` must have its own `.atlas/run/<id>/` with plan, claims, status, journal and handoff.
+- `depends_on` is checked across changes: a dependent change cannot have `done` units until its
+  dependency is complete.
+- `contract` (optional) must exist; freeze the API/schema before parallelizing backend/front.
+- `validar-run --program` checks the individual runs, cross-change claim overlaps, dependencies and contracts.
+
 ## Rules
 
 - **One owner per path.** Never write outside the claimed paths.
@@ -97,29 +127,38 @@ must know. Required when the unit is `done`.
 
 ## Lifecycle
 
-- Create the directory at the start of the parallel run.
-- Keep it across sessions until integration, QA and review are complete.
-- Delete it after archive/merge (or when the change is abandoned): `rm -rf .atlas/run/<change>`.
+- Create the run directory at the start of each parallel change.
+- Keep it across sessions until integration, QA and review are complete for that change.
+- For a program, create `.atlas/run/program.json` at the start and keep it until **all** changes are
+  merged; delete each change run as it closes and the program file last.
+- Delete a run after archive/merge (or when the change is abandoned): `rm -rf .atlas/run/<change>`.
 - It is gitignored and never part of the OpenSpec artifacts or the PR.
 
 ## Validation
 
 ```bash
 node .atlas/scripts/validar-run.mjs --change <change>
+node .atlas/scripts/validar-run.mjs --program [.atlas/run/program.json]
 ```
 
-Checks units, claims, overlaps, statuses, handoffs, journal events and dependencies.
+Checks units, claims, overlaps, statuses, handoffs, journal events, dependencies, contracts and
+cross-change claim overlaps.
 
 The protocol has no fixed limit of units; the bounded example uses two. The real constraint is disjoint
 paths and declared dependencies.
 
 ## Bounded example
 
-Two units, two agents, two disjoint files:
+**One change, two units:** two agents, two disjoint files:
 
 - `agent-a` → `agents/a/hello.py` with `hello() -> "hello"`.
 - `agent-b` → `agents/b/sum.py` with `sum(a, b) -> a + b`.
 
-Both append their starts, progress and done events; the analyst runs `validar-run.mjs`, integrates and
-runs the tests. This is the smallest useful parallel run; do not use it as a template for large,
-coupled changes.
+**Program, two changes × three units:**
+
+- `spec-a`: `hello`, `sum`, `mul`.
+- `spec-b`: `hello`, `div`, `concat`.
+- `program.json` with `spec-b` depending on `spec-a` and a contract file per change.
+
+In both cases each agent appends its events; the analyst runs `validar-run.mjs`, integrates and runs
+the tests. These are the smallest useful cases; do not use them as a template for large, coupled changes.

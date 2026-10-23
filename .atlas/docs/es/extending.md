@@ -16,6 +16,7 @@ acción de una intención y no de una orden explícita, **pide confirmación exp
 |---|---|
 | Empezar o continuar un cambio (“en esta sesión trabajaremos X”, “retomemos X”, “¿cómo va X?”) | Carga contexto, revisa `openspec/changes/`, pregunta OpenSpec/orquestación y arranca explore/propose o retoma |
 | Ejecutar changes independientes en paralelo (experimental) | Seguir `.atlas/docs/es/parallel-run.md`; confirmar y validar con `validar-run.mjs` |
+| Ejecutar varios changes como programa (experimental) | `program.json` + `.atlas/docs/es/parallel-run.md`; validar con `validar-run --program` |
 | Configurar el proyecto | Ejecutar `.atlas/BOOTSTRAP.md` solo si `status=pending` |
 | Añadir un stack o perfil | `crear-perfil.mjs` → completar comandos → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
 | Añadir un agente implementador | Es el mismo `engineer` con un stack nuevo: `state.stacks` + `engineer-<id>` |

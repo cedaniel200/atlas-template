@@ -22,6 +22,15 @@ No lo uses para dos specs que tocan los mismos archivos, ni para trabajo dependi
 - **implementadores**: un agente por unidad. Solo escriben dentro de sus rutas reclamadas y añaden progreso.
 - **qa-analyst / reviewer**: se ejecutan **después de integrar**, no por agente paralelo.
 
+## Dos modos
+
+- **Un change, N unidades**: un directorio `.atlas/run/<change>/` con N unidades/agentes.
+- **Programa, N changes × N unidades**: `.atlas/run/program.json` más un run por change.
+
+Un programa es la forma de ejecutar varias specs grandes en paralelo, cada una con sus N agentes.
+
+---
+
 ## Directorio de estado
 
 ```text
@@ -39,13 +48,14 @@ No lo uses para dos specs que tocan los mismos archivos, ni para trabajo dependi
 {
   "change": "demo",
   "units": [
-    { "id": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"], "depends_on": [] },
-    { "id": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"], "depends_on": [] }
+    { "id": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
+    { "id": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
   ]
 }
 ```
 
 - `id` único; `agent` único por unidad; `paths` no vacío; `depends_on` referencia unidades existentes.
+- `task` (opcional pero recomendado) enlaza la unidad con la tarea OpenSpec, p. ej. `1.2`.
 - Sin ciclos.
 
 ### `claims.json`
@@ -85,6 +95,26 @@ Un objeto JSON por línea, append-only:
 Resumen corto para el orquestador: qué cambió, tests ejecutados, preguntas abiertas y lo que el
 integrador debe saber. Obligatorio cuando la unidad está `done`.
 
+## Programa (varios changes)
+
+`.atlas/run/program.json` coordina varios changes:
+
+```json
+{
+  "program": "demo",
+  "changes": [
+    { "id": "spec-a", "depends_on": [], "contract": "docs/api/spec-a.yaml" },
+    { "id": "spec-b", "depends_on": ["spec-a"], "contract": "docs/api/spec-b.yaml" }
+  ]
+}
+```
+
+- Cada `id` debe tener su propio `.atlas/run/<id>/` con plan, claims, estado, journal y handoff.
+- `depends_on` se comprueba entre changes: un change dependiente no puede tener unidades `done`
+  hasta que su dependencia esté completa.
+- `contract` (opcional) debe existir; congela la API/schema antes de paralelizar backend/front.
+- `validar-run --program` valida los runs individuales, solapes de claims entre changes, dependencias y contratos.
+
 ## Reglas
 
 - **Un dueño por ruta.** Nunca escribir fuera de las rutas reclamadas.
@@ -97,29 +127,38 @@ integrador debe saber. Obligatorio cuando la unidad está `done`.
 
 ## Ciclo de vida
 
-- Se crea al empezar la ejecución paralela.
-- Se conserva entre sesiones hasta terminar integración, QA y review.
-- Se borra después de archive/merge (o si el change se abandona): `rm -rf .atlas/run/<change>`.
+- Se crea el run al empezar cada change paralelo.
+- Se conserva entre sesiones hasta terminar integración, QA y review de ese change.
+- En un programa, crea `.atlas/run/program.json` al inicio y consérvalo hasta que **todos** los changes
+  estén mergeados; borra cada run al cerrar su change y el programa al final.
+- Borra un run después de archive/merge (o si el change se abandona): `rm -rf .atlas/run/<change>`.
 - Es gitignored y nunca forma parte de los artefactos OpenSpec ni del PR.
 
 ## Validación
 
 ```bash
 node .atlas/scripts/validar-run.mjs --change <change>
+node .atlas/scripts/validar-run.mjs --program [.atlas/run/program.json]
 ```
 
-Comprueba unidades, claims, solapes, estados, handoffs, eventos del journal y dependencias.
+Comprueba unidades, claims, solapes, estados, handoffs, eventos del journal, dependencias, contratos
+y solapes de claims entre changes.
 
 El protocolo no fija un número máximo de unidades; el ejemplo usa dos. La restricción real son las rutas
 disjuntas y las dependencias declaradas.
 
 ## Ejemplo acotado
 
-Dos unidades, dos agentes, dos archivos disjuntos:
+**Un change, dos unidades:** dos agentes, dos archivos disjuntos:
 
 - `agent-a` → `agents/a/hello.py` con `hello() -> "hello"`.
 - `agent-b` → `agents/b/sum.py` con `sum(a, b) -> a + b`.
 
-Ambos añaden sus eventos de inicio, progreso y fin; el analyst ejecuta `validar-run.mjs`, integra y
-lanza los tests. Es la ejecución paralela mínima útil; no la uses como plantilla para cambios grandes
-y acoplados.
+**Programa, dos changes × tres unidades:**
+
+- `spec-a`: `hello`, `sum`, `mul`.
+- `spec-b`: `hello`, `div`, `concat`.
+- `program.json` con `spec-b` dependiendo de `spec-a` y un contrato por change.
+
+En ambos casos cada agente añade sus eventos; el analyst ejecuta `validar-run.mjs`, integra y lanza
+los tests. Son los casos mínimos útiles; no los uses como plantilla para cambios grandes y acoplados.

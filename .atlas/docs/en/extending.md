@@ -16,6 +16,7 @@ action from intent rather than an explicit command, **ask for explicit confirmat
 |---|---|
 | Start or continue a change (“in this session we will work on X”, “continue X”, “status of X”) | Loads context, checks `openspec/changes/`, asks OpenSpec/orchestration and starts explore/propose or resumes |
 | Run independent changes in parallel (experimental) | Follow `.atlas/docs/en/parallel-run.md`; confirm and validate with `validar-run.mjs` |
+| Run several changes as a program (experimental) | `program.json` + `.atlas/docs/en/parallel-run.md`; validate with `validar-run --program` |
 | Configure the project | Run `.atlas/BOOTSTRAP.md` only if `status=pending` |
 | Add a stack or profile | `crear-perfil.mjs` → fill in the commands → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
 | Add an implementer agent | It is the same `engineer` with a new stack: `state.stacks` + `engineer-<id>` |
