@@ -110,6 +110,9 @@ node .atlas/scripts/validar-run.mjs --change <change>
 
 Checks units, claims, overlaps, statuses, handoffs, journal events and dependencies.
 
+The protocol has no fixed limit of units; the bounded example uses two. The real constraint is disjoint
+paths and declared dependencies.
+
 ## Bounded example
 
 Two units, two agents, two disjoint files:

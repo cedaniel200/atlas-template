@@ -110,6 +110,9 @@ node .atlas/scripts/validar-run.mjs --change <change>
 
 Comprueba unidades, claims, solapes, estados, handoffs, eventos del journal y dependencias.
 
+El protocolo no fija un número máximo de unidades; el ejemplo usa dos. La restricción real son las rutas
+disjuntas y las dependencias declaradas.
+
 ## Ejemplo acotado
 
 Dos unidades, dos agentes, dos archivos disjuntos:
