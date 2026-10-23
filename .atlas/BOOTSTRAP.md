@@ -182,8 +182,8 @@ Run the interview in **5 rounds (0–4)**, grouping questions.
 
 | Question | Values | Where it is stored |
 |---|---|---|
-| User language (documentation, AGENTS.md, messages) | `es`, `en`, other | `language.user` |
-| Skills and agent prompt language | `en` (default) or the user's | `language.agent` |
+| User language (README, project docs, messages) | `es`, `en`, other | `language.user` |
+| Agent language (AGENTS.md, prompts, skills, OpenSpec context) | `en` (default) or the user's | `language.agent` |
 
 ## Round 1 — Identity and stack
 
@@ -316,12 +316,16 @@ Rules:
 
 - Replace **all** `{{...}}` in the previous files. When done:
   `grep -r "{{" AGENTS.md openspec/config.yaml README.md` must return **empty**.
-- **Language (agent)**: `AGENTS.md`, `.atlas/docs/en/`, `.atlas/agents/` and `.agents/skills/` are
-  written in `language.agent` (English by default); they are the agent's contract and procedure.
-- **Language (human)**: the project `README.md` and `docs/README.md` are written in `language.user`.
-  If it is not Spanish, **translate** `docs/README.md`, use the guides in
-  `docs/harness/<language.user>/` and update their links to `docs/harness/<language.user>/` and
-  `.atlas/docs/<language.user>/`; do not leave `es/` links in an English project.
+- **Language (agent)**: `AGENTS.md`, `.atlas/docs/en/`, `.atlas/agents/`, `.agents/skills/`,
+  the `context:` block of `openspec/config.yaml` and `state.architecture.notes` are written in
+  `language.agent` (English by default); they are the agent's contract and procedure.
+  **Translate the interview answers before writing them into these files**; never paste
+  `language.user` prose into an agent-language file.
+- **Language (human)**: `README.md`, `docs/README.md`, `docs/project-context.md` and
+  `docs/harness/<language.user>/` are written in `language.user`. If it is not Spanish,
+  **translate** `docs/README.md`, use the guides in `docs/harness/<language.user>/` and update their
+  links to `docs/harness/<language.user>/` and `.atlas/docs/<language.user>/`; do not leave `es/`
+  links in an English project.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adapters, commands, CLAUDE.md).
 - If the user provided domain terms, replace the `<entity>` examples in the skills.
@@ -340,6 +344,8 @@ Advancing to `propose` is not allowed until **everything** is green.
 - [ ] `AGENTS.md` has `## Structure` and `## Do Not Touch Rules`
 - [ ] `AGENTS.md` has `## Preferences` with `language`, OpenSpec commands and orchestration
 - [ ] `AGENTS.md` has `## Architecture`
+- [ ] `AGENTS.md`, the `openspec/config.yaml` `context:` block and `state.architecture.notes` are
+  written in `language.agent`; no `language.user` prose leaked
 - [ ] No `{{...}}` remains in `AGENTS.md`, `openspec/config.yaml` and `README.md`
 - [ ] Placeholder contract is consistent: `node .atlas/scripts/validar-contrato.mjs`
 - [ ] Profiles are valid: `node .atlas/scripts/validar-perfiles.mjs`
@@ -358,6 +364,7 @@ Advancing to `propose` is not allowed until **everything** is green.
 - [ ] No template contamination: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.atlas --exclude-dir=node_modules .` → no results
 - [ ] `.atlas/manifest.json` generated
 - [ ] `git status` clean and phases committed
+- [ ] One-time handoff message delivered in `language.user` (Phase 3.5)
 
 If something fails: fix and repeat. If the user insists on skipping the gate:
 
@@ -393,6 +400,24 @@ State the consequences before asking:
 - Active profiles, packs and skills are not touched.
 
 Ask: **"Do you want me to minimize ATLAS now?"** and wait for the answer.
+
+# Phase 3.5 — Handoff (one-time)
+
+After the gate is green and the optional minimization decision is resolved, deliver a short handoff
+to the human in `language.user`. **Do not write it to a file** and do not create a commit for it; it is
+a one-time onboarding message.
+
+Include:
+
+- how to start a session: *"In this session we will work on …"*;
+- the normal flow: `analyst` explores and proposes → human approves → `engineer` implements → QA and
+  `reviewer` validate → `doc-writer` updates documentation → PR → human reviews;
+- the close: the human approves `archive`; `archive` + sync is committed **inside the PR, before
+  merge**; then merge and cleanup;
+- the fallback: if the PR is merged without archive, open a new archive branch/PR and **never rewrite
+  `main`**;
+- a link to `docs/harness/<language.user>/QUICKSTART.md`;
+- that this is explained once; repeat it only if the human asks.
 
 **After the bootstrap:** do not repeat this ritual. Agent procedure for stacks, profiles, packs or
 agents: `.atlas/docs/en/extending.md` (human version: `.atlas/docs/<language.user>/extending.md`).
