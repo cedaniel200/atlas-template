@@ -98,6 +98,7 @@ Cuando termine el ritual, pídeselo con tus palabras; si el agente deduce la acc
 
 - Empezar o retomar un cambio: “en esta sesión trabajaremos X” / “retomemos X”.
 - Añadir un stack o perfil, un implementador o un pack.
+- Añadir un implementador para una tecnología nueva: “añade un implementador para React”.
 - Dejar ATLAS mínimo (`minimizar.mjs`).
 - Actualizar ATLAS o medir el contexto.
 

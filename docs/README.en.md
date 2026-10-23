@@ -100,6 +100,7 @@ ask for explicit confirmation before acting**.
 
 - Start or continue a change: “in this session we will work on X” / “continue X”.
 - Add a stack or profile, an implementer or a pack.
+- Add an implementer for a new technology: “add an implementer for React”.
 - Minimize ATLAS (`minimizar.mjs`).
 - Update ATLAS or measure context.
 
