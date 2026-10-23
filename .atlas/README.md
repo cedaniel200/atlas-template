@@ -60,6 +60,7 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `preferences.orchestration` | `orchestrated` \| `manual` | Whether the analyst chains phases or the user invokes them |
 | `quality.crap_threshold` | integer | CRAP threshold per method (default `6`) |
 | `docs.root` | relative path | Documentation root (default `docs`) |
+| `docs.bilingual` | boolean | Keep both landings (`README.md` + `README.en.md`); default `false` |
 | `docs.functional`, `docs.architecture`, `docs.api`, `docs.guides` | path \| `null` | Selected section (project-relative, includes the root); `null` = not used |
 | `phase` | `0`–`3` | Last completed phase |
 | `displaced` | list | Paths moved to `adapters/` or `archive/` |

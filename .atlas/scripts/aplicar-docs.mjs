@@ -8,18 +8,24 @@
 //   docs.functional|architecture|api|guides
 //                           ruta relativa de la sección (incluye la raíz) o `null`
 //   mode                    `greenfield` | `brownfield` (lo exige `--descartar-docs`)
-//   language.user           idioma de los stubs (`es` por defecto)
+//   language.user           idioma de los stubs y de la portada (`es` por defecto)
+//   docs.bilingual          `true` conserva las dos portadas (`README.md` y `README.en.md`)
 //
 // Siempre existen `<root>/README.md`, `<root>/project-context.md`, `<root>/harness/`
 // y el directorio de ADR (`adr/` por defecto; su ruta vive en `AGENTS.md`).
+//
+// La portada inglesa es opcional: en `es` se retira el scaffold `README.en.md` en
+// `greenfield`; en `en` su contenido pasa a `README.md`. Con `docs.bilingual: true` se
+// conservan ambas y nunca se inventa una traducción.
 //
 // Nunca copia `docs/` a otra raíz sin una decisión explícita del usuario y nunca
 // sobrescribe un archivo existente. Es idempotente: una segunda ejecución no escribe.
 //
 // Única eliminación que realiza: en `greenfield` retira el scaffold de las secciones no
-// seleccionadas que el template entrega (`<root>/<área>/` con exclusivamente `README.md`).
-// Si el directorio tiene cualquier otro archivo o subdirectorio se conserva y se avisa;
-// en `brownfield` no elimina nada. `--dry-run` solo informa de lo que eliminaría.
+// seleccionadas que el template entrega (`<root>/<área>/` con exclusivamente `README.md`)
+// y la portada inglesa scaffold. Si el directorio tiene cualquier otro archivo o
+// subdirectorio se conserva y se avisa; en `brownfield` no elimina nada.
+// `--dry-run` solo informa de lo que eliminaría.
 //
 // Uso:
 //   node .atlas/scripts/aplicar-docs.mjs [--proyecto <dir>] [--dry-run]
@@ -237,6 +243,106 @@ function reescribirReadmeProyecto(texto, { seleccionadas }) {
   return { texto: resultado, pendientes };
 }
 
+// Resuelve la portada del proyecto. La portada inglesa (`README.en.md`) es opcional:
+// solo se conserva con `docs.bilingual: true`. Cuando se retira, nada puede enlazarla.
+function esPortadaScaffold(texto) {
+  return /^#\s*🧭\s*ATLAS/m.test(texto.split('\n').slice(0, 5).join('\n'));
+}
+
+function esPortadaInglesa(texto) {
+  return /^#\s*🧭\s*ATLAS\s*—\s*OpenSpec \+ Agents/m.test(texto.split('\n').slice(0, 5).join('\n'));
+}
+
+function comoPortadaInglesa(texto) {
+  return texto
+    .replace(/# Spanish landing page/g, '# landing page')
+    .replace(/# portada en español/g, '# landing page');
+}
+
+function quitarConmutadorDeIdioma(linea) {
+  return linea
+    .replace(/ · \[English\]\(README\.en\.md\)/g, '')
+    .replace(/ · \[Español\]\(README\.md\)/g, '');
+}
+
+// Elimina el conmutador de idioma y la línea de estructura de la portada inglesa.
+// En AGENTS.md y en el README del proyecto reescribe las referencias al landing que sí existe.
+function retirarPortadaInglesa(texto, { esPortada = false } = {}) {
+  return texto
+    .split('\n')
+    .filter((linea) => !(linea.includes('README.en.md') && /^\s*[│├└─]/.test(linea)))
+    .map((linea) =>
+      esPortada ? quitarConmutadorDeIdioma(linea) : linea.split('README.en.md').join('README.md'),
+    )
+    .join('\n');
+}
+
+async function resolverPortadas({ rutaRoot, root, idioma, bilingual, modo, dryRun, avisar }) {
+  const rutaPrincipal = join(rutaRoot, 'README.md');
+  const rutaInglesa = join(rutaRoot, 'README.en.md');
+  const hayPrincipal = await existe(rutaPrincipal);
+  const hayInglesa = await existe(rutaInglesa);
+
+  if (bilingual) {
+    if (!hayPrincipal) avisar('⚠️', `${root}/README.md no existe: no se inventa la portada`);
+    if (!hayInglesa) avisar('⚠️', `${root}/README.en.md no existe: no se inventa la traducción`);
+    return;
+  }
+
+  if (idioma === 'en') {
+    if (hayInglesa) {
+      const principal = hayPrincipal ? await readFile(rutaPrincipal, 'utf8') : null;
+      if (principal !== null && !esPortadaScaffold(principal)) {
+        avisar('⚠️', `${root}/README.en.md conservado: ${root}/README.md no es scaffold`);
+        return;
+      }
+      const inglesa = comoPortadaInglesa(
+        retirarPortadaInglesa(await readFile(rutaInglesa, 'utf8'), { esPortada: true }),
+      );
+      if (!dryRun) {
+        await mkdir(rutaRoot, { recursive: true });
+        await writeFile(rutaPrincipal, inglesa, 'utf8');
+        await rm(rutaInglesa, { force: true });
+      }
+      avisar('✅', `${root}/README.en.md → ${root}/README.md (portada inglesa)`);
+      return;
+    }
+    if (hayPrincipal) {
+      const principal = await readFile(rutaPrincipal, 'utf8');
+      if (esPortadaScaffold(principal) && !esPortadaInglesa(principal)) {
+        avisar('⚠️', `falta la portada inglesa en ${root}/README.md y no se inventa una traducción`);
+      }
+    }
+    return;
+  }
+
+  if (!hayInglesa) return;
+  if (modo === 'greenfield' && esPortadaScaffold(await readFile(rutaInglesa, 'utf8'))) {
+    if (!dryRun) await rm(rutaInglesa, { force: true });
+    avisar('🧹', `${root}/README.en.md eliminado (scaffold en greenfield)`);
+    return;
+  }
+  avisar('⚠️', `${root}/README.en.md conservado (contenido existente)`);
+}
+
+// Sin portada inglesa, ningún archivo puede seguir enlazándola.
+async function ajustarEnlacesPortada({ proyecto, rutaRoot, root, dryRun, avisar }) {
+  if (await existe(join(rutaRoot, 'README.en.md'))) return;
+  const destinos = [
+    { ruta: join(rutaRoot, 'README.md'), relativo: `${root}/README.md`, esPortada: true },
+    { ruta: join(proyecto, 'AGENTS.md'), relativo: 'AGENTS.md', esPortada: false },
+    { ruta: join(proyecto, 'README.md'), relativo: 'README.md', esPortada: false },
+  ];
+  for (const destino of destinos) {
+    if (!(await existe(destino.ruta))) continue;
+    const original = await readFile(destino.ruta, 'utf8');
+    const reescrito = retirarPortadaInglesa(original, { esPortada: destino.esPortada });
+    if (reescrito === original) continue;
+    if (!dryRun) await writeFile(destino.ruta, reescrito, 'utf8');
+    avisar('✅', `${destino.relativo}: referencias a la portada inglesa corregidas`);
+  }
+}
+
 // Resuelve la raíz de documentación. Nunca copia `docs/` sin una decisión explícita.
 async function resolverRaiz({ proyecto, root, decision, modo, dryRun, avisar, log }) {
   const rutaRoot = join(proyecto, root);
@@ -422,6 +528,8 @@ export async function aplicarDocs({ proyecto = '.', dryRun = false, decision = n
   }
 
   const config = estado.docs ?? {};
+  const idioma = estado.language?.user === 'en' ? 'en' : 'es';
+  const bilingual = config.bilingual === true;
   const root = validarRuta(config.root ?? ROOT_CANONICA, 'docs.root');
   if (root.startsWith(`${ROOT_CANONICA}/`)) {
     throw new Error(`docs.root: "${root}" no puede estar dentro de ${ROOT_CANONICA}/`);
@@ -431,7 +539,7 @@ export async function aplicarDocs({ proyecto = '.', dryRun = false, decision = n
     const valor = config[area];
     rutas[area] = valor === null || valor === undefined ? null : validarRuta(valor, `docs.${area}`);
   }
-  const textos = TEXTOS[estado.language?.user === 'en' ? 'en' : 'es'];
+  const textos = TEXTOS[idioma];
   const secciones = AREAS.filter((area) => rutas[area] !== null);
   const rutaRoot = join(proyecto, root);
   const acciones = [];
@@ -453,6 +561,15 @@ export async function aplicarDocs({ proyecto = '.', dryRun = false, decision = n
     return { root, secciones: secciones.map((area) => rutas[area]), decision, dryRun, pendiente, acciones };
   }
 
+  await resolverPortadas({
+    rutaRoot,
+    root,
+    idioma,
+    bilingual,
+    modo: estado.mode ?? null,
+    dryRun,
+    avisar,
+  });
   await limpiarScaffoldNoSeleccionado({
     rutaRoot,
     root,
@@ -464,6 +581,7 @@ export async function aplicarDocs({ proyecto = '.', dryRun = false, decision = n
   await crearSiemprePresentes({ rutaRoot, root, textos, dryRun, avisar });
   await crearSecciones({ proyecto, secciones, rutas, textos, dryRun, avisar });
   await actualizarEnlaces({ proyecto, rutaRoot, root, rutas, secciones, dryRun, avisar });
+  await ajustarEnlacesPortada({ proyecto, rutaRoot, root, dryRun, avisar });
 
   return {
     root,

@@ -240,6 +240,9 @@ Run the interview in **5 rounds (0–4)**, grouping questions.
      wants. Store each accepted one in `state.docs.<area>` as its project-relative path **including the
      root** (e.g. `docs/architecture`); the rest stay `null`. Never create a section the user did not
      choose.
+   - **Bilingual landing**: a second landing (`<root>/README.en.md`) is created **only if the human
+     asks for it explicitly**; record it in `state.docs.bilingual` (`false` by default). Never invent a
+     translation.
 
    These always exist, whatever the answers: `<root>/README.md`, `<root>/project-context.md`,
    `<root>/harness/` and the ADR directory (`adr/` by default, recorded in `AGENTS.md § Document map`,

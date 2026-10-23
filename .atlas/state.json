@@ -36,6 +36,7 @@
   },
   "docs": {
     "root": "docs",
+    "bilingual": false,
     "functional": null,
     "architecture": null,
     "api": null,

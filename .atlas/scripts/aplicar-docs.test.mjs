@@ -13,7 +13,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { access, cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { aplicarDocs } from './aplicar-docs.mjs';
@@ -38,11 +38,16 @@ async function existe(ruta) {
   );
 }
 
-async function crearFixture({ mode = 'greenfield', docs, idioma = 'es' } = {}) {
+async function crearFixture({ mode = 'greenfield', docs, idioma = 'es', bilingual = false, skills } = {}) {
   const fixture = await mkdtemp(join(tmpdir(), 'aplicar-docs-'));
-  await cp(join(RAIZ_TEMPLATE, 'AGENTS.md'), join(fixture, 'AGENTS.md'));
-  await cp(join(RAIZ_TEMPLATE, 'docs'), join(fixture, 'docs'), { recursive: true });
+  // Copia el template completo (salvo .git/node_modules) para que la integridad de
+  // enlaces se valide contra el contenido real que se entrega.
+  await cp(RAIZ_TEMPLATE, fixture, {
+    recursive: true,
+    filter: (origen) => !['.git', 'node_modules'].includes(basename(origen)),
+  });
   await mkdir(join(fixture, '.atlas'), { recursive: true });
+  const configDocs = docs ?? { root: 'docs', functional: null, architecture: null, api: null, guides: null };
   await writeFile(
     join(fixture, '.atlas/state.json'),
     `${JSON.stringify(
@@ -50,7 +55,8 @@ async function crearFixture({ mode = 'greenfield', docs, idioma = 'es' } = {}) {
         status: 'pending',
         mode,
         language: { user: idioma, agent: 'en' },
-        docs: docs ?? { root: 'docs', functional: null, architecture: null, api: null, guides: null },
+        docs: { bilingual, ...configDocs },
+        skills: skills ?? { duplicates: [], decision: null, reason: null },
       },
       null,
       2,
@@ -105,8 +111,26 @@ function assertParidad(textoEs, textoEn) {
   assert.deepEqual(es === null ? null : [...es].sort(), en === null ? null : [...en].sort());
 }
 
+// Extrae `](destino)` y exige que cada enlace relativo resuelva a una ruta existente.
+// Se ignoran http(s), `#anclas` y mailto.
+async function assertEnlacesResueltos(raiz, archivos) {
+  for (const relativo of archivos) {
+    const archivo = join(raiz, relativo);
+    const texto = await leer(archivo);
+    for (const coincidencia of texto.matchAll(/\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g)) {
+      const destino = coincidencia[1];
+      if (/^(?:https?:|mailto:|#|\/\/)/.test(destino)) continue;
+      const ruta = destino.split('#')[0];
+      if (ruta === '') continue;
+      const resuelta = resolve(dirname(archivo), ruta);
+      assert.ok(await existe(resuelta), `${relativo} enlaza a "${destino}", que no existe`);
+    }
+  }
+}
+
 test('crea solo las secciones seleccionadas y enlaza únicamente esas', async () => {
   const fixture = await crearFixture({
+    bilingual: true,
     docs: {
       root: 'docs',
       functional: null,
@@ -163,7 +187,7 @@ test('crea solo las secciones seleccionadas y enlaza únicamente esas', async ()
 });
 
 test('sin secciones opcionales no crea carpetas ni deja filas o enlaces', async () => {
-  const fixture = await crearFixture();
+  const fixture = await crearFixture({ bilingual: true });
   try {
     await aplicarDocs({ proyecto: fixture, log: silencio });
 
@@ -231,6 +255,7 @@ test('conserva una sección no seleccionada con contenido propio y avisa', async
 test('reubica docs/ a documentation/ con --mover-docs y actualiza enlaces', async () => {
   const fixture = await crearFixture({
     mode: 'greenfield',
+    bilingual: true,
     docs: {
       root: 'documentation',
       functional: null,
@@ -444,6 +469,134 @@ test('--dry-run no escribe nada, ni siquiera cuando falta la decisión', async (
   } finally {
     await rm(fixture, { recursive: true, force: true });
     await rm(pendiente, { recursive: true, force: true });
+  }
+});
+
+test('es sin bilingüe deja solo la portada española y sin referencias a README.en.md', async () => {
+  const fixture = await crearFixture();
+  try {
+    await writeFile(
+      join(fixture, 'README.md'),
+      '# Proyecto\n\n[Portada inglesa](docs/README.en.md)\n',
+      'utf8',
+    );
+    await aplicarDocs({ proyecto: fixture, log: silencio });
+
+    assert.ok(await existe(join(fixture, 'docs/README.md')));
+    assert.ok(!(await existe(join(fixture, 'docs/README.en.md'))), 'el scaffold inglés se elimina');
+
+    const portada = await leer(join(fixture, 'docs/README.md'));
+    assert.match(portada, /> \*\*Idioma:\*\* Español\n/);
+    for (const relativo of ['docs/README.md', 'AGENTS.md', 'README.md']) {
+      assert.ok(
+        !(await leer(join(fixture, relativo))).includes('README.en.md'),
+        `${relativo} no debe citar README.en.md`,
+      );
+    }
+    assert.ok(
+      (await leer(join(fixture, 'README.md'))).includes('[Portada inglesa](docs/README.md)'),
+      'el README del proyecto se reescribe al landing existente',
+    );
+    await assertEnlacesResueltos(fixture, ['docs/README.md']);
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('en sin bilingüe mueve la portada inglesa a README.md y elimina README.en.md', async () => {
+  const fixture = await crearFixture({ idioma: 'en' });
+  try {
+    await aplicarDocs({ proyecto: fixture, log: silencio });
+
+    assert.ok(await existe(join(fixture, 'docs/README.md')));
+    assert.ok(!(await existe(join(fixture, 'docs/README.en.md'))));
+
+    const portada = await leer(join(fixture, 'docs/README.md'));
+    assert.match(portada.split('\n')[0], /^#\s*🧭\s*ATLAS\s*—\s*OpenSpec \+ Agents/);
+    assert.ok(portada.includes('> **Language:** English\n'));
+    assert.ok(portada.includes('# landing page'), 'la estructura ya no dice "Spanish landing page"');
+    for (const relativo of ['docs/README.md', 'AGENTS.md']) {
+      assert.ok(
+        !(await leer(join(fixture, relativo))).includes('README.en.md'),
+        `${relativo} no debe citar README.en.md`,
+      );
+    }
+    await assertEnlacesResueltos(fixture, ['docs/README.md']);
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('es con docs.bilingual conserva ambas portadas, sus enlaces y la estructura', async () => {
+  const fixture = await crearFixture({ bilingual: true });
+  try {
+    await aplicarDocs({ proyecto: fixture, log: silencio });
+
+    assert.ok(await existe(join(fixture, 'docs/README.md')));
+    assert.ok(await existe(join(fixture, 'docs/README.en.md')));
+
+    const portadaEs = await leer(join(fixture, 'docs/README.md'));
+    const portadaEn = await leer(join(fixture, 'docs/README.en.md'));
+    assert.ok(portadaEs.includes('> **Idioma:** Español · [English](README.en.md)'));
+    assert.ok(portadaEn.includes('> **Language:** English · [Español](README.md)'));
+    assert.match(portadaEs, /README\.md\s+# este índice/);
+    assert.match(portadaEs, /README\.en\.md\s+# portada en inglés/);
+    assert.match(portadaEn, /README\.md\s+# Spanish landing page/);
+    assert.match(portadaEn, /README\.en\.md\s+# this English landing page/);
+    await assertEnlacesResueltos(fixture, ['docs/README.md', 'docs/README.en.md']);
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('la portada no enlaza a archivos inexistentes en los tres modos', async () => {
+  const casos = [
+    { nombre: 'es', opciones: {} },
+    { nombre: 'en', opciones: { idioma: 'en' } },
+    { nombre: 'bilingüe', opciones: { bilingual: true } },
+  ];
+  for (const caso of casos) {
+    const fixture = await crearFixture(caso.opciones);
+    try {
+      await aplicarDocs({ proyecto: fixture, log: silencio });
+      const portadas = (await existe(join(fixture, 'docs/README.en.md')))
+        ? ['docs/README.md', 'docs/README.en.md']
+        : ['docs/README.md'];
+      await assertEnlacesResueltos(fixture, portadas);
+    } finally {
+      await rm(fixture, { recursive: true, force: true });
+    }
+  }
+});
+
+test('brownfield es conserva README.en.md existente y avisa', async () => {
+  const fixture = await crearFixture({ mode: 'brownfield' });
+  try {
+    const lineas = [];
+    await aplicarDocs({ proyecto: fixture, log: (linea) => lineas.push(linea) });
+
+    assert.ok(await existe(join(fixture, 'docs/README.en.md')), 'no se elimina contenido existente');
+    assert.match(await leer(join(fixture, 'docs/README.en.md')), /^#\s*🧭\s*ATLAS\s*—\s*OpenSpec \+ Agents/);
+    assert.ok(
+      lineas.some((linea) => linea.startsWith('⚠️') && linea.includes('README.en.md')),
+      'debe avisar de la portada conservada',
+    );
+    await assertEnlacesResueltos(fixture, ['docs/README.md', 'docs/README.en.md']);
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('aplicar-docs no modifica state.skills (solo lo usa el bootstrap)', async () => {
+  const skills = { duplicates: ['grilling'], decision: 'both', reason: 'team-owned fork' };
+  const fixture = await crearFixture({ skills });
+  try {
+    const antes = JSON.parse(await leer(join(fixture, '.atlas/state.json')));
+    await aplicarDocs({ proyecto: fixture, log: silencio });
+    const despues = JSON.parse(await leer(join(fixture, '.atlas/state.json')));
+    assert.deepEqual(despues.skills, antes.skills);
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
   }
 });
 
