@@ -36,18 +36,17 @@ const ESPERADO = {
   '.opencode/agent/demo.md': { ownership: 'generated', origin: 'host:opencode' },
 };
 
-async function crearFixture() {
+const ESTADO = { host: 'opencode', template_version: '0.1.2' };
+
+async function crearFixture({ contenido = CONTENIDO, estado = ESTADO } = {}) {
   const fixture = await mkdtemp(join(tmpdir(), 'generar-manifiesto-'));
-  for (const [rel, contenido] of Object.entries(CONTENIDO)) {
+  for (const [rel, texto] of Object.entries(contenido)) {
     const destino = join(fixture, rel);
     await mkdir(dirname(destino), { recursive: true });
-    await writeFile(destino, contenido, 'utf8');
+    await writeFile(destino, texto, 'utf8');
   }
-  await writeFile(
-    join(fixture, '.atlas/state.json'),
-    '{"host":"opencode","template_version":"0.1.2"}\n',
-    'utf8',
-  );
+  await mkdir(join(fixture, '.atlas'), { recursive: true });
+  await writeFile(join(fixture, '.atlas/state.json'), `${JSON.stringify(estado)}\n`, 'utf8');
   // Manifiesto de una ejecución anterior: el generador no debe inventariarlo.
   await writeFile(join(fixture, '.atlas/manifest.json'), '{"files":{}}\n', 'utf8');
   return fixture;
@@ -60,6 +59,18 @@ function generar(fixture) {
   return readFile(join(fixture, '.atlas/manifest.json'), 'utf8').then(JSON.parse);
 }
 
+async function afirmarEntrada(manifest, fixture, rel, esperado) {
+  const entrada = manifest.files[rel];
+  assert.ok(entrada, `${rel} debe inventariarse`);
+  assert.equal(entrada.ownership, esperado.ownership, `ownership de ${rel}`);
+  assert.equal(entrada.origin, esperado.origin, `origin de ${rel}`);
+
+  assert.match(entrada.sha256, /^[0-9a-f]{64}$/, `formato de sha256 de ${rel}`);
+  // Cálculo independiente del de producción.
+  const sha256 = createHash('sha256').update(await readFile(join(fixture, rel))).digest('hex');
+  assert.equal(entrada.sha256, sha256, `sha256 de ${rel}`);
+}
+
 test('clasifica scripts y README de .atlas como managed core', async () => {
   const fixture = await crearFixture();
   try {
@@ -70,15 +81,97 @@ test('clasifica scripts y README de .atlas como managed core', async () => {
     assert.ok(!('.atlas/manifest.json' in manifest.files), 'manifest.json no debe inventariarse');
 
     for (const [rel, esperado] of Object.entries(ESPERADO)) {
-      const entrada = manifest.files[rel];
-      assert.equal(entrada.ownership, esperado.ownership, `ownership de ${rel}`);
-      assert.equal(entrada.origin, esperado.origin, `origin de ${rel}`);
-
-      assert.match(entrada.sha256, /^[0-9a-f]{64}$/, `formato de sha256 de ${rel}`);
-      // Cálculo independiente del de producción.
-      const sha256 = createHash('sha256').update(await readFile(join(fixture, rel))).digest('hex');
-      assert.equal(entrada.sha256, sha256, `sha256 de ${rel}`);
+      await afirmarEntrada(manifest, fixture, rel, esperado);
     }
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('inventaría la raíz de documentación configurada en state.docs.root', async () => {
+  const contenido = {
+    'documentation/README.md': '# Documentación\n',
+    'documentation/project-context.md': '# Contexto del proyecto\n',
+    'documentation/architecture/README.md': '# Arquitectura\n',
+    'documentation/harness/en/QUICKSTART.md': '# Inicio rápido\n',
+    // Señuelo: con `docs/` fijo en la regla, este archivo se colaría en el manifiesto.
+    'docs/legacy.md': '# Documentación heredada\n',
+  };
+  const estado = {
+    ...ESTADO,
+    docs: {
+      root: 'documentation',
+      functional: null,
+      architecture: 'documentation/architecture',
+      api: null,
+      guides: null,
+      bilingual: false,
+    },
+  };
+  const fixture = await crearFixture({ contenido, estado });
+  try {
+    const manifest = await generar(fixture);
+
+    for (const rel of Object.keys(contenido).filter((ruta) => ruta.startsWith('documentation/'))) {
+      await afirmarEntrada(manifest, fixture, rel, { ownership: 'owned', origin: 'core' });
+    }
+    assert.ok(!('docs/legacy.md' in manifest.files), 'docs/ no debe inventariarse con otra raíz');
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('la raíz de documentación explícita `docs` se comporta como el valor por defecto', async () => {
+  const estado = {
+    ...ESTADO,
+    docs: {
+      root: 'docs',
+      functional: 'docs/functional',
+      architecture: null,
+      api: null,
+      guides: null,
+      bilingual: false,
+    },
+  };
+  const fixture = await crearFixture({ estado });
+  try {
+    const manifest = await generar(fixture);
+
+    await afirmarEntrada(manifest, fixture, 'docs/guide.md', {
+      ownership: 'owned',
+      origin: 'core',
+    });
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('escapa los metacaracteres de la raíz de documentación', async () => {
+  const contenido = {
+    'doc.v1/guide.md': '# Guía\n',
+    // Señuelo: un patrón sin escapar (`^doc.v1/`) también lo capturaría.
+    'docXv1/guide.md': '# Guía ajena\n',
+  };
+  const estado = {
+    ...ESTADO,
+    docs: {
+      root: 'doc.v1',
+      functional: null,
+      architecture: null,
+      api: null,
+      guides: null,
+      bilingual: false,
+    },
+  };
+  const fixture = await crearFixture({ contenido, estado });
+  try {
+    const manifest = await generar(fixture);
+
+    await afirmarEntrada(manifest, fixture, 'doc.v1/guide.md', {
+      ownership: 'owned',
+      origin: 'core',
+    });
+    assert.ok(!('docXv1/guide.md' in manifest.files), 'solo la raíz exacta debe inventariarse');
   } finally {
     await rm(fixture, { recursive: true, force: true });
   }

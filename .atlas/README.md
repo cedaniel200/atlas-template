@@ -20,7 +20,7 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `packs/<pack>/` | ✅ yes | Optional **procedure** (skills/agents), outside discovery |
 | `packs/_templates/` | ✅ yes | Pack skeleton; not activated |
 | `legal/` | ✅ yes | Template legal moved when configuring a project (LICENSE, SECURITY, THIRD-PARTY) |
-| `scripts/` | ✅ yes | Portable helpers (Node/shell only): `sha256.*` (hash), `renderizar-adaptadores.mjs` (tests: `node --test .atlas/scripts/*.test.mjs`), `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `crear-perfil.mjs`, `crear-pack.mjs`, `mover-legal.mjs`, `minimizar.mjs`, `validar-run.mjs`, `medir-contexto.mjs` (maintenance diagnostic) and `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
+| `scripts/` | ✅ yes | Portable helpers (Node/shell only): `sha256.*` (hash), `renderizar-adaptadores.mjs` (tests: `node --test .atlas/scripts/*.test.mjs`), `actualizar-arnes.mjs`, `validar-manifiesto.mjs`, `inventariar-adopcion.mjs`, `adoptar-agents.mjs`, `combinar-readme.mjs`, `generar-manifiesto.mjs`, `aplicar-docs.mjs` (optional documentation sections), `crear-perfil.mjs`, `crear-pack.mjs`, `mover-legal.mjs`, `minimizar.mjs`, `validar-run.mjs`, `medir-contexto.mjs` (maintenance diagnostic) and `validar-perfiles.mjs`/`validar-contrato.mjs` (gates) |
 | `adapters/<host>/` | ❌ no (gitignored) | Artifacts displaced by `prune` (local state) |
 | `archive/` | ❌ no (gitignored) | Material archived by minimization (docs, examples, inactive hosts) |
 | `run/<change>/` | ❌ no (gitignored) | Ephemeral state for an experimental parallel run (per change or `program.json`) |
@@ -53,10 +53,15 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `stacks` | list | Project stacks: `id`, `profile`, `paths`, commands and `packs` |
 | `readme` | `generated` \| `preserved` \| `appended` \| `null` | Policy applied to the project `README.md` |
 | `optional_agents` | list | Activated optional roles (`mentor`, `business-strategist`) |
+| `skills.duplicates` | list | Duplicate skill IDs detected between `.agents/skills/` and `.opencode/skills/` |
+| `skills.decision` | `canonical` \| `host` \| `both` \| `null` | Human decision for the duplicates (mandatory when they exist) |
+| `skills.reason` | text \| `null` | Justification; mandatory when `decision` is `both` |
 | `preferences.openspec_commands` | `user` \| `agent` \| `ask` | Who runs OpenSpec commands |
 | `preferences.orchestration` | `orchestrated` \| `manual` | Whether the analyst chains phases or the user invokes them |
 | `quality.crap_threshold` | integer | CRAP threshold per method (default `6`) |
-| `docs.*` | paths | Documentation folders (English names; content in `language.user`) |
+| `docs.root` | relative path | Documentation root (default `docs`) |
+| `docs.bilingual` | boolean | Keep both landings (`README.md` + `README.en.md`); default `false` |
+| `docs.functional`, `docs.architecture`, `docs.api`, `docs.guides` | path \| `null` | Selected section (project-relative, includes the root); `null` = not used |
 | `phase` | `0`–`3` | Last completed phase |
 | `displaced` | list | Paths moved to `adapters/` or `archive/` |
 | `override_reason` | text \| `null` | Reason if the user skipped the validation gate |

@@ -5,7 +5,7 @@
 //
 // Reglas (BOOTSTRAP Fase 2):
 //   owned     AGENTS.md, README.md, openspec/config.yaml, .env.example, .gitignore,
-//             .gitattributes, .editorconfig, docs/**, adr/**, openspec/specs/**
+//             .gitattributes, .editorconfig, <docs.root>/**, adr/**, openspec/specs/**
 //   managed   .agents/skills/**, .atlas/agents/**, openspec/schemas/**,
 //             .atlas/scripts/**, .atlas/README.md, .atlas/legal/**,
 //             .atlas/profiles/_templates/**, .atlas/profiles/_examples/**, .atlas/packs/**
@@ -37,6 +37,12 @@ const EXCLUIR = new Set([
   '.atlas/manifest.json', '.atlas/state.json',
 ]);
 
+// La raíz de documentación es configurable (`state.docs.root`): la regla `owned` se
+// construye con ella para inventariar `documentation/` o cualquier otra raíz. Sin
+// `state.docs` se usa `docs`, el valor histórico.
+const raizDocs = (state.docs?.root ?? 'docs').replace(/\/+$/, '') || 'docs';
+const patronRaizDocs = new RegExp(`^${raizDocs.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/`);
+
 const REGLAS = [
   {
     patron: /^(AGENTS\.md|README\.md|\.env\.example|\.gitignore|\.gitattributes|\.editorconfig)$/,
@@ -44,7 +50,12 @@ const REGLAS = [
     origin: () => 'core',
   },
   {
-    patron: /^openspec\/config\.yaml$|^docs\/|^adr\/|^openspec\/specs\//,
+    patron: /^openspec\/config\.yaml$|^adr\/|^openspec\/specs\//,
+    ownership: 'owned',
+    origin: () => 'core',
+  },
+  {
+    patron: patronRaizDocs,
     ownership: 'owned',
     origin: () => 'core',
   },
