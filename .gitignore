@@ -33,6 +33,7 @@ Thumbs.db
 .atlas/adapters/
 .atlas/backups/
 .atlas/archive/
+.atlas/run/
 
 # ─── Memoria persistente (opt-in; nunca versionar por defecto) ──────
 .engram/

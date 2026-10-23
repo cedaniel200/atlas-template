@@ -162,7 +162,7 @@ Detalle: [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md).
 │   ├── packs/           # packs opcionales bajo demanda (_templates/ + activos)
 │   ├── docs/en|es/      # documentación del arnés (contribuidor)
 │   ├── hosts/           # plantillas de adaptador por host
-│   ├── scripts/         # sha256 + validadores + crear-perfil + crear-pack + mover-legal + minimizar + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── scripts/         # sha256 + validadores + crear-perfil + crear-pack + mover-legal + minimizar + validar-run + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
 │   ├── legal/           # legal del template en proyectos configurados
 │   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/
