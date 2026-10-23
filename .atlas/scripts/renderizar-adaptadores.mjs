@@ -61,6 +61,41 @@ async function limpiarAdaptadoresObsoletos(directorio, vigentes, log) {
   }
 }
 
+// La descripción del adaptador es la primera oración del primer bloque de cita
+// del prompt canónico. Se unen todas sus líneas consecutivas (incluidas las
+// vacías `>` que separan párrafos) y se corta en el primer `.` seguido de
+// espacio o fin de texto: el bloque completo arrastra instrucciones operativas
+// que el host no debe mostrar en el selector de agentes. Si el bloque no tiene
+// punto final, se devuelve entero.
+function extraerDescripcion(cuerpo) {
+  const lineas = cuerpo.split('\n');
+  const inicio = lineas.findIndex((linea) => linea.startsWith('>'));
+  if (inicio === -1) return '';
+  const partes = [];
+  for (let i = inicio; i < lineas.length && lineas[i].startsWith('>'); i += 1) {
+    partes.push(lineas[i].replace(/^>\s?/, ''));
+  }
+  const bloque = partes.join(' ').replace(/\s+/g, ' ').trim();
+  const oracion = bloque.match(/^[\s\S]*?\.(?=\s|$)/);
+  return (oracion ? oracion[0] : bloque).trim();
+}
+
+// El stack se anota dentro de la oración y antes de su puntuación final: el
+// adaptador se lee como una sola frase, así que un sufijo posterior al punto
+// parecía una instrucción suelta. Sin puntuación final, se añade al cierre.
+function marcarStack(descripcion, stackId) {
+  const sufijo = ` (${stackId})`;
+  const cierre = descripcion.match(/[.!?]$/);
+  if (!cierre) return `${descripcion}${sufijo}`;
+  return `${descripcion.slice(0, -1)}${sufijo}${cierre[0]}`;
+}
+
+// La descripción contiene `: ` y empieza por `**`, así que un escalar plano no es
+// YAML válido: se emite entre comillas simples duplicando las internas.
+function comillarYaml(texto) {
+  return `'${texto.replace(/'/g, "''")}'`;
+}
+
 export async function renderizarAdaptadores({
   host,
   template = '.',
@@ -94,7 +129,7 @@ export async function renderizarAdaptadores({
 
   const renderizados = [];
   const rolesOpcionales = new Set();
-  const renderizar = async (rol, archivoSalida, cuerpoCanonico, descripcionExtra = '') => {
+  const renderizar = async (rol, archivoSalida, cuerpoCanonico, stackId) => {
     const nombreAdaptador = archivoSalida.replace(/\.md$/, '');
     const sinResolver = [...new Set([...cuerpoCanonico.matchAll(PATRON)].map((m) => m[1]))].filter(
       (nombre) => nombre !== 'STACK_CONTEXT' && (!mapa.has(nombre) || mapa.get(nombre).startsWith('{{')),
@@ -104,11 +139,13 @@ export async function renderizarAdaptadores({
     }
 
     const cuerpo = cuerpoCanonico.replace(PATRON, (_, nombre) => mapa.get(nombre));
-    const descripcion = (cuerpo.match(/^>\s*(.+)$/m) || [])[1] ?? `Rol ${rol} del arnés`;
+    const descripcion = extraerDescripcion(cuerpo) || `Rol ${rol} del arnés`;
+    const descripcionConStack = stackId ? marcarStack(descripcion, stackId) : descripcion;
+    const descripcionYaml = comillarYaml(descripcionConStack);
     const frontmatter =
       hostElegido === 'opencode'
-        ? `---\ndescription: ${descripcion}${descripcionExtra}\nmode: all\n---\n\n`
-        : `---\nname: ${nombreAdaptador}\ndescription: ${descripcion}${descripcionExtra}\n---\n\n`;
+        ? `---\ndescription: ${descripcionYaml}\nmode: all\n---\n\n`
+        : `---\nname: ${nombreAdaptador}\ndescription: ${descripcionYaml}\n---\n\n`;
 
     const archivo = join(destino, archivoSalida);
     if (!dryRun) await writeFile(archivo, frontmatter + cuerpo, 'utf8');
@@ -143,7 +180,7 @@ export async function renderizarAdaptadores({
         const archivo = `${rol}-${stack.id}.md`;
         vigentes.add(archivo);
         const cuerpo = cuerpoCanonico.replaceAll(STACK_CONTEXT, contextoStack(stack));
-        await renderizar(rol, archivo, cuerpo, ` — ${stack.id}`);
+        await renderizar(rol, archivo, cuerpo, stack.id);
       }
       if (!dryRun) await limpiarAdaptadoresObsoletos(destino, vigentes, log);
       continue;
