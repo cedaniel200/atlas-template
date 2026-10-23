@@ -33,7 +33,7 @@
 
 | `ownership` | Examples | On update |
 |---|---|---|
-| `managed` | skills, agent prompts, schemas | Replaced **only if the hash matches**; otherwise written as `<file>.new` and reported |
+| `managed` | skills, agent prompts, schemas, `.atlas/scripts/`, `.atlas/README.md` | Replaced **only if the hash matches**; otherwise written as `<file>.new` and reported |
 | `generated` | host adapter, command wrappers | Regenerated |
 | `owned` | `AGENTS.md`, `config.yaml`, specs, ADRs, `docs/` | **Never overwritten**; only suggestions |
 
