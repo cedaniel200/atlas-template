@@ -72,8 +72,9 @@ A program is the way to run several large specs in parallel, each with its own N
 }
 ```
 
-- One claim per unit; the agent must match the plan.
-- Claims of different units cannot overlap (same path or one inside the other).
+- One claim per unit; the agent must match the plan and **paths must equal the plan paths**.
+- In `shared-worktree`, claims of different units cannot overlap (same path or one inside the other).
+  In `per-unit-worktree`, overlaps are allowed because worktrees isolate them; integration may conflict.
 
 ### `agents/<agent>/status.json`
 
@@ -91,8 +92,9 @@ One JSON object per line, append-only:
 {"ts":"2026-01-01T00:00:00Z","event":"commit","unit":"hello","agent":"orchestrator","sha":"a1b2c3d"}
 ```
 
-`event`: `started`, `progress`, `blocked`, `handoff`, `done` or `commit`. `commit` records the SHA of
-each commit associated with the unit (the orchestrator in `shared-worktree`, the agent in `per-unit-worktree`).
+`event`: `started`, `progress`, `blocked`, `handoff`, `done` or `commit`. `commit` requires a `sha`
+(7–40 hex) of each commit associated with the unit (the orchestrator in `shared-worktree`, the agent in
+`per-unit-worktree`).
 
 ### `handoff/<unit>.md`
 

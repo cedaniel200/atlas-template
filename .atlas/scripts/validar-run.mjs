@@ -45,6 +45,7 @@ async function validarRun(runDir) {
 
   const ids = new Set();
   const porId = new Map();
+  const agentes = new Set();
   const estrategia = plan.strategy ?? 'shared-worktree';
   if (!['shared-worktree', 'per-unit-worktree'].includes(estrategia)) {
     errores.push(`plan.json: strategy inválida ${estrategia}`);
@@ -72,6 +73,8 @@ async function validarRun(runDir) {
         porId.set(unidad.id, unidad);
       }
       if (!unidad.agent) errores.push(`plan.json: ${unidad.id ?? '?'} no tiene agent`);
+      else if (agentes.has(unidad.agent)) errores.push(`plan.json: agent duplicado ${unidad.agent}`);
+      else agentes.add(unidad.agent);
       if (!Array.isArray(unidad.paths) || unidad.paths.length === 0) {
         errores.push(`plan.json: ${unidad.id ?? '?'} no tiene paths`);
       }
@@ -128,16 +131,25 @@ async function validarRun(runDir) {
       for (const id of ids) {
         if (!porUnidad.has(id)) errores.push(`claims.json: falta el claim de ${id}`);
       }
-      const todos = [...porUnidad.values()].flatMap((claim) =>
-        (claim.paths ?? []).map((ruta) => ({ unit: claim.unit, ruta: normalizar(ruta) })),
-      );
-      for (let i = 0; i < todos.length; i += 1) {
-        for (let j = i + 1; j < todos.length; j += 1) {
-          if (todos[i].unit === todos[j].unit) continue;
-          const a = todos[i].ruta;
-          const b = todos[j].ruta;
-          if (a === b || a.startsWith(`${b}/`) || b.startsWith(`${a}/`)) {
-            errores.push(`claims.json: solape de rutas entre ${todos[i].unit} y ${todos[j].unit} (${a} / ${b})`);
+      for (const [id, claim] of porUnidad) {
+        const planPaths = (porId.get(id)?.paths ?? []).map(normalizar).sort();
+        const claimPaths = (claim.paths ?? []).map(normalizar).sort();
+        if (JSON.stringify(planPaths) !== JSON.stringify(claimPaths)) {
+          errores.push(`claims.json: ${id} paths no coinciden con plan.json`);
+        }
+      }
+      if (estrategia === 'shared-worktree') {
+        const todos = [...porUnidad.values()].flatMap((claim) =>
+          (claim.paths ?? []).map((ruta) => ({ unit: claim.unit, ruta: normalizar(ruta) })),
+        );
+        for (let i = 0; i < todos.length; i += 1) {
+          for (let j = i + 1; j < todos.length; j += 1) {
+            if (todos[i].unit === todos[j].unit) continue;
+            const a = todos[i].ruta;
+            const b = todos[j].ruta;
+            if (a === b || a.startsWith(`${b}/`) || b.startsWith(`${a}/`)) {
+              errores.push(`claims.json: solape de rutas entre ${todos[i].unit} y ${todos[j].unit} (${a} / ${b})`);
+            }
           }
         }
       }
@@ -188,8 +200,8 @@ async function validarRun(runDir) {
       if (!EVENTOS.has(evento.event)) errores.push(`journal.ndjson:${indice + 1}: evento inválido ${evento.event}`);
       if (!porId.has(evento.unit)) errores.push(`journal.ndjson:${indice + 1}: unidad inexistente ${evento.unit}`);
       else if (evento.event === 'commit') {
-        if (evento.sha && !/^[0-9a-f]{7,40}$/i.test(evento.sha)) {
-          errores.push(`journal.ndjson:${indice + 1}: sha inválido ${evento.sha}`);
+        if (!evento.sha || !/^[0-9a-f]{7,40}$/i.test(evento.sha)) {
+          errores.push(`journal.ndjson:${indice + 1}: sha inválido ${evento.sha ?? '(falta)'}`);
         }
       } else if (evento.agent !== porId.get(evento.unit).agent) {
         errores.push(`journal.ndjson:${indice + 1}: agente ${evento.agent} no coincide con ${evento.unit}`);

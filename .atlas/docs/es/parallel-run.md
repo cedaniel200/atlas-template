@@ -72,8 +72,9 @@ Un programa es la forma de ejecutar varias specs grandes en paralelo, cada una c
 }
 ```
 
-- Un claim por unidad; el agente debe coincidir con el plan.
-- Los claims de unidades distintas no pueden solaparse (misma ruta o una dentro de otra).
+- Un claim por unidad; el agente debe coincidir con el plan y **las rutas deben ser iguales a las del plan**.
+- En `shared-worktree`, los claims de unidades distintas no pueden solaparse (misma ruta o una dentro de otra).
+  En `per-unit-worktree`, el solape está permitido porque los worktrees aíslan; la integración puede conflictuar.
 
 ### `agents/<agent>/status.json`
 
@@ -91,8 +92,9 @@ Un objeto JSON por línea, append-only:
 {"ts":"2026-01-01T00:00:00Z","event":"commit","unit":"hello","agent":"orchestrator","sha":"a1b2c3d"}
 ```
 
-`event`: `started`, `progress`, `blocked`, `handoff`, `done` o `commit`. `commit` registra el SHA de
-cada commit asociado a la unidad (el orquestador en `shared-worktree`, el agente en `per-unit-worktree`).
+`event`: `started`, `progress`, `blocked`, `handoff`, `done` o `commit`. `commit` exige un `sha`
+(7–40 hex) de cada commit asociado a la unidad (el orquestador en `shared-worktree`, el agente en
+`per-unit-worktree`).
 
 ### `handoff/<unit>.md`
 
