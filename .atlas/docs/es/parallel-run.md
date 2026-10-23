@@ -47,6 +47,7 @@ Un programa es la forma de ejecutar varias specs grandes en paralelo, cada una c
 ```json
 {
   "change": "demo",
+  "strategy": "shared-worktree",
   "units": [
     { "id": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
     { "id": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
@@ -54,8 +55,10 @@ Un programa es la forma de ejecutar varias specs grandes en paralelo, cada una c
 }
 ```
 
+- `strategy`: `shared-worktree` (por defecto) o `per-unit-worktree`.
 - `id` único; `agent` único por unidad; `paths` no vacío; `depends_on` referencia unidades existentes.
 - `task` (opcional pero recomendado) enlaza la unidad con la tarea OpenSpec, p. ej. `1.2`.
+- `worktree` solo es obligatorio con `per-unit-worktree`; debe ser único.
 - Sin ciclos.
 
 ### `claims.json`
@@ -114,6 +117,25 @@ integrador debe saber. Obligatorio cuando la unidad está `done`.
   hasta que su dependencia esté completa.
 - `contract` (opcional) debe existir; congela la API/schema antes de paralelizar backend/front.
 - `validar-run --program` valida los runs individuales, solapes de claims entre changes, dependencias y contratos.
+
+## Estrategias de worktree y commits
+
+### `shared-worktree` (por defecto)
+
+- Un change y un worktree; las unidades escriben en **rutas disjuntas**.
+- Los agentes **nunca ejecutan `git add` ni `git commit`**: escriben, actualizan estado/journal y dejan handoff.
+- El orquestador verifica el handoff, hace stage **solo de las rutas reclamadas**, commitea por unidad (o
+  en un lote pequeño) y actualiza el estado.
+
+### `per-unit-worktree`
+
+- Cada unidad tiene su propio `worktree` (rama/ruta); los agentes commitean **solo en su rama/worktree**.
+- El orquestador integra (merge/cherry-pick), valida y mantiene el historial final.
+
+### Handoff
+
+`handoff/<unit>.md` debe incluir: archivos cambiados, tests ejecutados, mensaje de commit sugerido y lo
+que el integrador deba saber. El orquestador nunca commitea una unidad sin handoff.
 
 ## Reglas
 

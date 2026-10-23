@@ -45,6 +45,22 @@ async function validarRun(runDir) {
 
   const ids = new Set();
   const porId = new Map();
+  const estrategia = plan.strategy ?? 'shared-worktree';
+  if (!['shared-worktree', 'per-unit-worktree'].includes(estrategia)) {
+    errores.push(`plan.json: strategy inválida ${estrategia}`);
+  }
+  if (estrategia === 'per-unit-worktree' && Array.isArray(plan.units)) {
+    const worktrees = new Set();
+    for (const unidad of plan.units) {
+      if (!unidad.worktree || typeof unidad.worktree !== 'string') {
+        errores.push(`plan.json: ${unidad.id ?? '?'} necesita worktree en per-unit-worktree`);
+      } else if (worktrees.has(unidad.worktree)) {
+        errores.push(`plan.json: worktree duplicado ${unidad.worktree}`);
+      } else {
+        worktrees.add(unidad.worktree);
+      }
+    }
+  }
   if (!Array.isArray(plan.units) || plan.units.length === 0) {
     errores.push('plan.json: units debe ser una lista no vacía');
   } else {

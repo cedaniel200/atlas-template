@@ -82,6 +82,7 @@ each artifact.
 - **One large spec → N agents**: split the work into units with disjoint paths.
 - **Several large specs → program**: each spec with its N agents, dependencies and frozen contracts.
 - Requirements: globally disjoint paths, contract before backend/front and human confirmation.
+- **Commits**: shared worktree → the orchestrator commits; `per-unit-worktree` → each agent in its branch.
 - Protocol and validation: [`.atlas/docs/en/parallel-run.md`](../.atlas/docs/en/parallel-run.md) · `validar-run.mjs`.
 
 ---

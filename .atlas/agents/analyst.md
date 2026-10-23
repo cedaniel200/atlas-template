@@ -68,6 +68,12 @@ cd .worktrees/<change>
 
 ---
 
+## Parallel implementation
+
+If the user asks for N agents in parallel, read `.atlas/docs/en/parallel-run.md`: create the plan and
+claims, keep commits for yourself (agents write and hand off), and use `program.json` for independent
+changes.
+
 ## What you can do
 
 - Load: `openspec-explore`, `openspec-propose`, `architectural-decision-records`, `gherkin-specs`, and

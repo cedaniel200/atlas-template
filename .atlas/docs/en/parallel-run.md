@@ -47,6 +47,7 @@ A program is the way to run several large specs in parallel, each with its own N
 ```json
 {
   "change": "demo",
+  "strategy": "shared-worktree",
   "units": [
     { "id": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
     { "id": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
@@ -54,8 +55,10 @@ A program is the way to run several large specs in parallel, each with its own N
 }
 ```
 
+- `strategy`: `shared-worktree` (default) or `per-unit-worktree`.
 - `id` unique; `agent` unique per unit; `paths` non-empty; `depends_on` references existing units.
 - `task` (optional but recommended) links the unit to the OpenSpec task, e.g. `1.2`.
+- `worktree` is required only with `per-unit-worktree`; must be unique.
 - No cycles.
 
 ### `claims.json`
@@ -114,6 +117,25 @@ must know. Required when the unit is `done`.
   dependency is complete.
 - `contract` (optional) must exist; freeze the API/schema before parallelizing backend/front.
 - `validar-run --program` checks the individual runs, cross-change claim overlaps, dependencies and contracts.
+
+## Worktree strategies and commits
+
+### `shared-worktree` (default)
+
+- One change and one worktree; units write **disjoint paths**.
+- Agents **never run `git add` or `git commit`**: they write, update status/journal and leave a handoff.
+- The orchestrator verifies the handoff, stages **only the claimed paths**, commits per unit (or in a
+  small batch) and updates the status.
+
+### `per-unit-worktree`
+
+- Each unit has its own `worktree` (branch/path); agents commit **only inside their own branch/worktree**.
+- The orchestrator integrates (merge/cherry-pick), validates and keeps the final history.
+
+### Handoff
+
+`handoff/<unit>.md` must include: files changed, tests run, suggested commit message, and anything the
+integrator must know. The orchestrator never commits a unit without a handoff.
 
 ## Rules
 

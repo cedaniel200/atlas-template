@@ -81,6 +81,7 @@ Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el hum
 - **1 spec grande → N agentes**: divide el trabajo en unidades con rutas disjuntas.
 - **Varias specs grandes → programa**: cada spec con sus N agentes, dependencias y contratos congelados.
 - Requisitos: rutas globalmente disjuntas, contrato antes de backend/front y confirmación humana.
+- **Commits**: worktree compartido → commitea el orquestador; `per-unit-worktree` → cada agente en su rama.
 - Protocolo y validación: [`.atlas/docs/es/parallel-run.md`](../.atlas/docs/es/parallel-run.md) · `validar-run.mjs`.
 
 ---
