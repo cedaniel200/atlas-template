@@ -53,6 +53,9 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `stacks` | list | Project stacks: `id`, `profile`, `paths`, commands and `packs` |
 | `readme` | `generated` \| `preserved` \| `appended` \| `null` | Policy applied to the project `README.md` |
 | `optional_agents` | list | Activated optional roles (`mentor`, `business-strategist`) |
+| `skills.duplicates` | list | Duplicate skill IDs detected between `.agents/skills/` and `.opencode/skills/` |
+| `skills.decision` | `canonical` \| `host` \| `both` \| `null` | Human decision for the duplicates (mandatory when they exist) |
+| `skills.reason` | text \| `null` | Justification; mandatory when `decision` is `both` |
 | `preferences.openspec_commands` | `user` \| `agent` \| `ask` | Who runs OpenSpec commands |
 | `preferences.orchestration` | `orchestrated` \| `manual` | Whether the analyst chains phases or the user invokes them |
 | `quality.crap_threshold` | integer | CRAP threshold per method (default `6`) |

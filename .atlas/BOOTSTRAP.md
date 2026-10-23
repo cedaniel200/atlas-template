@@ -162,16 +162,28 @@ Expected output: `.opencode/commands/opsx-*` · `.claude/commands/opsx/*` · `.c
 `openspec update` does not accept `--tools`: use it only to update already generated instructions.
 If `openspec init` rewrites `AGENTS.md`, restore it from the backup and merge only what is new.
 
-**If there are duplicate IDs, you decide.** The copy in `.opencode/skills/` wins over `.agents/skills/`.
-Two valid outcomes:
+**If `comm` returns one or more IDs, stop and ask the human. Do not continue until the human
+answers.** Present exactly these three options:
 
-| Option | Advantage | Cost |
+| Option | What it does | Consequence |
 |---|---|---|
-| Keep `.opencode/skills/` | Native host space; the team can keep its own skills there | Template canonical skills are shadowed and do not receive their improvements |
-| Delete only the duplicate IDs (or the whole directory) | The canonical wins; same behavior in OpenCode, Claude and Codex | Repeat after every `openspec init`; deleting the directory also removes team skills |
+| **(a) recommended** | Delete **only the duplicate IDs** from `.opencode/skills/`, so the canonical `.agents/skills/` wins | Same behavior across OpenCode, Claude and Codex |
+| **(b)** | Keep the native `.opencode/skills/` | Template canonical skills are shadowed and do not receive their improvements |
+| **(c)** | Keep both, with an explicit justification recorded | Two copies of the same skill; the recorded reason explains why |
 
-Delete only the IDs listed by `comm` if you want to keep team-owned skills. There is no "correct"
-option: the project owns the tradeoff.
+Record the answer in `.atlas/state.json` → `skills`, so it is never implicit:
+
+```json
+"skills": { "duplicates": ["<ids>"], "decision": "canonical|host|both", "reason": null }
+```
+
+- `decision` is `canonical` (a), `host` (b) or `both` (c).
+- `reason` is mandatory text when `decision` is `both`; otherwise `null`.
+- If there are no duplicates, keep `{ "duplicates": [], "decision": null, "reason": null }`.
+
+The ritual **never** deletes the whole `.opencode/skills/` directory: option (a) removes **only the IDs
+listed by `comm`** and leaves team-owned skills in place. Repeat the decision after every
+`openspec init` that recreates the duplicates.
 
 **Commit:** `chore(bootstrap): adapt the environment to <host>`
 
@@ -374,6 +386,7 @@ Advancing to `propose` is not allowed until **everything** is green.
 - [ ] `openspec schema which spec-driven-with-adr` → `Source: project`
 - [ ] `openspec context` → no warnings
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
+- [ ] Duplicate skill IDs: `state.skills` records the human's decision (or there were none)
 - [ ] Active host adapter present (agents and commands)
 - [ ] Optional agents: only those chosen in `state.optional_agents` have an adapter
 - [ ] Stacks: each one has `engineer-<stack>.md` and no `engineer.md` remains

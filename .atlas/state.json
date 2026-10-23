@@ -22,6 +22,11 @@
   "packs": [],
   "optional_agents": [],
   "readme": null,
+  "skills": {
+    "duplicates": [],
+    "decision": null,
+    "reason": null
+  },
   "preferences": {
     "openspec_commands": "ask",
     "orchestration": "orchestrated"
