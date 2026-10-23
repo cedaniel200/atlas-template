@@ -61,6 +61,27 @@ async function limpiarAdaptadoresObsoletos(directorio, vigentes, log) {
   }
 }
 
+// La descripción del adaptador es el primer bloque de cita del prompt canónico
+// completo. Se toman todas sus líneas consecutivas (incluidas las vacías `>` que
+// separan párrafos) y se unen en una sola frase: quedarse con la primera línea
+// truncaba el texto que el host muestra en el selector de agentes.
+function extraerDescripcion(cuerpo) {
+  const lineas = cuerpo.split('\n');
+  const inicio = lineas.findIndex((linea) => linea.startsWith('>'));
+  if (inicio === -1) return '';
+  const partes = [];
+  for (let i = inicio; i < lineas.length && lineas[i].startsWith('>'); i += 1) {
+    partes.push(lineas[i].replace(/^>\s?/, ''));
+  }
+  return partes.join(' ').replace(/\s+/g, ' ').trim();
+}
+
+// La descripción contiene `: ` y empieza por `**`, así que un escalar plano no es
+// YAML válido: se emite entre comillas simples duplicando las internas.
+function comillarYaml(texto) {
+  return `'${texto.replace(/'/g, "''")}'`;
+}
+
 export async function renderizarAdaptadores({
   host,
   template = '.',
@@ -104,11 +125,12 @@ export async function renderizarAdaptadores({
     }
 
     const cuerpo = cuerpoCanonico.replace(PATRON, (_, nombre) => mapa.get(nombre));
-    const descripcion = (cuerpo.match(/^>\s*(.+)$/m) || [])[1] ?? `Rol ${rol} del arnés`;
+    const descripcion = extraerDescripcion(cuerpo) || `Rol ${rol} del arnés`;
+    const descripcionYaml = comillarYaml(`${descripcion}${descripcionExtra}`);
     const frontmatter =
       hostElegido === 'opencode'
-        ? `---\ndescription: ${descripcion}${descripcionExtra}\nmode: all\n---\n\n`
-        : `---\nname: ${nombreAdaptador}\ndescription: ${descripcion}${descripcionExtra}\n---\n\n`;
+        ? `---\ndescription: ${descripcionYaml}\nmode: all\n---\n\n`
+        : `---\nname: ${nombreAdaptador}\ndescription: ${descripcionYaml}\n---\n\n`;
 
     const archivo = join(destino, archivoSalida);
     if (!dryRun) await writeFile(archivo, frontmatter + cuerpo, 'utf8');
