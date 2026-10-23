@@ -96,6 +96,7 @@ El agente lee [`../AGENTS.md`](../AGENTS.md), ve que `.atlas/state.json` está `
 Cuando termine el ritual, pídeselo con tus palabras; si el agente deduce la acción de la intención,
 **te pedirá confirmación antes de actuar**.
 
+- Empezar o retomar un cambio: “en esta sesión trabajaremos X” / “retomemos X”.
 - Añadir un stack o perfil, un implementador o un pack.
 - Dejar ATLAS mínimo (`minimizar.mjs`).
 - Actualizar ATLAS o medir el contexto.

@@ -98,6 +98,7 @@ The agent reads [`../AGENTS.md`](../AGENTS.md), sees `.atlas/state.json` is `pen
 Once the ritual is done, ask in your own words; if the agent infers the action from intent, **it will
 ask for explicit confirmation before acting**.
 
+- Start or continue a change: “in this session we will work on X” / “continue X”.
 - Add a stack or profile, an implementer or a pack.
 - Minimize ATLAS (`minimizar.mjs`).
 - Update ATLAS or measure context.

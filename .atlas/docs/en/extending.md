@@ -14,6 +14,7 @@ action from intent rather than an explicit command, **ask for explicit confirmat
 
 | You ask… | The agent does… |
 |---|---|
+| Start or continue a change (“in this session we will work on X”, “continue X”, “status of X”) | Loads context, checks `openspec/changes/`, asks OpenSpec/orchestration and starts explore/propose or resumes |
 | Configure the project | Run `.atlas/BOOTSTRAP.md` only if `status=pending` |
 | Add a stack or profile | `crear-perfil.mjs` → fill in the commands → `state.stacks` + `AGENTS.md § Stacks` → `renderizar-adaptadores.mjs` |
 | Add an implementer agent | It is the same `engineer` with a new stack: `state.stacks` + `engineer-<id>` |

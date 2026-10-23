@@ -377,6 +377,23 @@ When closing:
 
 Announce: **"Bootstrap complete. You can now propose a change."**
 
+**Optional minimization:** ATLAS may not need all its internal material. If the user is not going to
+contribute to the template, offer to minimize it, but **never run it without explicit confirmation**:
+
+```bash
+node .atlas/scripts/minimizar.mjs --dry-run --all
+node .atlas/scripts/minimizar.mjs --apply --examples --hosts
+```
+
+State the consequences before asking:
+
+- Nothing is deleted: it moves to `.atlas/archive/` (gitignored).
+- Archived files are **no longer updated** by `actualizar-arnes`; restore them from git or the template.
+- `.atlas/docs/` is archived only if `AGENTS.md` and `docs/README*` no longer link to it.
+- Active profiles, packs and skills are not touched.
+
+Ask: **"Do you want me to minimize ATLAS now?"** and wait for the answer.
+
 **After the bootstrap:** do not repeat this ritual. Agent procedure for stacks, profiles, packs or
 agents: `.atlas/docs/en/extending.md` (human version: `.atlas/docs/<language.user>/extending.md`).
 
