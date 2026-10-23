@@ -8,6 +8,9 @@
 //   generated -> se regenera desde el template
 //   managed   -> se reemplaza solo si el hash coincide; si no, se escribe <archivo>.new
 //
+// Un `generated` sin origen en el template pertenece a la herramienta del host
+// (`openspec update --tools <host>`): se reporta como ajeno y no se toca.
+//
 // Además: backup previo, reescritura de manifest.json y state.json (versión,
 // commit y hashes) y reporte. Sin esto, la siguiente actualización daría falsos
 // conflictos.
@@ -74,7 +77,7 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
   const marca = new Date().toISOString().replace(/[:.]/g, '-');
   const backup = join(proyecto, '.atlas/backups', marca);
   const host = state.host;
-  const resultado = { actualizados: [], sinCambios: [], regenerados: [], conflictos: [], omitidos: [], nuevos: [], eliminados: [], errores: [] };
+  const resultado = { actualizados: [], sinCambios: [], regenerados: [], conflictos: [], omitidos: [], nuevos: [], eliminados: [], ajenosAlTemplate: [], errores: [] };
 
   // Los adaptadores se regeneran todos de una vez (y sin placeholders).
   if (!dryRun && ['opencode', 'claude'].includes(host)) {
@@ -109,7 +112,9 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
       if (rel === 'opencode.json') origenGenerated = join(template, '.atlas/hosts/opencode/opencode.json');
       if (rel === 'CLAUDE.md') origenGenerated = join(template, 'CLAUDE.md');
       if (!(await existe(origenGenerated))) {
-        resultado.eliminados.push(rel);
+        // El archivo pertenece a la herramienta del host (`openspec update --tools <host>`):
+        // el manifiesto solo lo registra, así que no hay nada que copiar ni eliminar.
+        resultado.ajenosAlTemplate.push(rel);
         continue;
       }
       await copiarConBackup(rel, proyecto, origenGenerated, backup, dryRun);
