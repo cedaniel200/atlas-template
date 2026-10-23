@@ -6,6 +6,7 @@
 [![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-339933?style=flat-square&logo=node.js&logoColor=white)](harness/es/QUICKSTART.md)
 [![OpenSpec](https://img.shields.io/badge/OpenSpec-spec--driven-6E56CF?style=flat-square)](../.atlas/BOOTSTRAP.md)
 [![Hosts](https://img.shields.io/badge/hosts-OpenCode%20%7C%20Claude%20Code%20%7C%20Codex-111827?style=flat-square)](harness/es/COMPATIBILITY.md)
+[![ATLAS](https://img.shields.io/github/v/release/cedaniel200/atlas-template?label=ATLAS&style=flat-square)](https://github.com/cedaniel200/atlas-template/releases)
 
 > **ATLAS** (*Agnostic Template for LLM Agent Systems*) es una plantilla para **desarrollo de software
 > impulsado por IA con SDD (Spec-Driven Development)**: el agente trabaja sobre especificaciones,
