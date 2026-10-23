@@ -116,7 +116,7 @@ In addition:
 | Orchestration | `{{ORCHESTRATION_POLICY}}` | `orchestrated` (default) or `manual` |
 | CRAP threshold | `{{CRAP_THRESHOLD}}` | integer per method (default `6`) |
 | Persistent memory | `{{MEMORY}}` | `engram`, another, or `none` |
-| Documentation | `docs/functional`, `docs/architecture`, `docs/api`, `docs/guides` | English folder names; content in `language.user` |
+| Documentation | Only the areas selected in `state.docs` | Root configurable (`state.docs.root`); English folder names; content in `language.user` |
 
 **Invariant:** `archive` and `sync` always require explicit approval, whatever the preference.
 

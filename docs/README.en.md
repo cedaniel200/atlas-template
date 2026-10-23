@@ -147,6 +147,9 @@ Detail: [`.atlas/docs/en/extending.md`](../.atlas/docs/en/extending.md).
 | 📦 **Project** | `docs/architecture/`, `docs/api/`, `docs/functional/`, `docs/guides/` | The project team |
 | 🧠 **Project context** | `docs/project-context.md` | The project team |
 
+> The **project documentation** layers are optional: the ritual creates only the sections you choose
+> and their root is `state.docs.root` (default `docs/`). The other layers do not depend on them.
+
 ---
 
 ## 📦 What it includes

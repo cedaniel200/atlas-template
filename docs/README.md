@@ -145,6 +145,9 @@ Detalle: [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md).
 | 📦 **Proyecto** | `docs/architecture/`, `docs/api/`, `docs/functional/`, `docs/guides/` | El equipo del proyecto |
 | 🧠 **Contexto del proyecto** | `docs/project-context.md` | El equipo del proyecto |
 
+> Las capas de **documentación del proyecto** son opcionales: el ritual crea solo las secciones que
+> elijas y su raíz es `state.docs.root` (por defecto `docs/`). El resto de capas no depende de ellas.
+
 ---
 
 ## 📦 Qué incluye

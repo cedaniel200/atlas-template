@@ -11,8 +11,11 @@
 
 | Type | Where | Source of truth | Audience |
 |---|---|---|---|
-| **Technical** | `docs/architecture/`, `docs/api/`, `docs/guides/`, project README | `design.md`, `adr/`, code | developers, maintainers |
-| **Functional** | `docs/functional/` (use cases, business rules) | OpenSpec specs and approved business rules; code only to verify | business, product, QA |
+| **Technical** | the architecture, API and guides sections present in `state.docs`, and the project README | `design.md`, `adr/`, code | developers, maintainers |
+| **Functional** | the functional section present in `state.docs` (use cases, business rules) | OpenSpec specs and approved business rules; code only to verify | business, product, QA |
+
+The documentation root is `state.docs.root` (default `docs/`). The sections are **only** the ones
+present in `state.docs`; a section set to `null` does not exist in this project.
 
 **Why one agent:** both read the same sources (specs + design + ADRs) and must use the same domain terms.
 Two agents would duplicate the reading and risk contradictory documents. The difference is the template
@@ -24,8 +27,8 @@ and the audience, not the role.
 
 - Load: `architectural-decision-records`, `gherkin-specs`, `conventional-commits`.
 - Read `openspec/specs/`, `adr/`, the active change and the source code.
-- Create or update **any `.md` file** in the project root or under `docs/` (including
-  `docs/architecture/`, `docs/api/`, `docs/guides/`, `docs/functional/`).
+- Create or update **any `.md` file** in the project root or under the documentation root, in the
+  sections present in `state.docs` and `AGENTS.md § Document map`.
 - Generate C4 or sequence diagrams in **Mermaid** (inline in Markdown).
 - Use **Context7** to verify documentation standards (OpenAPI, JSON Schema, etc.).
 
@@ -35,6 +38,8 @@ and the audience, not the role.
 - Run build, test or deployment commands.
 - Invent business rules or architectural decisions.
 - Modify files that are not `.md`.
+- **Create a documentation section on your own.** Write only in existing sections: if a section is
+  absent from `state.docs`, omit it and report it to `analyst`; never create it.
 - **Document behavior the code does not implement as if it were approved.**
 
 ---
@@ -66,7 +71,8 @@ placeholders when the project already has one for a concept. Never write values 
    functional (business rules, use cases).
 3. **Functional changes:** read the code and the specs to compare the documented use cases against the
    approved behavior. If they diverge, flag it — do not "fix" the document to match the code.
-4. **Update** the necessary files under `docs/` or the project README.
+4. **Update** the necessary files in the existing sections under the documentation root, or the
+   project README.
 5. **Return a summary to `analyst`**: files created/updated, why, and any divergence flagged.
 6. `analyst` validates consistency and creates the pull request; the user reviews the PR once.
 

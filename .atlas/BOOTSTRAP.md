@@ -67,6 +67,9 @@ The bootstrap writes files: **it never runs on a branch with uncommitted work**.
 
 Confirm with the user before continuing.
 
+Record the confirmed mode in `.atlas/state.json` → `mode` (`greenfield` | `brownfield`). The
+documentation script reads it: `--descartar-docs` is rejected unless `mode` is `greenfield`.
+
 ## −1.2 Inventory (read-only, brownfield)
 
 Inspect and record the inventory in `.atlas/adoption-report.md` (guide: `docs/harness/<lang>/ADOPTION.md`):
@@ -219,8 +222,22 @@ Run the interview in **5 rounds (0–4)**, grouping questions.
 2. **Domain**: 2–3 initial modules/contexts and 5–10 business-language terms.
 3. **Do Not Touch Rules**: files, folders, APIs, migrations the agent must never modify.
 4. **Git convention**: branches, PR, merge.
-5. **Documentation**: default English folders (`docs/functional`, `docs/architecture`, `docs/api`,
-   `docs/guides`); the user may rename them.
+5. **Documentation** (two parts, one question):
+   - **Root**: where the project documentation lives. Default `docs/`; store it in `state.docs.root`.
+   - **Optional sections**: ask which of `functional`, `architecture`, `api` and `guides` the project
+     wants. Store each accepted one in `state.docs.<area>` as its project-relative path **including the
+     root** (e.g. `docs/architecture`); the rest stay `null`. Never create a section the user did not
+     choose.
+
+   These always exist, whatever the answers: `<root>/README.md`, `<root>/project-context.md`,
+   `<root>/harness/` and the ADR directory (`adr/` by default, recorded in `AGENTS.md § Document map`,
+   not in `state.docs`).
+
+   **Brownfield:** detect `docs/`, `documentation/`, `doc/` and `wiki/` first. If the project already has
+   documentation, ask before using or relocating it: never overwrite an existing README and never move
+   documentation without confirmation. If the user chooses a new root, ask **"move or keep both"** and
+   pass the matching flag when running the script from Phase 2 (`--mover-docs` or `--mantener-ambas`).
+   Never leave a duplicate `docs/` behind without an explicit decision.
 6. **Persistent memory**: Engram, another, or none. If unsure, **suggest Engram**; `.engram/` is not
    versioned by default.
 7. **OpenSpec commands**: `user` (always the human), `agent` (always the agent) or `ask` (ask at each
@@ -269,7 +286,7 @@ Do not present them as recommended or activate them by default.
 | `docs/project-context.md` | Project-specific context (brownfield: migrate the existing `AGENTS.md`) |
 | `.env.example` / `.gitattributes` / `.editorconfig` | **Only if they do not exist**: create them with the stack conventions (detected variables, EOL, indentation). If they exist, preserve them. They do not come from the template. |
 | `.gitignore` | Stack, secrets, local state (create it if missing) |
-| `docs/` | Rename folders if the user chose other names and update `AGENTS.md` |
+| `docs/` | `node .atlas/scripts/aplicar-docs.mjs` (add `--mover-docs`, `--mantener-ambas` or `--descartar-docs` only with the user's confirmation). It creates only the selected sections and updates `AGENTS.md § Document map`, the landing files and the project README |
 | `CLAUDE.md` | Verify the one-line stub: `@AGENTS.md` |
 | Adapters | Agents and commands for the detected host |
 | `.atlas/docs/` | If not contributing, move to `.atlas/archive/docs/` and remove the index row |
@@ -321,10 +338,10 @@ Rules:
   `language.agent` (English by default); they are the agent's contract and procedure.
   **Translate the interview answers before writing them into these files**; never paste
   `language.user` prose into an agent-language file.
-- **Language (human)**: `README.md`, `docs/README.md`, `docs/project-context.md` and
-  `docs/harness/<language.user>/` are written in `language.user`. If it is not Spanish,
-  **translate** `docs/README.md`, use the guides in `docs/harness/<language.user>/` and update their
-  links to `docs/harness/<language.user>/` and `.atlas/docs/<language.user>/`; do not leave `es/`
+- **Language (human)**: `README.md`, `<root>/README.md`, `<root>/project-context.md` and
+  `<root>/harness/<language.user>/` are written in `language.user`. If it is not Spanish,
+  **translate** `<root>/README.md`, use the guides in `<root>/harness/<language.user>/` and update
+  their links to `<root>/harness/<language.user>/` and `.atlas/docs/<language.user>/`; do not leave `es/`
   links in an English project.
 - `ownership`: `owned` (AGENTS.md, config.yaml, docs, adr, specs), `managed` (skills, prompts, schemas),
   `generated` (adapters, commands, CLAUDE.md).
@@ -361,6 +378,7 @@ Advancing to `propose` is not allowed until **everything** is green.
 - [ ] Optional agents: only those chosen in `state.optional_agents` have an adapter
 - [ ] Stacks: each one has `engineer-<stack>.md` and no `engineer.md` remains
 - [ ] Template legal: if moved, `.atlas/legal/` has the five files and the root is free; if the project has its own, they remain at the root
+- [ ] Documentation is idempotent: `node .atlas/scripts/aplicar-docs.mjs --dry-run` reports nothing pending
 - [ ] No template contamination: `grep -rniE "example-domain|template-domain" --exclude-dir=.git --exclude-dir=.atlas --exclude-dir=node_modules .` → no results
 - [ ] `.atlas/manifest.json` generated
 - [ ] `git status` clean and phases committed
