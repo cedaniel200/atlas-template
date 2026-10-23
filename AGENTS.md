@@ -164,7 +164,7 @@ The `analyst` orchestrates by default and stops at:
 2. **Start of implementation** (can be resumed in another session).
 3. Start of QA (consumes an environment).
 4. Pull request creation.
-5. Archive approval, merge and cleanup (always the user).
+5. Archive approval and merge (always the user).
 
 In `manual` mode, the user invokes each phase; the `analyst` checks that no gate is skipped.
 

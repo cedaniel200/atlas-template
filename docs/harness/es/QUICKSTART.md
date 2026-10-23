@@ -130,7 +130,7 @@ Si tu repo tiene CI, branch protection o hooks y quieres endurecer el cierre, p�
 > “Comprueba una vez si este repo tiene CI, branch protection o hooks. Si hay un mecanismo, propón y
 > configura con mi aprobación el mejor control posible para que no se mergee mientras
 > `openspec/changes/<change>/` siga activo. Usa solo lo que ya exista, no instales nada ni cambies
-> settings sin permiso. Si no hay mecanismo o permisos, no lo inventes: seguimos con el flujo manual.”
+> la configuración sin permiso. Si no hay mecanismo o permisos, no lo inventes: seguimos con el flujo manual.”
 
 El template no detecta ni configura esto por defecto; solo se activa si tú lo pides.
 
