@@ -108,10 +108,31 @@ Detalle: [`.atlas/docs/es/extending.md`](../../../.atlas/docs/es/extending.md).
 3. **Implement** — el `engineer` aplica TDD por tarea.
 4. **QA** — el `qa-analyst` diseña escenarios y ejecuta contra el entorno.
 5. **Review** — el `reviewer` revisa arquitectura, seguridad y calidad.
-6. **Cierre** — documentación, PR y revisión humana una sola vez.
-7. **Merge** — tú mergeas; después `archive` y limpieza.
+6. **Cierre** — documentación, PR y revisión humana.
+7. **Archive** — apruebas `archive` + sync; se commitea dentro del PR.
+8. **Merge** — tú mergeas; después limpieza.
+
+El `archive` va **dentro del PR, antes del merge**. Si el PR ya se mergeó sin archive, se abre una rama
+nueva y un PR de archive; no se reescribe `main`.
+
+Checklist antes del merge:
+
+- [ ] El PR está revisado.
+- [ ] `archive` + sync está commiteado en el PR.
+- [ ] Después del merge, limpieza de rama y worktree.
 
 El `analyst` te pregunta al inicio si orquesta el ciclo o prefieres invocar cada fase.
+
+### Opcional: bloquear merge sin archive
+
+Si tu repo tiene CI, branch protection o hooks y quieres endurecer el cierre, pégale esto al `analyst`:
+
+> “Comprueba una vez si este repo tiene CI, branch protection o hooks. Si hay un mecanismo, propón y
+> configura con mi aprobación el mejor control posible para que no se mergee mientras
+> `openspec/changes/<change>/` siga activo. Usa solo lo que ya exista, no instales nada ni cambies
+> settings sin permiso. Si no hay mecanismo o permisos, no lo inventes: seguimos con el flujo manual.”
+
+El template no detecta ni configura esto por defecto; solo se activa si tú lo pides.
 
 ---
 
