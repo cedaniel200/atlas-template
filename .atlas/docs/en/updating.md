@@ -52,7 +52,7 @@
 5. **Rewrite manifest.json** (new hashes, `template_version`, `generated_at`) and **state.json**
    (`template_version`, `template_source`, `updated_at`) — without this, the next update reports false conflicts
 6. **Validate**: `node .atlas/scripts/validar-manifiesto.mjs`
-7. Report: updated / unchanged / conflicts / skipped
+7. Report: updated / unchanged / conflicts / skipped / host-owned
 ```
 
 This version **never destroys** user work. A three-way merge for conflicts is a future improvement.

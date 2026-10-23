@@ -53,7 +53,7 @@
 5. **Reescribir manifest.json** (hashes nuevos, `template_version`, `generated_at`) y **state.json**
    (`template_version`, `template_source`, `updated_at`) — sin esto, la próxima actualización da falsos conflictos
 6. **Validar**: `node .atlas/scripts/validar-manifiesto.mjs`
-7. Reporte: actualizados / sin cambios / conflictos / omitidos
+7. Reporte: actualizados / sin cambios / conflictos / omitidos / ajenos al template
 ```
 
 Esta versión **nunca destruye** trabajo del usuario. El merge a tres bandas para conflictos es una mejora
