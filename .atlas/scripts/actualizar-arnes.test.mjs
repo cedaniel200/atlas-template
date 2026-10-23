@@ -23,6 +23,8 @@ async function escribir(ruta, contenido) {
 const OPSX = '# opsx-apply\n\nComando generado por `openspec update --tools opencode`.\n';
 const GONE = '# gone\n\nAgente que ya no existe en el template.\n';
 const SAME = '# same\n\nAgente idéntico en proyecto y template.\n';
+const NUEVO = '#!/usr/bin/env node\n// Script managed que solo existe en el template nuevo.\n';
+const NUEVO_LOCAL = '// versión local sin seguimiento en el manifiesto\n';
 
 async function crearProyecto(raiz) {
   const proyecto = join(raiz, 'proyecto');
@@ -73,6 +75,17 @@ async function crearTemplate(raiz) {
   return template;
 }
 
+async function crearTemplateConArchivos(raiz, archivos = {}) {
+  const template = await crearTemplate(raiz);
+  for (const [rel, contenido] of Object.entries(archivos)) {
+    await escribir(join(template, rel), contenido);
+  }
+  return template;
+}
+
+const leerManifiesto = async (proyecto) =>
+  JSON.parse(await readFile(join(proyecto, '.atlas/manifest.json'), 'utf8'));
+
 test('los comandos del host no se reportan como eliminados ni se tocan', async () => {
   const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
   try {
@@ -92,6 +105,104 @@ test('los comandos del host no se reportan como eliminados ni se tocan', async (
     const state = JSON.parse(await readFile(join(proyecto, '.atlas/state.json'), 'utf8'));
     assert.equal(manifest.template_version, '0.1.3');
     assert.equal(state.template_version, '0.1.3');
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('adopta un archivo managed que solo existe en el template nuevo', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    const template = await crearTemplateConArchivos(raiz, { '.atlas/scripts/nuevo.mjs': NUEVO });
+
+    const resultado = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.deepEqual(resultado.nuevos, ['.atlas/scripts/nuevo.mjs']);
+    assert.equal(await readFile(join(proyecto, '.atlas/scripts/nuevo.mjs'), 'utf8'), NUEVO);
+    const manifest = await leerManifiesto(proyecto);
+    assert.deepEqual(manifest.files['.atlas/scripts/nuevo.mjs'], {
+      origin: 'core',
+      ownership: 'managed',
+      sha256: sha256(NUEVO),
+    });
+    assert.deepEqual(resultado.errores, []);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('la adopción es idempotente: la segunda ejecución no reporta nuevos', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    const template = await crearTemplateConArchivos(raiz, { '.atlas/scripts/nuevo.mjs': NUEVO });
+
+    await actualizarArnes({ template, proyecto, log: () => {} });
+    const segunda = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.deepEqual(segunda.nuevos, []);
+    assert.ok(segunda.sinCambios.includes('.atlas/scripts/nuevo.mjs'));
+    assert.equal(await readFile(join(proyecto, '.atlas/scripts/nuevo.mjs'), 'utf8'), NUEVO);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('un archivo managed nuevo que ya existe sin seguimiento genera .new y conflicto', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    const template = await crearTemplateConArchivos(raiz, { '.atlas/scripts/nuevo.mjs': NUEVO });
+    await escribir(join(proyecto, '.atlas/scripts/nuevo.mjs'), NUEVO_LOCAL);
+
+    const resultado = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.deepEqual(resultado.nuevos, []);
+    assert.deepEqual(resultado.conflictos, ['.atlas/scripts/nuevo.mjs']);
+    assert.equal(await readFile(join(proyecto, '.atlas/scripts/nuevo.mjs'), 'utf8'), NUEVO_LOCAL);
+    assert.equal(await readFile(join(proyecto, '.atlas/scripts/nuevo.mjs.new'), 'utf8'), NUEVO);
+    const manifest = await leerManifiesto(proyecto);
+    assert.deepEqual(manifest.files['.atlas/scripts/nuevo.mjs'], {
+      origin: 'core',
+      ownership: 'managed',
+      sha256: sha256(NUEVO),
+    });
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('no adopta archivos owned aunque solo existan en el template nuevo', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    const template = await crearTemplateConArchivos(raiz, { 'docs/extra.md': '# Extra\n' });
+
+    const resultado = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.deepEqual(resultado.nuevos, []);
+    assert.ok(!resultado.conflictos.includes('docs/extra.md'));
+    await assert.rejects(readFile(join(proyecto, 'docs/extra.md')), { code: 'ENOENT' });
+    const manifest = await leerManifiesto(proyecto);
+    assert.equal(manifest.files['docs/extra.md'], undefined);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('--dry-run reporta la adopción sin escribir archivos ni manifiesto', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    const template = await crearTemplateConArchivos(raiz, { '.atlas/scripts/nuevo.mjs': NUEVO });
+
+    const resultado = await actualizarArnes({ template, proyecto, dryRun: true, log: () => {} });
+
+    assert.deepEqual(resultado.nuevos, ['.atlas/scripts/nuevo.mjs']);
+    await assert.rejects(readFile(join(proyecto, '.atlas/scripts/nuevo.mjs')), { code: 'ENOENT' });
+    const manifest = await leerManifiesto(proyecto);
+    assert.equal(manifest.files['.atlas/scripts/nuevo.mjs'], undefined);
   } finally {
     await rm(raiz, { recursive: true, force: true });
   }

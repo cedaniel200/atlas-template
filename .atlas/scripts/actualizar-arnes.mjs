@@ -24,6 +24,7 @@ import { dirname, join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { renderizarAdaptadores } from './renderizar-adaptadores.mjs';
+import { inventariar } from './lib/inventario.mjs';
 
 const sha256 = async (ruta) => createHash('sha256').update(await readFile(ruta)).digest('hex');
 const existe = async (ruta) => {
@@ -150,6 +151,44 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
       }
       resultado.conflictos.push(rel);
     }
+  }
+
+  // Adopción de archivos que el template añade en una versión nueva. Solo `managed`:
+  //   - `owned` pertenece al proyecto, así que un archivo nuevo del template no se copia.
+  //   - `generated` lo regenera el host (`openspec update --tools <host>`) o el
+  //     renderizador; tampoco se adopta.
+  // Se inventaría el template (el suyo trae `files: {}` y no permite conocer su
+  // inventario) y se ignora lo que el manifiesto del proyecto ya sigue. Si el destino
+  // existe sin seguimiento, nunca se sobrescribe: se escribe `<rel>.new`.
+  const inventarioTemplate = await inventariar({
+    raiz: template,
+    raizDocs: stateTemplate.docs?.root ?? 'docs',
+    host,
+  });
+  for (const rel of Object.keys(inventarioTemplate).sort()) {
+    const datos = inventarioTemplate[rel];
+    if (datos.ownership !== 'managed' || rel in manifest.files) continue;
+
+    const origen = join(template, rel);
+    if (await existe(join(proyecto, rel))) {
+      if (!dryRun) {
+        await mkdir(dirname(join(proyecto, `${rel}.new`)), { recursive: true });
+        await copyFile(origen, join(proyecto, `${rel}.new`));
+        manifest.files[rel] = { origin: datos.origin, ownership: datos.ownership, sha256: datos.sha256 };
+      }
+      resultado.conflictos.push(rel);
+      continue;
+    }
+
+    if (!dryRun) {
+      await copiarConBackup(rel, proyecto, origen, backup, false);
+      manifest.files[rel] = {
+        origin: datos.origin,
+        ownership: datos.ownership,
+        sha256: await sha256(join(proyecto, rel)),
+      };
+    }
+    resultado.nuevos.push(rel);
   }
 
   if (!dryRun) {
