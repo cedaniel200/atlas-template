@@ -41,7 +41,7 @@ flowchart TD
     C["📋 analyst<br/>cierre y consistencia"]:::doc
     D["📝 doc-writer<br/>documentación"]:::doc
     V["✅ analyst<br/>consistencia documental"]:::doc
-    P["🔀 PR<br/>humano revisa, merge y archiva"]:::pr
+    P["🔀 PR<br/>humano revisa, aprueba archive y merge"]:::pr
 
     H --> E --> Q --> R
     Q -->|hallazgos| E
@@ -58,6 +58,7 @@ flowchart TD
 
 Las correcciones de QA y reviewer vuelven al implementador correspondiente (tope global: **5 iteraciones** entre ambos).
 Cada cambio es **1 PR revisable** (≤ 800–1200 líneas, 1–2 specs) y el humano aprueba cada artefacto.
+El `archive` se commitea **dentro del PR, antes del merge**; si el PR ya se mergeó sin archive, se abre un PR de archive.
 
 **Roles de soporte (opcionales, fuera del ciclo de entrega):**
 

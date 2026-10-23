@@ -74,8 +74,13 @@ findings and highs resolved → `-FINAL`.
    a summary; if the code diverges from the specs, it flags the divergence instead of documenting it.
 3. **Analyst validates** that the documentation matches the approved change and the specs.
 4. **Pull request**: open it with the documentation included. The user reviews the PR **once**.
-5. **Archive**: `openspec archive <change>` and sync the specs.
+5. **Archive**: after explicit user approval, run `openspec archive <change>` and sync the specs; commit
+   the archive in the same PR.
 6. **Merge** (the user) and **cleanup** (branch + worktree).
+
+If the PR is merged without archive, do not rewrite `main`: open a new archive branch/PR, archive and
+merge it. If a review after archive changes specs, design or tasks, unarchive, fix, validate and archive
+again.
 
 ## Limits
 

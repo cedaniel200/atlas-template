@@ -41,7 +41,7 @@ flowchart TD
     C["📋 analyst<br/>close and consistency"]:::doc
     D["📝 doc-writer<br/>documentation"]:::doc
     V["✅ analyst<br/>documentation consistency"]:::doc
-    P["🔀 PR<br/>human reviews, merges and archives"]:::pr
+    P["🔀 PR<br/>human reviews, approves archive and merges"]:::pr
 
     H --> E --> Q --> R
     Q -->|findings| E
@@ -58,7 +58,8 @@ flowchart TD
 
 QA and reviewer findings go back to the corresponding implementer (global cap: **5 iterations**
 between both). Each change is **1 reviewable PR** (≤ 800–1200 lines, 1–2 specs) and the human approves
-each artifact.
+each artifact. The archive is committed **inside the PR, before merge**; if the PR was already merged
+without archive, open an archive PR.
 
 **Support roles (optional, outside the delivery cycle):**
 

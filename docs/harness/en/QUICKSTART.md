@@ -109,10 +109,33 @@ Detail: [`.atlas/docs/en/extending.md`](../../../.atlas/docs/en/extending.md).
 3. **Implement** — the `engineer` applies TDD per task.
 4. **QA** — the `qa-analyst` designs scenarios and runs them against the environment.
 5. **Review** — the `reviewer` checks architecture, security and quality.
-6. **Close** — documentation, pull request and a single human review.
-7. **Merge** — you merge; then archive and clean up.
+6. **Close** — documentation, pull request and human review.
+7. **Archive** — you approve `archive` + sync; it is committed inside the PR.
+8. **Merge** — you merge; then clean up.
+
+The archive goes **inside the PR, before merge**. If the PR was already merged without archive, open a
+new archive branch and PR; do not rewrite `main`.
+
+Checklist before merge:
+
+- [ ] The PR is reviewed.
+- [ ] `archive` + sync is committed in the PR.
+- [ ] After merge, clean up the branch and worktree.
 
 The `analyst` asks at the start whether to orchestrate the cycle or let you invoke each phase.
+
+### Optional: block merge without archive
+
+If your repo has CI, branch protection or hooks and you want to harden the close, paste this into the
+`analyst`:
+
+> “Check once whether this repo has CI, branch protection or hooks. If a mechanism exists, propose and,
+> with my approval, configure the strongest control possible so nothing merges while
+> `openspec/changes/<change>/` is still active. Use only what already exists; do not install anything or
+> change settings without permission. If there is no mechanism or permission, do not fake it: we
+> continue with the manual flow.”
+
+The template does not detect or configure this by default; it only runs when you ask for it.
 
 ---
 

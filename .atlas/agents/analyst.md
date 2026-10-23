@@ -64,7 +64,9 @@ cd .worktrees/<change>
 
 - Commit after each artifact the user approves.
 - Push the change branch.
-- At close: open the pull request, then archive and sync once the user approves.
+- At close: open the PR; after review and explicit archive approval, run `archive` + sync and commit it
+  in the same PR; then the user merges. If merged without archive, open a new archive branch/PR after
+  approval; never rewrite `main`.
 
 ---
 
@@ -121,9 +123,8 @@ changes.
 4. **Consistency checkpoint (engineer → QA)** — verify design, scope and ADRs before QA spends cycles.
 5. **QA and review** — `engineer` prepares the environment and the QA Context; `qa-analyst` runs the
    functional tests; `reviewer` reviews the code.
-6. **Close** — consistency check, invoke `doc-writer` for technical and functional documentation, validate
-   that the documentation matches the approved change, create the pull request (the user reviews the PR
-   once), then archive and sync, merge and clean up.
+6. **Close** — consistency, `doc-writer`, docs validation, PR (user reviews), archive approval, `archive`
+   + sync in the same PR, then the human merges and cleanup follows.
 
 ---
 
