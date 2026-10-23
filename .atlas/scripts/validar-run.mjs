@@ -23,7 +23,7 @@ const valor = (flag) => {
 const existe = async (ruta) => access(ruta).then(() => true).catch(() => false);
 const leerJson = async (ruta) => JSON.parse(await readFile(ruta, 'utf8'));
 const normalizar = (ruta) => ruta.replace(/^\.\//, '').replace(/\/+$/, '');
-const EVENTOS = new Set(['started', 'progress', 'blocked', 'handoff', 'done']);
+const EVENTOS = new Set(['started', 'progress', 'blocked', 'handoff', 'done', 'commit']);
 const ESTADOS = new Set(['pending', 'running', 'blocked', 'done']);
 
 async function validarRun(runDir) {
@@ -187,7 +187,11 @@ async function validarRun(runDir) {
       }
       if (!EVENTOS.has(evento.event)) errores.push(`journal.ndjson:${indice + 1}: evento inválido ${evento.event}`);
       if (!porId.has(evento.unit)) errores.push(`journal.ndjson:${indice + 1}: unidad inexistente ${evento.unit}`);
-      else if (evento.agent !== porId.get(evento.unit).agent) {
+      else if (evento.event === 'commit') {
+        if (evento.sha && !/^[0-9a-f]{7,40}$/i.test(evento.sha)) {
+          errores.push(`journal.ndjson:${indice + 1}: sha inválido ${evento.sha}`);
+        }
+      } else if (evento.agent !== porId.get(evento.unit).agent) {
         errores.push(`journal.ndjson:${indice + 1}: agente ${evento.agent} no coincide con ${evento.unit}`);
       }
       eventos.push(evento);

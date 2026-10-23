@@ -83,6 +83,7 @@ each artifact.
 - **Several large specs → program**: each spec with its N agents, dependencies and frozen contracts.
 - Requirements: globally disjoint paths, contract before backend/front and human confirmation.
 - **Commits**: shared worktree → the orchestrator commits; `per-unit-worktree` → each agent in its branch.
+- **Traceability**: one commit per handoff/checkpoint; in per-unit, merge/cherry-pick without squash.
 - Protocol and validation: [`.atlas/docs/en/parallel-run.md`](../.atlas/docs/en/parallel-run.md) · `validar-run.mjs`.
 
 ---

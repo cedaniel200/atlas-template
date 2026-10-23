@@ -88,10 +88,11 @@ A program is the way to run several large specs in parallel, each with its own N
 One JSON object per line, append-only:
 
 ```json
-{"ts":"2026-01-01T00:00:00Z","event":"started","unit":"hello","agent":"agent-a","message":"start"}
+{"ts":"2026-01-01T00:00:00Z","event":"commit","unit":"hello","agent":"orchestrator","sha":"a1b2c3d"}
 ```
 
-`event`: `started`, `progress`, `blocked`, `handoff` or `done`.
+`event`: `started`, `progress`, `blocked`, `handoff`, `done` or `commit`. `commit` records the SHA of
+each commit associated with the unit (the orchestrator in `shared-worktree`, the agent in `per-unit-worktree`).
 
 ### `handoff/<unit>.md`
 
@@ -136,6 +137,16 @@ must know. Required when the unit is `done`.
 
 `handoff/<unit>.md` must include: files changed, tests run, suggested commit message, and anything the
 integrator must know. The orchestrator never commits a unit without a handoff.
+
+### Traceability
+
+- **`shared-worktree`**: one commit per handoff/checkpoint. If the orchestrator batches everything at
+  the end, intermediate commits are lost. If the same file needs several logical commits, split the work
+  into checkpoints (update the handoff and journal each time) or use `per-unit-worktree`.
+- **`per-unit-worktree`**: agents commit each change in their branch; the orchestrator merges or
+  cherry-picks. **Do not squash** if you need the individual commits; the journal `commit` events record
+  the SHAs.
+- Multiple `commit` events for the same unit are allowed: they represent checkpoints, not duplicate work.
 
 ## Rules
 

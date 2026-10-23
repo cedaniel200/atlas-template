@@ -88,10 +88,11 @@ Un programa es la forma de ejecutar varias specs grandes en paralelo, cada una c
 Un objeto JSON por línea, append-only:
 
 ```json
-{"ts":"2026-01-01T00:00:00Z","event":"started","unit":"hello","agent":"agent-a","message":"start"}
+{"ts":"2026-01-01T00:00:00Z","event":"commit","unit":"hello","agent":"orchestrator","sha":"a1b2c3d"}
 ```
 
-`event`: `started`, `progress`, `blocked`, `handoff` o `done`.
+`event`: `started`, `progress`, `blocked`, `handoff`, `done` o `commit`. `commit` registra el SHA de
+cada commit asociado a la unidad (el orquestador en `shared-worktree`, el agente en `per-unit-worktree`).
 
 ### `handoff/<unit>.md`
 
@@ -136,6 +137,16 @@ integrador debe saber. Obligatorio cuando la unidad está `done`.
 
 `handoff/<unit>.md` debe incluir: archivos cambiados, tests ejecutados, mensaje de commit sugerido y lo
 que el integrador deba saber. El orquestador nunca commitea una unidad sin handoff.
+
+### Trazabilidad
+
+- **`shared-worktree`**: un commit por handoff/checkpoint. Si el orquestador lo agrupa todo al final,
+  los commits intermedios se pierden. Si el mismo archivo necesita varios commits lógicos, divide el
+  trabajo en checkpoints (actualiza handoff y journal cada vez) o usa `per-unit-worktree`.
+- **`per-unit-worktree`**: los agentes commitean cada cambio en su rama; el orquestador hace merge o
+  cherry-pick. **No hagas squash** si necesitas los commits individuales; los eventos `commit` del
+  journal registran los SHAs.
+- Se permiten varios eventos `commit` para la misma unidad: representan checkpoints, no trabajo duplicado.
 
 ## Reglas
 
