@@ -12,7 +12,8 @@
 // Salida: 0 = ok; 1 = hallazgos.
 
 import { access, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const args = process.argv.slice(2);
 const valor = (flag) => {
@@ -26,7 +27,7 @@ const normalizar = (ruta) => ruta.replace(/^\.\//, '').replace(/\/+$/, '');
 const EVENTOS = new Set(['started', 'progress', 'blocked', 'handoff', 'done', 'commit']);
 const ESTADOS = new Set(['pending', 'running', 'blocked', 'done']);
 
-async function validarRun(runDir) {
+async function validarRun(runDir, opciones = {}) {
   const errores = [];
   let plan;
   let claims;
@@ -81,6 +82,9 @@ async function validarRun(runDir) {
       if (unidad.task !== undefined && (typeof unidad.task !== 'string' || unidad.task.trim() === '')) {
         errores.push(`plan.json: ${unidad.id ?? '?'} task debe ser texto no vacío`);
       }
+      if (unidad.role !== undefined && (typeof unidad.role !== 'string' || unidad.role.trim() === '')) {
+        errores.push(`plan.json: ${unidad.id ?? '?'} role debe ser texto no vacío`);
+      }
       if (unidad.depends_on && !Array.isArray(unidad.depends_on)) {
         errores.push(`plan.json: ${unidad.id ?? '?'} depends_on debe ser lista`);
       }
@@ -106,6 +110,31 @@ async function validarRun(runDir) {
       visitados.add(id);
     };
     for (const id of ids) visitar(id);
+  }
+
+  if (opciones.checkWorktrees && estrategia === 'per-unit-worktree' && Array.isArray(plan.units)) {
+    let registrados = null;
+    try {
+      const salida = execFileSync('git', ['worktree', 'list', '--porcelain'], {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      });
+      registrados = new Set(
+        salida
+          .split(/\r?\n/)
+          .filter((linea) => linea.startsWith('worktree '))
+          .map((linea) => resolve(linea.slice('worktree '.length).trim())),
+      );
+    } catch {
+      errores.push('--check-worktrees: no se pudo ejecutar git worktree list');
+    }
+    if (registrados) {
+      for (const unidad of plan.units) {
+        if (unidad.worktree && !registrados.has(resolve(unidad.worktree))) {
+          errores.push(`plan.json: el worktree de ${unidad.id} no está registrado en git (${unidad.worktree})`);
+        }
+      }
+    }
   }
 
   if (claims) {
@@ -166,8 +195,15 @@ async function validarRun(runDir) {
         if (estado.agent !== unidad.agent) errores.push(`${ruta}: agent ${estado.agent} no coincide con ${unidad.agent}`);
         if (!ESTADOS.has(estado.state)) errores.push(`${ruta}: state inválido ${estado.state}`);
         estados.set(unidad.id, estado.state);
-        if (estado.state === 'done' && !(await existe(join(runDir, 'handoff', `${unidad.id}.md`)))) {
-          errores.push(`${runDir}/handoff/${unidad.id}.md: falta el handoff de ${unidad.id}`);
+        if (estado.state === 'done') {
+          const handoff = join(runDir, 'handoff', `${unidad.id}.md`);
+          try {
+            const texto = await readFile(handoff, 'utf8');
+            if (!/^Files:\s*\S+/m.test(texto)) errores.push(`${handoff}: falta "Files:"`);
+            if (!/^Tests:\s*\S+/m.test(texto)) errores.push(`${handoff}: falta "Tests:"`);
+          } catch {
+            errores.push(`${handoff}: falta el handoff de ${unidad.id}`);
+          }
         }
       } catch {
         errores.push(`${ruta}: falta o no es JSON válido`);
@@ -212,6 +248,9 @@ async function validarRun(runDir) {
       if (estado === 'done' && !eventos.some((evento) => evento.unit === id && evento.event === 'done')) {
         errores.push(`journal.ndjson: falta evento done para ${id}`);
       }
+      if (estado === 'done' && !eventos.some((evento) => evento.unit === id && evento.event === 'commit')) {
+        errores.push(`journal.ndjson: falta evento commit para ${id}`);
+      }
     }
   } catch {
     errores.push(`${runDir}/journal.ndjson: falta`);
@@ -220,7 +259,7 @@ async function validarRun(runDir) {
   return { errores, plan, claims, estados };
 }
 
-async function validarPrograma(programa, runs) {
+async function validarPrograma(programa, runs, opciones = {}) {
   const errores = [];
   if (!programa || typeof programa !== 'object') return ['program.json: no es un objeto'];
   if (!Array.isArray(programa.changes) || programa.changes.length === 0) {
@@ -303,11 +342,12 @@ async function validarPrograma(programa, runs) {
 }
 
 const modoPrograma = args.includes('--program');
+const checkWorktrees = args.includes('--check-worktrees');
 const cambio = valor('--change');
 const runDir = valor('--run-dir');
 
 if (!modoPrograma && !cambio && !runDir) {
-  console.error('Uso: node .atlas/scripts/validar-run.mjs --change <id> | --run-dir <ruta> | --program [ruta]');
+  console.error('Uso: node .atlas/scripts/validar-run.mjs --change <id> | --run-dir <ruta> | --program [ruta] [--check-worktrees]');
   process.exit(1);
 }
 
@@ -324,9 +364,9 @@ if (modoPrograma) {
   const runs = new Map();
   for (const change of programa.changes ?? []) {
     if (!change.id) continue;
-    runs.set(change.id, await validarRun(join('.atlas/run', change.id)));
+    runs.set(change.id, await validarRun(join('.atlas/run', change.id), { checkWorktrees }));
   }
-  const errores = await validarPrograma(programa, runs);
+  const errores = await validarPrograma(programa, runs, { checkWorktrees });
   if (errores.length > 0) {
     console.error(`❌ ${errores.length} hallazgo(s) en ${ruta}:`);
     for (const error of errores) console.error(`   - ${error}`);
@@ -337,7 +377,7 @@ if (modoPrograma) {
 }
 
 const dir = runDir ?? join('.atlas/run', cambio);
-const resultado = await validarRun(dir);
+const resultado = await validarRun(dir, { checkWorktrees });
 if (resultado.errores.length > 0) {
   console.error(`❌ ${resultado.errores.length} hallazgo(s) en ${dir}:`);
   for (const error of resultado.errores) console.error(`   - ${error}`);

@@ -49,14 +49,15 @@ Un programa es la forma de ejecutar varias specs grandes en paralelo, cada una c
   "change": "demo",
   "strategy": "shared-worktree",
   "units": [
-    { "id": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
-    { "id": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
+    { "id": "hello", "agent": "agent-a", "role": "engineer-java", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
+    { "id": "sum", "agent": "agent-b", "role": "engineer-java", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
   ]
 }
 ```
 
 - `strategy`: `shared-worktree` (por defecto) o `per-unit-worktree`.
 - `id` único; `agent` único por unidad; `paths` no vacío; `depends_on` referencia unidades existentes.
+- `role` (opcional) es el rol (`engineer-java`); `agent` es la instancia única (`engineer-java-1`).
 - `task` (opcional pero recomendado) enlaza la unidad con la tarea OpenSpec, p. ej. `1.2`.
 - `worktree` solo es obligatorio con `per-unit-worktree`; debe ser único.
 - Sin ciclos.
@@ -137,8 +138,9 @@ integrador debe saber. Obligatorio cuando la unidad está `done`.
 
 ### Handoff
 
-`handoff/<unit>.md` debe incluir: archivos cambiados, tests ejecutados, mensaje de commit sugerido y lo
-que el integrador deba saber. El orquestador nunca commitea una unidad sin handoff.
+`handoff/<unit>.md` debe incluir `Files:`, `Tests:` y un mensaje de commit sugerido; el orquestador
+nunca commitea una unidad sin handoff. Si una unidad tiene varios checkpoints, actualiza el handoff y
+añade un evento `commit` por checkpoint.
 
 ### Trazabilidad
 
@@ -149,6 +151,7 @@ que el integrador deba saber. El orquestador nunca commitea una unidad sin hando
   cherry-pick. **No hagas squash** si necesitas los commits individuales; los eventos `commit` del
   journal registran los SHAs.
 - Se permiten varios eventos `commit` para la misma unidad: representan checkpoints, no trabajo duplicado.
+- Una unidad `done` exige al menos un evento `commit`; el SHA es obligatorio en cada uno.
 
 ## Reglas
 
@@ -174,10 +177,13 @@ que el integrador deba saber. El orquestador nunca commitea una unidad sin hando
 ```bash
 node .atlas/scripts/validar-run.mjs --change <change>
 node .atlas/scripts/validar-run.mjs --program [.atlas/run/program.json]
+node .atlas/scripts/validar-run.mjs --change <change> --check-worktrees
 ```
 
 Comprueba unidades, claims, solapes, estados, handoffs, eventos del journal, dependencias, contratos
-y solapes de claims entre changes.
+y solapes de claims entre changes. `--check-worktrees` exige además que cada path de
+`per-unit-worktree` esté registrado en git; ejecútalo **antes** de limpiar, porque los worktrees pueden
+eliminarse tras el merge.
 
 El protocolo no fija un número máximo de unidades; el ejemplo usa dos. La restricción real son las rutas
 disjuntas y las dependencias declaradas.

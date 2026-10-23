@@ -49,14 +49,15 @@ A program is the way to run several large specs in parallel, each with its own N
   "change": "demo",
   "strategy": "shared-worktree",
   "units": [
-    { "id": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
-    { "id": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
+    { "id": "hello", "agent": "agent-a", "role": "engineer-java", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
+    { "id": "sum", "agent": "agent-b", "role": "engineer-java", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
   ]
 }
 ```
 
 - `strategy`: `shared-worktree` (default) or `per-unit-worktree`.
 - `id` unique; `agent` unique per unit; `paths` non-empty; `depends_on` references existing units.
+- `role` (optional) is the role (`engineer-java`); `agent` is the unique instance (`engineer-java-1`).
 - `task` (optional but recommended) links the unit to the OpenSpec task, e.g. `1.2`.
 - `worktree` is required only with `per-unit-worktree`; must be unique.
 - No cycles.
@@ -137,8 +138,9 @@ must know. Required when the unit is `done`.
 
 ### Handoff
 
-`handoff/<unit>.md` must include: files changed, tests run, suggested commit message, and anything the
-integrator must know. The orchestrator never commits a unit without a handoff.
+`handoff/<unit>.md` must include `Files:`, `Tests:` and a suggested commit message; the orchestrator
+never commits a unit without a handoff. When a unit has several checkpoints, update the handoff and add
+a `commit` event for each checkpoint.
 
 ### Traceability
 
@@ -149,6 +151,7 @@ integrator must know. The orchestrator never commits a unit without a handoff.
   cherry-picks. **Do not squash** if you need the individual commits; the journal `commit` events record
   the SHAs.
 - Multiple `commit` events for the same unit are allowed: they represent checkpoints, not duplicate work.
+- A unit marked `done` requires at least one `commit` event; the SHA is mandatory in each one.
 
 ## Rules
 
@@ -174,10 +177,12 @@ integrator must know. The orchestrator never commits a unit without a handoff.
 ```bash
 node .atlas/scripts/validar-run.mjs --change <change>
 node .atlas/scripts/validar-run.mjs --program [.atlas/run/program.json]
+node .atlas/scripts/validar-run.mjs --change <change> --check-worktrees
 ```
 
 Checks units, claims, overlaps, statuses, handoffs, journal events, dependencies, contracts and
-cross-change claim overlaps.
+cross-change claim overlaps. `--check-worktrees` additionally requires every `per-unit-worktree` path
+to be registered in git; run it **before** cleanup, because worktrees may be removed after merge.
 
 The protocol has no fixed limit of units; the bounded example uses two. The real constraint is disjoint
 paths and declared dependencies.
