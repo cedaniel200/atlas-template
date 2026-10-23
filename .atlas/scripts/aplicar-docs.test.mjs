@@ -38,13 +38,10 @@ async function existe(ruta) {
   );
 }
 
-async function crearFixture({ mode = 'greenfield', docs, areaPresentes = AREAS, idioma = 'es' } = {}) {
+async function crearFixture({ mode = 'greenfield', docs, idioma = 'es' } = {}) {
   const fixture = await mkdtemp(join(tmpdir(), 'aplicar-docs-'));
   await cp(join(RAIZ_TEMPLATE, 'AGENTS.md'), join(fixture, 'AGENTS.md'));
   await cp(join(RAIZ_TEMPLATE, 'docs'), join(fixture, 'docs'), { recursive: true });
-  for (const area of AREAS) {
-    if (!areaPresentes.includes(area)) await rm(join(fixture, 'docs', area), { recursive: true, force: true });
-  }
   await mkdir(join(fixture, '.atlas'), { recursive: true });
   await writeFile(
     join(fixture, '.atlas/state.json'),
@@ -110,7 +107,6 @@ function assertParidad(textoEs, textoEn) {
 
 test('crea solo las secciones seleccionadas y enlaza únicamente esas', async () => {
   const fixture = await crearFixture({
-    areaPresentes: ['architecture', 'api'],
     docs: {
       root: 'docs',
       functional: null,
@@ -167,7 +163,7 @@ test('crea solo las secciones seleccionadas y enlaza únicamente esas', async ()
 });
 
 test('sin secciones opcionales no crea carpetas ni deja filas o enlaces', async () => {
-  const fixture = await crearFixture({ areaPresentes: [] });
+  const fixture = await crearFixture();
   try {
     await aplicarDocs({ proyecto: fixture, log: silencio });
 
@@ -193,7 +189,40 @@ test('sin secciones opcionales no crea carpetas ni deja filas o enlaces', async 
       [portadaEn, 'docs/README.en.md'],
     ]) {
       for (const area of AREAS) assertSinAreaNoSeleccionada(texto, area, 'docs', nombre);
+      assert.doesNotMatch(
+        texto,
+        /docs\/(functional|architecture|api|guides)/,
+        `${nombre} no debe citar ninguna ruta de sección bajo docs/`,
+      );
     }
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('conserva una sección no seleccionada con contenido propio y avisa', async () => {
+  const fixture = await crearFixture({
+    docs: {
+      root: 'docs',
+      functional: null,
+      architecture: 'docs/architecture',
+      api: 'docs/api',
+      guides: null,
+    },
+  });
+  try {
+    await writeFile(join(fixture, 'docs/functional/uc-001.md'), '# UC-001\n', 'utf8');
+    const lineas = [];
+    await aplicarDocs({ proyecto: fixture, log: (linea) => lineas.push(linea) });
+
+    assert.ok(await existe(join(fixture, 'docs/functional/README.md')), 'functional se conserva');
+    assert.ok(await existe(join(fixture, 'docs/functional/uc-001.md')), 'el contenido del usuario se conserva');
+    assert.ok(!(await existe(join(fixture, 'docs/guides'))), 'guides (solo scaffold) se elimina');
+    assert.ok(
+      lineas.some((linea) => linea.startsWith('⚠️') && linea.includes('docs/functional')),
+      'debe avisar de la sección conservada',
+    );
+    assert.ok(!lineas.some((linea) => linea.startsWith('🧹') && linea.includes('docs/functional')));
   } finally {
     await rm(fixture, { recursive: true, force: true });
   }
@@ -220,6 +249,9 @@ test('reubica docs/ a documentation/ con --mover-docs y actualiza enlaces', asyn
     assert.ok(await existe(join(fixture, 'documentation/project-context.md')));
     assert.ok(await existe(join(fixture, 'documentation/harness/es/QUICKSTART.md')));
     assert.ok(await existe(join(fixture, 'documentation/architecture/README.md')));
+    assert.ok(await existe(join(fixture, 'documentation/api/README.md')));
+    assert.ok(!(await existe(join(fixture, 'documentation/functional'))), 'functional no seleccionada no queda');
+    assert.ok(!(await existe(join(fixture, 'documentation/guides'))), 'guides no seleccionada no queda');
 
     const portadaEs = await leer(join(fixture, 'documentation/README.md'));
     const portadaEn = await leer(join(fixture, 'documentation/README.en.md'));
@@ -299,6 +331,9 @@ test('--mantener-ambas copia el scaffold y conserva docs/ intacto', async () => 
     assert.ok(await existe(join(fixture, 'documentation/README.md')));
     assertInstantaneasIguales(docsAntes, await instantanea(join(fixture, 'docs')), 'docs/ debe quedar intacto');
     assert.ok(await existe(join(fixture, 'documentation/architecture/README.md')));
+    assert.ok(!(await existe(join(fixture, 'documentation/functional'))), 'la limpieza solo aplica a la raíz nueva');
+    assert.ok(!(await existe(join(fixture, 'documentation/api'))), 'api no seleccionada no queda en la raíz nueva');
+    assert.ok(await existe(join(fixture, 'docs/functional/README.md')), 'docs/ original conserva su scaffold');
   } finally {
     await rm(fixture, { recursive: true, force: true });
   }
@@ -314,7 +349,6 @@ test('brownfield usa la raíz existente y respeta el README del usuario', async 
       api: null,
       guides: null,
     },
-    areaPresentes: [],
   });
   try {
     const contenidoUsuario = '# Documentación propia\n\nÍndice mantenido por el equipo.\n';
@@ -357,6 +391,8 @@ test('--descartar-docs funciona en greenfield y se rechaza en brownfield', async
     assert.ok(!(await existe(join(greenfield, 'docs'))), 'docs/ se elimina en greenfield');
     assert.ok(await existe(join(greenfield, 'documentation/README.md')));
     assert.ok(await existe(join(greenfield, 'documentation/architecture/README.md')));
+    assert.ok(!(await existe(join(greenfield, 'documentation/functional'))), 'functional no seleccionada no queda');
+    assert.ok(!(await existe(join(greenfield, 'documentation/guides'))), 'guides no seleccionada no queda');
   } finally {
     await rm(greenfield, { recursive: true, force: true });
   }

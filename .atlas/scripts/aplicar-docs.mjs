@@ -16,11 +16,16 @@
 // Nunca copia `docs/` a otra raíz sin una decisión explícita del usuario y nunca
 // sobrescribe un archivo existente. Es idempotente: una segunda ejecución no escribe.
 //
+// Única eliminación que realiza: en `greenfield` retira el scaffold de las secciones no
+// seleccionadas que el template entrega (`<root>/<área>/` con exclusivamente `README.md`).
+// Si el directorio tiene cualquier otro archivo o subdirectorio se conserva y se avisa;
+// en `brownfield` no elimina nada. `--dry-run` solo informa de lo que eliminaría.
+//
 // Uso:
 //   node .atlas/scripts/aplicar-docs.mjs [--proyecto <dir>] [--dry-run]
 //        [--mover-docs | --mantener-ambas | --descartar-docs]
 
-import { access, cp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { access, cp, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -288,6 +293,30 @@ async function resolverRaiz({ proyecto, root, decision, modo, dryRun, avisar, lo
   return { pendiente: false };
 }
 
+// Única eliminación del script. Solo actúa en greenfield y solo sobre el scaffold que
+// entrega el template: un directorio de sección no seleccionada que contiene únicamente
+// `README.md`. Cualquier contenido propio del usuario lo conserva y lo declara.
+async function contieneSoloScaffold(ruta) {
+  const entradas = await readdir(ruta, { withFileTypes: true });
+  return entradas.length === 1 && entradas[0].isFile() && entradas[0].name === 'README.md';
+}
+
+async function limpiarScaffoldNoSeleccionado({ rutaRoot, root, rutas, modo, dryRun, avisar }) {
+  if (modo !== 'greenfield') return;
+  for (const area of AREAS) {
+    if (rutas[area] !== null) continue;
+    const ruta = join(rutaRoot, area);
+    if (!(await existe(ruta))) continue;
+    const relativo = `${root}/${area}/`;
+    if (!(await contieneSoloScaffold(ruta))) {
+      avisar('⚠️', `${relativo}: conservado (tiene contenido propio)`);
+      continue;
+    }
+    if (!dryRun) await rm(ruta, { recursive: true, force: true });
+    avisar('🧹', `${relativo}: scaffold no seleccionado eliminado`);
+  }
+}
+
 // README, contexto y harness de la raíz: se crean solo si faltan y nunca se sobrescriben.
 async function crearSiemprePresentes({ rutaRoot, root, textos, dryRun, avisar }) {
   const presentes = [
@@ -424,6 +453,14 @@ export async function aplicarDocs({ proyecto = '.', dryRun = false, decision = n
     return { root, secciones: secciones.map((area) => rutas[area]), decision, dryRun, pendiente, acciones };
   }
 
+  await limpiarScaffoldNoSeleccionado({
+    rutaRoot,
+    root,
+    rutas,
+    modo: estado.mode ?? null,
+    dryRun,
+    avisar,
+  });
   await crearSiemprePresentes({ rutaRoot, root, textos, dryRun, avisar });
   await crearSecciones({ proyecto, secciones, rutas, textos, dryRun, avisar });
   await actualizarEnlaces({ proyecto, rutaRoot, root, rutas, secciones, dryRun, avisar });
