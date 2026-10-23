@@ -73,6 +73,21 @@ each artifact.
 
 ---
 
+## 🧵 Parallel runs (experimental)
+
+[![Experimental](https://img.shields.io/badge/status-experimental-orange?style=flat-square)](../.atlas/docs/en/parallel-run.md)
+
+> ⚗️ **Experimental.** It is not the default flow. It is enabled only when the user asks and confirms.
+
+- **One large spec → N agents**: split the work into units with disjoint paths.
+- **Several large specs → program**: each spec with its N agents, dependencies and frozen contracts.
+- Requirements: globally disjoint paths, contract before backend/front and human confirmation.
+- **Commits**: shared worktree → the orchestrator commits; `per-unit-worktree` → each agent in its branch.
+- **Traceability**: one commit per handoff/checkpoint; in per-unit, merge/cherry-pick without squash.
+- Protocol and validation: [`.atlas/docs/en/parallel-run.md`](../.atlas/docs/en/parallel-run.md) · `validar-run.mjs`.
+
+---
+
 ## 🚀 Start here
 
 ### 1️⃣ Create the project from ATLAS
@@ -99,6 +114,7 @@ Once the ritual is done, ask in your own words; if the agent infers the action f
 ask for explicit confirmation before acting**.
 
 - Start or continue a change: “in this session we will work on X” / “continue X”.
+- Run two independent specs in parallel (experimental): ask for confirmation and follow `parallel-run.md`.
 - Add a stack or profile, an implementer or a pack.
 - Add an implementer for a new technology: “add an implementer for React”.
 - Minimize ATLAS (`minimizar.mjs`).
@@ -164,7 +180,7 @@ Detail: [`.atlas/docs/en/extending.md`](../.atlas/docs/en/extending.md).
 │   ├── packs/           # optional on-demand packs (_templates/ + active)
 │   ├── docs/en|es/      # harness documentation (contributor)
 │   ├── hosts/           # host adapter templates
-│   ├── scripts/         # sha256 + validators + crear-perfil + crear-pack + mover-legal + minimizar + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
+│   ├── scripts/         # sha256 + validators + crear-perfil + crear-pack + mover-legal + minimizar + validar-run + adoptar-agents + combinar-readme + generar-manifiesto + inventariar + medir
 │   ├── legal/           # template legal in configured projects
 │   └── state.json (stacks, packs, optional_agents) manifest.json
 ├── docs/

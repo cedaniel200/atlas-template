@@ -90,6 +90,7 @@ ask for explicit confirmation before acting**.
 | Ask… | What it does |
 |---|---|
 | “In this session we will work on X” / “continue X” | Loads context, checks `openspec/changes/` and starts or resumes explore/propose |
+| “Run two independent specs in parallel (experimental)” | Follow `parallel-run.md` and ask for confirmation |
 | “Add a stack or profile for X” | Creates the profile, updates `state.stacks`/`AGENTS.md` and regenerates the adapter |
 | “Add an implementer for X” | Creates the stack and `engineer-<id>` |
 | “Create a pack for X” | Creates the skeleton and activates it |

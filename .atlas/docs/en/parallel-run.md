@@ -1,0 +1,204 @@
+# Parallel runs (experimental)
+
+> **Experimental.** This is not the default flow and it has no stability guarantee. It is a protocol
+> for the agent when the user explicitly asks to implement independent changes or units in parallel.
+> The human requests and approves; the agent orchestrates.
+
+---
+
+## When to use it
+
+Only when **all** of these are true:
+
+- The changes/units are independent, or the contract between them is already frozen (API/schema).
+- Each unit has **disjoint paths** or its own worktree/branch.
+- The user explicitly confirms the parallel run.
+
+Do not use it for two specs that touch the same files, or for dependent work without a contract.
+
+## Roles
+
+- **analyst**: orchestrator. Creates the plan, assigns claims, integrates, validates and reports.
+- **implementers**: one agent per unit. They only write inside their claimed paths and append progress.
+- **qa-analyst / reviewer**: run **after integration**, not per parallel agent.
+
+## Two modes
+
+- **One change, N units**: one run directory `.atlas/run/<change>/` with N units/agents.
+- **Program, N changes × N units**: `.atlas/run/program.json` plus one run directory per change.
+
+A program is the way to run several large specs in parallel, each with its own N agents.
+
+---
+
+## State directory
+
+```text
+.atlas/run/<change>/          # gitignored, local runtime state
+├── plan.json
+├── claims.json
+├── journal.ndjson
+├── agents/<agent>/status.json
+└── handoff/<unit>.md
+```
+
+### `plan.json`
+
+```json
+{
+  "change": "demo",
+  "strategy": "shared-worktree",
+  "units": [
+    { "id": "hello", "agent": "agent-a", "role": "engineer-java", "paths": ["agents/a/hello.py"], "task": "1.1", "depends_on": [] },
+    { "id": "sum", "agent": "agent-b", "role": "engineer-java", "paths": ["agents/b/sum.py"], "task": "1.2", "depends_on": [] }
+  ]
+}
+```
+
+- `strategy`: `shared-worktree` (default) or `per-unit-worktree`.
+- `id` unique; `agent` unique per unit; `paths` non-empty; `depends_on` references existing units.
+- `role` (optional) is the role (`engineer-java`); `agent` is the unique instance (`engineer-java-1`).
+- `task` (optional but recommended) links the unit to the OpenSpec task, e.g. `1.2`.
+- `worktree` is required only with `per-unit-worktree`; must be unique.
+- No cycles.
+
+### `claims.json`
+
+```json
+{
+  "claims": [
+    { "unit": "hello", "agent": "agent-a", "paths": ["agents/a/hello.py"] },
+    { "unit": "sum", "agent": "agent-b", "paths": ["agents/b/sum.py"] }
+  ]
+}
+```
+
+- One claim per unit; the agent must match the plan and **paths must equal the plan paths**.
+- In `shared-worktree`, claims of different units cannot overlap (same path or one inside the other).
+  In `per-unit-worktree`, overlaps are allowed because worktrees isolate them; integration may conflict.
+
+### `agents/<agent>/status.json`
+
+```json
+{ "agent": "agent-a", "unit": "hello", "state": "done", "updated_at": "2026-01-01T00:00:00Z" }
+```
+
+`state`: `pending`, `running`, `blocked` or `done`.
+
+### `journal.ndjson`
+
+One JSON object per line, append-only:
+
+```json
+{"ts":"2026-01-01T00:00:00Z","event":"commit","unit":"hello","agent":"orchestrator","sha":"a1b2c3d"}
+```
+
+`event`: `started`, `progress`, `blocked`, `handoff`, `done` or `commit`. `commit` requires a `sha`
+(7–40 hex) of each commit associated with the unit (the orchestrator in `shared-worktree`, the agent in
+`per-unit-worktree`).
+
+### `handoff/<unit>.md`
+
+Short summary for the orchestrator: what changed, tests run, open questions, and what the integrator
+must know. Required when the unit is `done`.
+
+## Program (multiple changes)
+
+`.atlas/run/program.json` coordinates several changes:
+
+```json
+{
+  "program": "demo",
+  "changes": [
+    { "id": "spec-a", "depends_on": [], "contract": "docs/api/spec-a.yaml" },
+    { "id": "spec-b", "depends_on": ["spec-a"], "contract": "docs/api/spec-b.yaml" }
+  ]
+}
+```
+
+- Each `id` must have its own `.atlas/run/<id>/` with plan, claims, status, journal and handoff.
+- `depends_on` is checked across changes: a dependent change cannot have `done` units until its
+  dependency is complete.
+- `contract` (optional) must exist; freeze the API/schema before parallelizing backend/front.
+- `validar-run --program` checks the individual runs, cross-change claim overlaps, dependencies and contracts.
+
+## Worktree strategies and commits
+
+### `shared-worktree` (default)
+
+- One change and one worktree; units write **disjoint paths**.
+- Agents **never run `git add` or `git commit`**: they write, update status/journal and leave a handoff.
+- The orchestrator verifies the handoff, stages **only the claimed paths**, commits per unit (or in a
+  small batch) and updates the status.
+
+### `per-unit-worktree`
+
+- Each unit has its own `worktree` (branch/path); agents commit **only inside their own branch/worktree**.
+- The orchestrator integrates (merge/cherry-pick), validates and keeps the final history.
+
+### Handoff
+
+`handoff/<unit>.md` must include `Files:`, `Tests:` and a suggested commit message; the orchestrator
+never commits a unit without a handoff. When a unit has several checkpoints, update the handoff and add
+a `commit` event for each checkpoint.
+
+### Traceability
+
+- **`shared-worktree`**: one commit per handoff/checkpoint. If the orchestrator batches everything at
+  the end, intermediate commits are lost. If the same file needs several logical commits, split the work
+  into checkpoints (update the handoff and journal each time) or use `per-unit-worktree`.
+- **`per-unit-worktree`**: agents commit each change in their branch; the orchestrator merges or
+  cherry-picks. **Do not squash** if you need the individual commits; the journal `commit` events record
+  the SHAs.
+- Multiple `commit` events for the same unit are allowed: they represent checkpoints, not duplicate work.
+- A unit marked `done` requires at least one `commit` event; the SHA is mandatory in each one.
+
+## Rules
+
+- **One owner per path.** Never write outside the claimed paths.
+- **Atomic writes**: write a temporary file and rename; never edit a shared file in place.
+- **Append-only journal**; do not rewrite previous lines.
+- **Blocked** requires a journal entry with the reason and a status update.
+- **Done** requires tests, a status update, a `done` event and a handoff.
+- If a claim conflicts, stop and ask the human; do not invent a resolution.
+- The analyst integrates; parallel agents do not merge or open PRs.
+
+## Lifecycle
+
+- Create the run directory at the start of each parallel change.
+- Keep it across sessions until integration, QA and review are complete for that change.
+- For a program, create `.atlas/run/program.json` at the start and keep it until **all** changes are
+  merged; delete each change run as it closes and the program file last.
+- Delete a run after archive/merge (or when the change is abandoned): `rm -rf .atlas/run/<change>`.
+- It is gitignored and never part of the OpenSpec artifacts or the PR.
+
+## Validation
+
+```bash
+node .atlas/scripts/validar-run.mjs --change <change>
+node .atlas/scripts/validar-run.mjs --program [.atlas/run/program.json]
+node .atlas/scripts/validar-run.mjs --change <change> --check-worktrees
+```
+
+Checks units, claims, overlaps, statuses, handoffs, journal events, dependencies, contracts and
+cross-change claim overlaps. `--check-worktrees` additionally requires every `per-unit-worktree` path
+to be registered in git; run it **before** cleanup, because worktrees may be removed after merge.
+
+The protocol has no fixed limit of units; the bounded example uses two. The real constraint is disjoint
+paths and declared dependencies.
+
+## Bounded example
+
+**One change, two units:** two agents, two disjoint files:
+
+- `agent-a` → `agents/a/hello.py` with `hello() -> "hello"`.
+- `agent-b` → `agents/b/sum.py` with `sum(a, b) -> a + b`.
+
+**Program, two changes × three units:**
+
+- `spec-a`: `hello`, `sum`, `mul`.
+- `spec-b`: `hello`, `div`, `concat`.
+- `program.json` with `spec-b` depending on `spec-a` and a contract file per change.
+
+In both cases each agent appends its events; the analyst runs `validar-run.mjs`, integrates and runs
+the tests. These are the smallest useful cases; do not use them as a template for large, coupled changes.

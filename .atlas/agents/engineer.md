@@ -10,6 +10,12 @@
 
 ---
 
+## Parallel implementer
+
+If you are assigned a unit of a parallel run, read `.atlas/docs/en/parallel-run.md`. Write only inside
+your claim, update status/journal and leave `handoff/<unit>.md`. **Do not commit** in a shared
+worktree: the orchestrator commits. In `per-unit-worktree`, commit only in your own branch.
+
 ## Contract
 
 `AGENTS.md` defines the commands, structure, architecture and **do-not-touch** rules. If a section is

@@ -32,7 +32,7 @@ if (!host) {
 
 const EXCLUIR = new Set([
   '.git', 'node_modules', 'build', 'dist', 'graphify-out',
-  '.atlas/backups', '.atlas/adapters', '.atlas/archive',
+  '.atlas/backups', '.atlas/adapters', '.atlas/archive', '.atlas/run',
   '.atlas/manifest.json', '.atlas/state.json',
 ]);
 
