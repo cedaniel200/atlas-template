@@ -34,7 +34,7 @@
 
 | `ownership` | Ejemplos | Al actualizar |
 |---|---|---|
-| `managed` | skills, prompts, schemas | Se reemplaza **solo si el hash coincide**; si no, se escribe `<archivo>.new` y se reporta |
+| `managed` | skills, prompts, schemas, `.atlas/scripts/`, `.atlas/README.md` | Se reemplaza **solo si el hash coincide**; si no, se escribe `<archivo>.new` y se reporta |
 | `generated` | adaptador de host, wrappers de comandos | Se regenera |
 | `owned` | `AGENTS.md`, `config.yaml`, specs, ADRs, `docs/` | **Nunca** se sobrescribe; solo sugerencias |
 
