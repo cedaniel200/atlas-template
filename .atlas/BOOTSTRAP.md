@@ -319,6 +319,21 @@ Do not present them as recommended or activate them by default.
     stack-agnostic.
   - **Optional agents**: only the ids in `state.optional_agents` are rendered (Round 4). Prompts
     marked with `<!-- optional-role -->` that are not active are omitted.
+- **Git hooks**: activate the hooks path **idempotently** — only when there is no path configured or it
+  is already the harness one. Never overwrite a foreign path (husky, lefthook): report it and offer
+  chaining (`.atlas/docs/en/` and `docs/harness/<language.user>/HOOKS.md`).
+
+  ```bash
+  RUTA=$(git config --get core.hooksPath || true)
+  if [ -z "$RUTA" ]; then
+    git config core.hooksPath .githooks
+    echo "Git hooks activated: .githooks"
+  elif [ "$RUTA" = ".githooks" ]; then
+    echo "Git hooks already active: .githooks"
+  else
+    echo "Git hooks path preserved: $RUTA (chain the harness hooks; do not overwrite it)"
+  fi
+  ```
 - **README (brownfield)**: if `README.md` exists, **do not overwrite it**. Ask:
   "Should the missing sections from `.atlas/PROJECT-README.md` be added?". Dry run:
   `node .atlas/scripts/combinar-readme.mjs --proyecto .`; if accepted, `--apply`. Record
@@ -383,7 +398,7 @@ Advancing to `propose` is not allowed until **everything** is green.
 - [ ] Profiles are valid: `node .atlas/scripts/validar-perfiles.mjs`
 - [ ] Manifest is consistent: `node .atlas/scripts/validar-manifiesto.mjs`
 - [ ] Adapters without placeholders: `grep -rn "{{" .opencode/agent .claude/agents` → empty (if they exist)
-- [ ] Git hooks active: `git config core.hooksPath .githooks` (if gitleaks is missing, the hook warns and does not block)
+- [ ] Git hooks path active: `git config --get core.hooksPath` → `.githooks` (a foreign path is preserved and reported; if gitleaks is missing the secret guard warns and does not block, but the base-branch guard still runs)
 - [ ] No health/port: if `qa.health_path` or `qa.app_port` are empty, `HEALTH_URL` is `N/A` (never compose a URL with an empty path)
 - [ ] `openspec doctor` → root ok
 - [ ] `openspec schema which spec-driven-with-adr` → `Source: project`
