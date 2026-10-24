@@ -33,9 +33,10 @@
 
    - `owned` (AGENTS.md, config, docs, adr, specs) → **no se toca**.
    - `generated` (adaptadores, `opencode.json`, `CLAUDE.md`) → **se regenera** (adaptadores con placeholders resueltos).
-   - `managed` (skills, prompts, schemas, packs activos) → se reemplaza **solo si no lo modificaste**; si lo modificaste, se escribe `<archivo>.new`.
+   - `managed` (skills, prompts, schemas, packs activos, `.githooks/`) → se reemplaza **solo si no lo modificaste**; si lo modificaste, se escribe `<archivo>.new` (y se respalda el archivo local).
    - Antes de escribir, copia lo que reemplaza a `.atlas/backups/<timestamp>/`.
    - **Actualiza `manifest.json` y `state.json`** (versión, commit y hashes) para que la próxima actualización no dé falsos conflictos.
+   - **No** escribe configuración de git: si `core.hooksPath` no está activa, muestra el comando exacto para activarla.
 
 3. **Resuelve los conflictos** (`.new`):
 
@@ -61,6 +62,7 @@
 - No borra archivos: si el template elimina uno, lo **reporta**.
 - **Packs**: los activos se actualizan como `managed` (si no los modificaste); los inactivos y el catálogo `.atlas/packs` no se tocan. Se activan/desactivan a mano.
 - No resuelve conflictos por ti.
+- No escribe configuración de git: si la ruta de hooks no está activa muestra el comando exacto (`git config core.hooksPath .githooks`) para que lo ejecutes.
 
 ## Rollback
 

@@ -33,9 +33,10 @@
 
    - `owned` (AGENTS.md, config, docs, adr, specs) → **never overwritten**.
    - `generated` (adapters, `opencode.json`, `CLAUDE.md`) → **regenerated** (adapters with resolved placeholders).
-   - `managed` (skills, prompts, schemas, active packs) → replaced **only if you did not modify it**; otherwise `<file>.new` is written.
+   - `managed` (skills, prompts, schemas, active packs, `.githooks/`) → replaced **only if you did not modify it**; otherwise `<file>.new` is written (and the local file is backed up).
    - Before writing, it backs up what it replaces to `.atlas/backups/<timestamp>/`.
    - **It rewrites `manifest.json` and `state.json`** (version, commit, hashes) so the next update does not report false conflicts.
+   - It does **not** write git configuration: if `core.hooksPath` is not active, it prints the exact command to activate it.
 
 3. **Resolve conflicts** (`.new`):
 
@@ -61,6 +62,7 @@
 - It does not delete files: if the template removes one, it **reports** it.
 - **Packs**: active packs are updated as `managed` (if you did not modify them); inactive packs and the `.atlas/packs` catalog are not touched. Enable/disable them by hand.
 - It does not resolve conflicts for you.
+- It does not write git configuration: if the hooks path is not active it prints the exact command (`git config core.hooksPath .githooks`) for you to run.
 
 ## Rollback
 

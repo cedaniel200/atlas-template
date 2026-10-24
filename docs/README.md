@@ -131,6 +131,8 @@ Detalle: [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md).
 | Quieres actualizar el arnés | [`docs/harness/es/UPDATE.md`](harness/es/UPDATE.md) |
 | Quieres configurar MCP o memoria | [`docs/harness/es/TOOLS.md`](harness/es/TOOLS.md) |
 | Te interesan los gates y CRAP | [`docs/harness/es/QUALITY.md`](harness/es/QUALITY.md) |
+| Quieres entender los hooks de commit | [`docs/harness/es/HOOKS.md`](harness/es/HOOKS.md) |
+| Quieres saber dónde se escribe cada change | [`docs/harness/es/ISOLATION.md`](harness/es/ISOLATION.md) |
 | No entiendes un término | [`docs/harness/es/GLOSSARY.md`](harness/es/GLOSSARY.md) |
 | Extender el arnés (skills/agentes/packs) | [`.atlas/docs/es/extending.md`](../.atlas/docs/es/extending.md) · [`.atlas/packs/README.md` (EN)](../.atlas/packs/README.md) |
 
