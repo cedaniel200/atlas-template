@@ -9,9 +9,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -70,6 +70,32 @@ async function afirmarEntrada(manifest, fixture, rel, esperado) {
   const sha256 = createHash('sha256').update(await readFile(join(fixture, rel))).digest('hex');
   assert.equal(entrada.sha256, sha256, `sha256 de ${rel}`);
 }
+
+test('sin lib/inventario.mjs falla con un mensaje accionable y sin stack de import', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'generar-manifiesto-sin-lib-'));
+  const aislado = join(raiz, 'scripts');
+  const fixture = await crearFixture();
+  try {
+    // Copia aislada del script, sin el `lib/` hermano: reproduce el proyecto
+    // que actualizó los scripts pero no llegó a adoptar el módulo.
+    await mkdir(aislado, { recursive: true });
+    await copyFile(RUTA_SCRIPT, join(aislado, 'generar-manifiesto.mjs'));
+
+    const salida = spawnSync(
+      process.execPath,
+      [join(aislado, 'generar-manifiesto.mjs'), '--project', fixture, '--host', 'opencode'],
+      { encoding: 'utf8' },
+    );
+
+    assert.equal(salida.status, 1);
+    assert.match(salida.stderr, /falta \.atlas\/scripts\/lib\/inventario\.mjs/);
+    assert.match(salida.stderr, /actualizar-arnes\.mjs --template <ruta del template>/);
+    assert.ok(!/ERR_MODULE_NOT_FOUND/.test(salida.stderr), 'no debe filtrar el stack del import');
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
 
 test('clasifica scripts y README de .atlas como managed core', async () => {
   const fixture = await crearFixture();

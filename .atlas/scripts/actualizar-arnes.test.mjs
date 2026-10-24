@@ -25,6 +25,11 @@ const GONE = '# gone\n\nAgente que ya no existe en el template.\n';
 const SAME = '# same\n\nAgente idéntico en proyecto y template.\n';
 const NUEVO = '#!/usr/bin/env node\n// Script managed que solo existe en el template nuevo.\n';
 const NUEVO_LOCAL = '// versión local sin seguimiento en el manifiesto\n';
+// Módulo nuevo de la versión: un proyecto < 0.3.0 no lo tiene y el updater
+// anterior no adoptaba archivos, así que el primer salto debe resolverlo desde
+// el template que se aplica.
+const INVENTARIO = '// inventario del template nuevo\nexport async function inventariar() {\n  return {};\n}\n';
+const RUTA_INVENTARIO = '.atlas/scripts/lib/inventario.mjs';
 
 async function crearProyecto(raiz) {
   const proyecto = join(raiz, 'proyecto');
@@ -186,6 +191,49 @@ test('no adopta archivos owned aunque solo existan en el template nuevo', async 
     await assert.rejects(readFile(join(proyecto, 'docs/extra.md')), { code: 'ENOENT' });
     const manifest = await leerManifiesto(proyecto);
     assert.equal(manifest.files['docs/extra.md'], undefined);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('primer salto: adopta lib/inventario.mjs desde el template aunque el proyecto no lo tenga', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    const template = await crearTemplateConArchivos(raiz, { [RUTA_INVENTARIO]: INVENTARIO });
+
+    // El proyecto usa la forma previa a 0.3.0: ni el archivo ni la entrada
+    // del manifiesto existen, y aun así la actualización debe completarse.
+    await assert.rejects(readFile(join(proyecto, RUTA_INVENTARIO)), { code: 'ENOENT' });
+    assert.equal(await leerManifiesto(proyecto).then((m) => m.files[RUTA_INVENTARIO]), undefined);
+
+    const resultado = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.deepEqual(resultado.nuevos, [RUTA_INVENTARIO]);
+    assert.equal(await readFile(join(proyecto, RUTA_INVENTARIO), 'utf8'), INVENTARIO);
+    assert.deepEqual((await leerManifiesto(proyecto)).files[RUTA_INVENTARIO], {
+      origin: 'core',
+      ownership: 'managed',
+      sha256: sha256(INVENTARIO),
+    });
+    assert.deepEqual(resultado.errores, []);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('primer salto: la segunda ejecución usa la copia local y no reporta nuevos', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    const template = await crearTemplateConArchivos(raiz, { [RUTA_INVENTARIO]: INVENTARIO });
+
+    await actualizarArnes({ template, proyecto, log: () => {} });
+    const segunda = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.deepEqual(segunda.nuevos, []);
+    assert.ok(segunda.sinCambios.includes(RUTA_INVENTARIO));
+    assert.deepEqual(segunda.errores, []);
   } finally {
     await rm(raiz, { recursive: true, force: true });
   }

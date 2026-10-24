@@ -6,11 +6,27 @@
 // Las reglas de ownership viven en `lib/inventario.mjs`, compartidas con el
 // actualizador (que inventaría el template para adoptar archivos managed nuevos).
 //
+// Resolución del inventario en tiempo de ejecución: un proyecto actualizado
+// desde < 0.3.0 puede tener este script sin `lib/inventario.mjs` (el updater
+// anterior no adoptaba archivos nuevos). Se importa dinámicamente para dar un
+// error accionable en lugar de un `ERR_MODULE_NOT_FOUND` sin contexto; el
+// updater es quien resuelve el módulo desde el template.
+//
 // Uso: node .atlas/scripts/generar-manifiesto.mjs --host opencode|claude|codex
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { inventariar } from './lib/inventario.mjs';
+
+let inventariar;
+try {
+  ({ inventariar } = await import('./lib/inventario.mjs'));
+} catch (error) {
+  if (error?.code !== 'ERR_MODULE_NOT_FOUND') throw error;
+  console.error(
+    '❌ falta .atlas/scripts/lib/inventario.mjs: ejecuta antes node .atlas/scripts/actualizar-arnes.mjs --template <ruta del template>',
+  );
+  process.exit(1);
+}
 
 const args = process.argv.slice(2);
 const valor = (flag) => {
