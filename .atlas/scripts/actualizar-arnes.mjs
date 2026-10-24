@@ -15,6 +15,12 @@
 // commit y hashes) y reporte. Sin esto, la siguiente actualización daría falsos
 // conflictos.
 //
+// El inventario de reglas (`lib/inventario.mjs`) se resuelve en tiempo de
+// ejecución: primero la copia local y, solo si no existe, la del template que
+// se aplica. Es el caso del primer salto desde < 0.3.0, cuyo updater no
+// adoptaba archivos nuevos; la pasada de adopción copia el módulo al proyecto
+// y la siguiente ejecución ya usa la copia local.
+//
 // Uso:
 //   node .atlas/scripts/actualizar-arnes.mjs --template /ruta/template-nuevo [--dry-run]
 
@@ -24,7 +30,6 @@ import { dirname, join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { renderizarAdaptadores } from './renderizar-adaptadores.mjs';
-import { inventariar } from './lib/inventario.mjs';
 
 const sha256 = async (ruta) => createHash('sha256').update(await readFile(ruta)).digest('hex');
 const existe = async (ruta) => {
@@ -35,6 +40,27 @@ const existe = async (ruta) => {
     return false;
   }
 };
+
+// El módulo local puede no existir todavía en un proyecto actualizado desde
+// < 0.3.0. Solo ese caso (ERR_MODULE_NOT_FOUND) recurre al template; cualquier
+// otro error de carga se propaga para no ocultar un módulo roto.
+async function cargarInventario(template) {
+  try {
+    return await import('./lib/inventario.mjs');
+  } catch (error) {
+    if (error?.code !== 'ERR_MODULE_NOT_FOUND') throw error;
+  }
+
+  const enTemplate = pathToFileURL(join(template, '.atlas/scripts/lib/inventario.mjs')).href;
+  try {
+    return await import(enTemplate);
+  } catch (error) {
+    if (error?.code !== 'ERR_MODULE_NOT_FOUND') throw error;
+    throw new Error(
+      'falta .atlas/scripts/lib/inventario.mjs: pasa --template <ruta del template> que lo incluya o ejecuta el updater una vez más',
+    );
+  }
+}
 
 async function copiarConBackup(rel, proyecto, origen, backup, dryRun) {
   if (!dryRun) {
@@ -160,6 +186,7 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
   // Se inventaría el template (el suyo trae `files: {}` y no permite conocer su
   // inventario) y se ignora lo que el manifiesto del proyecto ya sigue. Si el destino
   // existe sin seguimiento, nunca se sobrescribe: se escribe `<rel>.new`.
+  const { inventariar } = await cargarInventario(template);
   const inventarioTemplate = await inventariar({
     raiz: template,
     raizDocs: stateTemplate.docs?.root ?? 'docs',
