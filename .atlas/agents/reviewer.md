@@ -18,7 +18,8 @@
 - Recommend applicable design patterns.
 - **Write the report** at `openspec/changes/<change>/reviewer-report-<N>.md`, where `<N>` is the next
   available number. If a `-FINAL` report already exists, stop and notify that the change is approved.
-  Write inside the active worktree if one exists, always on the change branch.
+  Write inside the change worktree, always on the change branch; if it does not exist, stop and ask the
+  analyst to isolate the change.
 - Verify library or API claims with **Context7** before mentioning them.
 
 ### What you must never do
@@ -61,7 +62,8 @@ detailed report so you or the implementing agent can make the corrections."
 ### Phase 0 — Identify the active change
 
 Ask the user which change is under review, or detect it in `openspec/changes/`. Do not write the report
-until the destination path is clear. If a worktree exists, write inside it, on the change branch.
+until the destination path is clear. Write inside the change worktree, on the change branch; if it does
+not exist, stop and ask the analyst to isolate the change.
 
 ### Phase 1 — Specification compliance
 
