@@ -10,7 +10,8 @@
 //             .gitattributes, .editorconfig, <docs.root>/**, adr/**, openspec/specs/**
 //   managed   .agents/skills/**, .atlas/agents/**, openspec/schemas/**,
 //             .atlas/scripts/**, .atlas/README.md, .atlas/legal/**,
-//             .atlas/profiles/_templates/**, .atlas/profiles/_examples/**, .atlas/packs/**
+//             .atlas/profiles/_templates/**, .atlas/profiles/_examples/**, .atlas/packs/**,
+//             .githooks/**
 //   generated .opencode/agent/**, .claude/agents/**, .opencode/commands/**,
 //             .claude/commands/**, .codex/prompts/**, opencode.json, CLAUDE.md
 
@@ -56,6 +57,11 @@ export function crearReglas({ raizDocs = 'docs', host = 'host' } = {}) {
     },
     {
       patron: /^\.atlas\/scripts\/|^\.atlas\/README\.md$/,
+      ownership: 'managed',
+      origin: () => 'core',
+    },
+    {
+      patron: /^\.githooks\//,
       ownership: 'managed',
       origin: () => 'core',
     },

@@ -114,6 +114,25 @@ test('clasifica scripts y README de .atlas como managed core', async () => {
   }
 });
 
+test('clasifica .githooks como managed core', async () => {
+  const fixture = await crearFixture({
+    contenido: {
+      ...CONTENIDO,
+      '.githooks/pre-commit': '#!/bin/sh\n',
+      '.githooks/pre-commit.d/10-worktree-guard.sh': '#!/bin/sh\n',
+    },
+  });
+  try {
+    const manifest = await generar(fixture);
+
+    for (const rel of ['.githooks/pre-commit', '.githooks/pre-commit.d/10-worktree-guard.sh']) {
+      await afirmarEntrada(manifest, fixture, rel, { ownership: 'managed', origin: 'core' });
+    }
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
 test('inventaría la raíz de documentación configurada en state.docs.root', async () => {
   const contenido = {
     'documentation/README.md': '# Documentación\n',
