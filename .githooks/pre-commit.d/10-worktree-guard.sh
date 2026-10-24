@@ -1,5 +1,5 @@
 #!/bin/sh
-# Worktree guard — blocks commits on the base branch (ADR-0005).
+# Worktree guard — blocks commits on the base branch.
 #
 # The invariant is the branch, not the worktree: no commit lands on the base
 # branch. A worktree is the default mechanism; a human-requested feature branch

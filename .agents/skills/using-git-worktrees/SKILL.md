@@ -16,7 +16,7 @@ Never fight the harness.
 
 **Workspace policy:** every change is written on its own branch. The default is a worktree; a simple
 feature branch in the main checkout is an exception the human requests explicitly. The base branch is
-never written to (ADR-0005). This skill applies at three trigger points:
+never written to. This skill applies at three trigger points:
 
 1. **Session start** — report the current branch, whether the working directory is a worktree and the
    active change. Do not create anything yet.

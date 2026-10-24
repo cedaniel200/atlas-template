@@ -1,6 +1,6 @@
 #!/bin/sh
 # pre-commit dispatcher — runs every guard in pre-commit.d/ in lexicographic
-# order and aborts at the first failure (ADR-0006).
+# order and aborts at the first failure.
 #
 # Adding a guard is adding an executable file: this dispatcher never changes.
 # Each guard owns its skip semantics; the dispatcher only chains them.

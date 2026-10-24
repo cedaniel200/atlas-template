@@ -84,7 +84,7 @@ async function respaldar(rel, proyecto, backup, dryRun) {
 }
 
 // `core.hooksPath` del proyecto, o null si no hay repositorio o no está configurada.
-// El actualizador solo informa: nunca escribe configuración de git (ADR-0006).
+// El actualizador solo informa: nunca escribe configuración de git.
 function leerHooksPath(proyecto) {
   try {
     const salida = execFileSync('git', ['-C', proyecto, 'config', '--get', 'core.hooksPath'], {
@@ -256,7 +256,7 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
   }
 
   // Los hooks llegaron con la versión nueva: se informa de cómo activarlos, pero
-  // nunca se escribe `core.hooksPath` (ADR-0006). Una ruta ajena se conserva.
+  // nunca se escribe `core.hooksPath`. Una ruta ajena se conserva.
   if (await existe(join(proyecto, '.githooks'))) {
     const hooksPath = leerHooksPath(proyecto);
     if (hooksPath !== '.githooks') {
