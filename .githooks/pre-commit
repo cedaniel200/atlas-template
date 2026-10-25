@@ -1,26 +1,29 @@
 #!/bin/sh
-# GitLeaks pre-commit hook — blocks commits that contain secrets.
+# pre-commit dispatcher — runs every guard in pre-commit.d/ in lexicographic
+# order and aborts at the first failure.
 #
-# Install once per clone:
-#   git config core.hooksPath .githooks
-#
-# If gitleaks is not installed, the hook skips and reports it (non-blocking).
+# Adding a guard is adding an executable file: this dispatcher never changes.
+# Each guard owns its skip semantics; the dispatcher only chains them.
 
-echo "🔍 Scanning staged changes for secrets with GitLeaks..."
+case "$0" in
+    */*) hooks_dir=${0%/*} ;;
+    *) hooks_dir=. ;;
+esac
 
-if ! command -v gitleaks >/dev/null 2>&1; then
-    echo "⚠️  GitLeaks is not installed. Skipping the scan."
-    echo "   Install it with: brew install gitleaks"
-    exit 0
-fi
+guards="$hooks_dir/pre-commit.d"
+[ -d "$guards" ] || exit 0
 
-gitleaks git --pre-commit --staged --verbose
+for guard in "$guards"/*; do
+    [ -f "$guard" ] || continue
+    nombre=${guard##*/}
+    if [ ! -x "$guard" ]; then
+        echo "⚠️  pre-commit: skipping non-executable guard '$nombre'."
+        continue
+    fi
+    if ! "$guard"; then
+        echo "❌ pre-commit: guard '$nombre' failed; commit aborted."
+        exit 1
+    fi
+done
 
-if [ $? -ne 0 ]; then
-    echo "❌ Secrets detected in the staged changes. Commit blocked."
-    echo "   Review the findings and remove the secrets."
-    exit 1
-fi
-
-echo "✅ Secret scan completed — no findings."
 exit 0

@@ -29,6 +29,16 @@ license: MIT
    before writing code.
 7. **Present a plan to the user** before touching code.
 
+## Workspace check (two phases)
+
+**Phase 1 — at startup.** Report the current branch, whether the working directory is a worktree and
+the active change. Informing creates nothing and asks nothing.
+
+**Phase 2 — before the first write** (a change artifact, code, a QA report or documentation).
+Recheck the branch. If it is the base branch, isolate the change with the `using-git-worktrees` skill or
+stop and ask the human. A session that starts in read-only mode still repeats this check before it
+writes.
+
 ## If something is missing
 
 | Missing | Action |
@@ -37,6 +47,7 @@ license: MIT
 | "Do not touch" rules | Ask before editing |
 | Bootstrap pending | Run the ritual first |
 | Red tests | Report and do not proceed |
+| Writing on the base branch | Isolate or stop; never write on it |
 
 ## Role announcement
 

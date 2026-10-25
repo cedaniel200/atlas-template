@@ -50,6 +50,8 @@ health check.
     - **What must not appear**: internal fields, secrets, passwords, unnecessary PII, data from another
       tenant or user.
   - Record **evidence** in the report (body fragment or key fields), not just "status 200".
+- Verify the isolation before writing the report: the current branch must not be the base branch. If it
+  is, stop and ask to isolate the change; never write the report on the base branch.
 - Generate `qa-report-<N>.md` (incremental number) in `openspec/changes/<change>/`.
 - **Create test data** to unblock scenarios:
   - Prefer creating data through the API.

@@ -73,6 +73,30 @@ async function copiarConBackup(rel, proyecto, origen, backup, dryRun) {
   }
 }
 
+// Copia de seguridad del archivo local antes de declarar un conflicto: el
+// `.new` conserva la versión del template, pero la modificación del humano debe
+// quedar recuperable aunque el archivo siga en su sitio.
+async function respaldar(rel, proyecto, backup, dryRun) {
+  if (dryRun) return;
+  const destino = join(backup, rel);
+  await mkdir(dirname(destino), { recursive: true });
+  await copyFile(join(proyecto, rel), destino);
+}
+
+// `core.hooksPath` del proyecto, o null si no hay repositorio o no está configurada.
+// El actualizador solo informa: nunca escribe configuración de git.
+function leerHooksPath(proyecto) {
+  try {
+    const salida = execFileSync('git', ['-C', proyecto, 'config', '--get', 'core.hooksPath'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    return salida || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function actualizarArnes({ template, proyecto = '.', dryRun = false, log = console.log } = {}) {
   if (!template) throw new Error('falta --template <ruta del template nuevo>');
   if (!(await existe(join(proyecto, '.atlas/state.json'))) || !(await existe(join(proyecto, '.atlas/manifest.json')))) {
@@ -104,7 +128,7 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
   const marca = new Date().toISOString().replace(/[:.]/g, '-');
   const backup = join(proyecto, '.atlas/backups', marca);
   const host = state.host;
-  const resultado = { actualizados: [], sinCambios: [], regenerados: [], conflictos: [], omitidos: [], nuevos: [], eliminados: [], ajenosAlTemplate: [], errores: [] };
+  const resultado = { actualizados: [], sinCambios: [], regenerados: [], conflictos: [], omitidos: [], nuevos: [], eliminados: [], ajenosAlTemplate: [], avisos: [], errores: [] };
 
   // Los adaptadores se regeneran todos de una vez (y sin placeholders).
   if (!dryRun && ['opencode', 'claude'].includes(host)) {
@@ -171,6 +195,7 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
       resultado.actualizados.push(rel);
     } else {
       if (!dryRun) {
+        await respaldar(rel, proyecto, backup, dryRun);
         await mkdir(dirname(join(proyecto, `${rel}.new`)), { recursive: true });
         await copyFile(origen, join(proyecto, `${rel}.new`));
         manifest.files[rel].sha256 = await sha256(origen);
@@ -199,6 +224,7 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
     const origen = join(template, rel);
     if (await existe(join(proyecto, rel))) {
       if (!dryRun) {
+        await respaldar(rel, proyecto, backup, dryRun);
         await mkdir(dirname(join(proyecto, `${rel}.new`)), { recursive: true });
         await copyFile(origen, join(proyecto, `${rel}.new`));
         manifest.files[rel] = { origin: datos.origin, ownership: datos.ownership, sha256: datos.sha256 };
@@ -227,6 +253,21 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
     state.template_source = { url, commit };
     state.updated_at = new Date().toISOString();
     await writeFile(join(proyecto, '.atlas/state.json'), `${JSON.stringify(state, null, 2)}\n`, 'utf8');
+  }
+
+  // Los hooks llegaron con la versión nueva: se informa de cómo activarlos, pero
+  // nunca se escribe `core.hooksPath`. Una ruta ajena se conserva.
+  if (await existe(join(proyecto, '.githooks'))) {
+    const hooksPath = leerHooksPath(proyecto);
+    if (hooksPath !== '.githooks') {
+      const comando = 'git config core.hooksPath .githooks';
+      resultado.avisos.push(
+        hooksPath
+          ? `core.hooksPath apunta a ${hooksPath}: no se modifica; para encadenar los hooks del arnés ejecuta \`${comando}\``
+          : `hooks de git inactivos: ejecuta \`${comando}\` para activar el guard de la rama base`,
+      );
+      log(`⚠️  ${resultado.avisos[resultado.avisos.length - 1]}`);
+    }
   }
 
   log(dryRun ? 'SIMULACIÓN (sin escribir)' : `Actualización aplicada. Backup: ${backup}`);

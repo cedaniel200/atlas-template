@@ -30,7 +30,8 @@ at each session start). `archive` and `sync` always require explicit approval.
 
 ## Worktree
 
-The worktree must exist (created by `analyst`). If it does not, stop and ask `analyst` to create it.
+The change branch must exist before you start; the `analyst` creates it, not you. Verify that the
+current branch is not the base branch: if it is, stop and ask the `analyst` to isolate the change.
 
 ```bash
 cd .worktrees/<change>

@@ -53,14 +53,10 @@ Never ask the same question twice.
 
 ## Git
 
-The analyst executes git operations directly.
-
-```bash
-BASE=$(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's#^origin/##')
-git checkout "$BASE" && git pull origin "$BASE"
-git worktree add .worktrees/<change> -b feature/<change>
-cd .worktrees/<change>
-```
+The analyst runs git operations directly, following the `using-git-worktrees` skill instead of a
+hard-coded recipe. Before creating or writing any change artifact, verify the isolation precondition:
+if the current branch is the base branch, isolate the change in its worktree (or a human-approved
+feature branch) or stop and ask. Never write artifacts on the base branch.
 
 - Commit after each artifact the user approves.
 - Push the change branch.

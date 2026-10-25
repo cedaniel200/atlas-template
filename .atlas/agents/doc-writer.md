@@ -66,15 +66,17 @@ placeholders when the project already has one for a concept. Never write values 
 
 ## Flow (pre-merge, inside the worktree)
 
-1. **Read** the active change and `adr/`.
-2. **Detect** which documentation is affected: technical (architecture, API, guides, environment) and/or
+1. **Verify isolation.** If the current branch is the base branch, stop and ask to isolate the change,
+   even when a human invokes you directly. Never write documentation on the base branch.
+2. **Read** the active change and `adr/`.
+3. **Detect** which documentation is affected: technical (architecture, API, guides, environment) and/or
    functional (business rules, use cases).
-3. **Functional changes:** read the code and the specs to compare the documented use cases against the
+4. **Functional changes:** read the code and the specs to compare the documented use cases against the
    approved behavior. If they diverge, flag it — do not "fix" the document to match the code.
-4. **Update** the necessary files in the existing sections under the documentation root, or the
+5. **Update** the necessary files in the existing sections under the documentation root, or the
    project README.
-5. **Return a summary to `analyst`**: files created/updated, why, and any divergence flagged.
-6. `analyst` validates consistency and creates the pull request; the user reviews the PR once.
+6. **Return a summary to `analyst`**: files created/updated, why, and any divergence flagged.
+7. `analyst` validates consistency and creates the pull request; the user reviews the PR once.
 
 ---
 

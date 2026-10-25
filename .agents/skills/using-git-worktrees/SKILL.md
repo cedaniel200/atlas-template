@@ -1,6 +1,6 @@
 ---
 name: using-git-worktrees
-description: Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback
+description: Use at session start, when creating change artifacts, or before implementing a plan - resolves the workspace policy (worktree by default, human-requested feature branch as exception) and never writes on the base branch; prefers native worktree tools over git worktree
 license: MIT
 ---
 
@@ -13,6 +13,15 @@ to manual git worktrees only when no native tool is available.
 
 **Core principle:** Detect existing isolation first. Then use native tools. Then fall back to git.
 Never fight the harness.
+
+**Workspace policy:** every change is written on its own branch. The default is a worktree; a simple
+feature branch in the main checkout is an exception the human requests explicitly. The base branch is
+never written to. This skill applies at three trigger points:
+
+1. **Session start** — report the current branch, whether the working directory is a worktree and the
+   active change. Do not create anything yet.
+2. **Before creating change artifacts** — isolate first if the current branch is the base branch.
+3. **Before implementing a plan** — same check.
 
 **Announce at start:** "I'm using the using-git-worktrees skill to set up an isolated workspace."
 
@@ -38,13 +47,15 @@ git rev-parse --show-superproject-working-tree 2>/dev/null
 Step 2. Do NOT create another worktree. Report: *"Already in isolated workspace at `<path>` on branch
 `<name>`."* (Detached HEAD: note that branch creation is needed at finish time.)
 
-**If `GIT_DIR == GIT_COMMON` (or in a submodule):** you are in a normal repo checkout. Has the user
-already indicated their worktree preference? If not, ask for consent:
+**If `GIT_DIR == GIT_COMMON` (or in a submodule):** you are in a normal repo checkout. Resolve consent
+from the preference already declared in `AGENTS.md` or the session instructions. When the declared
+default is a worktree, do not ask again. Ask only when no preference exists:
 
 > "Would you like me to set up an isolated worktree? It protects your current branch from changes."
 
-Honor any existing declared preference without asking. If the user declines, work in place and skip
-to Step 2.
+If the user declines, work in place only when they asked for a simple feature branch and the working
+tree is clean. Never work on the base branch: isolate, or stop and ask. Record the exception in the
+change.
 
 ## Step 1: Create Isolated Workspace
 
@@ -133,6 +144,7 @@ Ready to implement <feature-name>
 ## Red Flags
 
 **Never:**
+- Write on the base branch: isolate the change or stop and ask
 - Create a worktree when Step 0 detects existing isolation
 - Use `git worktree add` when you have a native worktree tool (e.g., `EnterWorktree`)
 - Skip Step 1a by jumping straight to Step 1b's git commands

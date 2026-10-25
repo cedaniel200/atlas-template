@@ -65,6 +65,18 @@ git branch -d feature/<change>
 git worktree remove .worktrees/<change>
 ```
 
+## Simple branch exception
+
+A feature branch in the main checkout replaces the worktree only when **all** of these hold:
+
+- the human asks for it explicitly;
+- the working tree is clean;
+- the change branch is the same in the project and its submodules (no mixed branch state);
+- the exception is recorded in the change;
+- the branch is never the base branch.
+
+Otherwise use a worktree. The pre-commit guard still blocks any commit on the base branch.
+
 ## Integration branches
 
 When the default branch must stay stable, use an integration branch:

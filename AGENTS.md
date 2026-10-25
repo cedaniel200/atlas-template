@@ -153,6 +153,11 @@ explore → propose → apply → QA → review → close
 > **Exception — bootstrap:** the initial setup (`.atlas/BOOTSTRAP.md`) runs on its own branch
 > (`chore/bootstrap`), not in a change worktree. One commit per phase and the user merges.
 >
+> **Isolation:** every change is written on its own branch, never on the base branch. The default is a
+> worktree; a simple feature branch in the main checkout requires an explicit human request, a clean
+> working tree, aligned submodule branches and a record in the change. See `using-git-worktrees` and
+> `git-workflow`.
+>
 > **Stacks:** `state.stacks` is the source; each stack generates `engineer-<stack>` and `packs` are
 > activated per stack.
 
@@ -182,6 +187,9 @@ In `manual` mode, the user invokes each phase; the `analyst` checks that no gate
 
 ## Golden rules
 
+- **Branch isolation**: no commit and no change artifact is written on the base branch; isolate every
+  change (worktree by default, human-requested feature branch as exception). The pre-commit guard blocks
+  any commit on the base branch.
 - **Incremental commits**: one logical change = one commit (see `conventional-commits`).
 - **Role byline** in agent commits: `By <role>.` at the end of the body.
 - **Code comments**: reference ADRs (`adr/NNNN-...`) or functional documentation, **never**

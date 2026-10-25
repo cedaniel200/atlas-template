@@ -6,8 +6,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
@@ -31,7 +32,7 @@ const NUEVO_LOCAL = '// versión local sin seguimiento en el manifiesto\n';
 const INVENTARIO = '// inventario del template nuevo\nexport async function inventariar() {\n  return {};\n}\n';
 const RUTA_INVENTARIO = '.atlas/scripts/lib/inventario.mjs';
 
-async function crearProyecto(raiz) {
+async function crearProyecto(raiz, archivosExtra = {}) {
   const proyecto = join(raiz, 'proyecto');
   await escribir(
     join(proyecto, '.atlas/state.json'),
@@ -60,6 +61,7 @@ async function crearProyecto(raiz) {
           },
           '.atlas/agents/gone.md': { ownership: 'managed', origin: 'core', sha256: sha256(GONE) },
           '.atlas/agents/same.md': { ownership: 'managed', origin: 'core', sha256: sha256(SAME) },
+          ...archivosExtra,
         },
       },
       null,
@@ -251,6 +253,90 @@ test('--dry-run reporta la adopción sin escribir archivos ni manifiesto', async
     await assert.rejects(readFile(join(proyecto, '.atlas/scripts/nuevo.mjs')), { code: 'ENOENT' });
     const manifest = await leerManifiesto(proyecto);
     assert.equal(manifest.files['.atlas/scripts/nuevo.mjs'], undefined);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+const HOOK = '#!/bin/sh\n# hook del arnés\nexit 0\n';
+const HOOK_LOCAL = '#!/bin/sh\n# hook local modificado\nexit 0\n';
+const GUARD = '#!/bin/sh\nexit 0\n';
+
+test('un proyecto anterior sin .githooks/ adopta los hooks y avisa cómo activarlos', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    const template = await crearTemplateConArchivos(raiz, {
+      '.githooks/pre-commit': HOOK,
+      '.githooks/pre-commit.d/10-worktree-guard.sh': GUARD,
+    });
+
+    const resultado = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.deepEqual(resultado.nuevos, [
+      '.githooks/pre-commit',
+      '.githooks/pre-commit.d/10-worktree-guard.sh',
+    ]);
+    assert.equal(await readFile(join(proyecto, '.githooks/pre-commit'), 'utf8'), HOOK);
+    const manifest = await leerManifiesto(proyecto);
+    assert.deepEqual(manifest.files['.githooks/pre-commit'], {
+      origin: 'core',
+      ownership: 'managed',
+      sha256: sha256(HOOK),
+    });
+    assert.match(resultado.avisos[0], /git config core\.hooksPath \.githooks/);
+    assert.deepEqual(resultado.errores, []);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('un hook local modificado genera .new y copia de seguridad', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz, {
+      '.githooks/pre-commit': {
+        ownership: 'managed',
+        origin: 'core',
+        sha256: sha256(HOOK),
+      },
+    });
+    await escribir(join(proyecto, '.githooks/pre-commit'), HOOK_LOCAL);
+    const template = await crearTemplateConArchivos(raiz, { '.githooks/pre-commit': HOOK });
+
+    const resultado = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.deepEqual(resultado.conflictos, ['.githooks/pre-commit']);
+    assert.equal(await readFile(join(proyecto, '.githooks/pre-commit'), 'utf8'), HOOK_LOCAL);
+    assert.equal(await readFile(join(proyecto, '.githooks/pre-commit.new'), 'utf8'), HOOK);
+    const backups = await readdir(join(proyecto, '.atlas/backups'));
+    assert.equal(backups.length, 1);
+    assert.equal(
+      await readFile(join(proyecto, '.atlas/backups', backups[0], '.githooks/pre-commit'), 'utf8'),
+      HOOK_LOCAL,
+    );
+    assert.deepEqual((await leerManifiesto(proyecto)).files['.githooks/pre-commit'], {
+      origin: 'core',
+      ownership: 'managed',
+      sha256: sha256(HOOK),
+    });
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});
+
+test('si core.hooksPath ya es .githooks no avisa', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = await crearProyecto(raiz);
+    execFileSync('git', ['init', '--quiet'], { cwd: proyecto });
+    execFileSync('git', ['config', 'core.hooksPath', '.githooks'], { cwd: proyecto });
+    const template = await crearTemplateConArchivos(raiz, { '.githooks/pre-commit': HOOK });
+
+    const resultado = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    assert.ok(resultado.nuevos.includes('.githooks/pre-commit'));
+    assert.deepEqual(resultado.avisos, []);
   } finally {
     await rm(raiz, { recursive: true, force: true });
   }

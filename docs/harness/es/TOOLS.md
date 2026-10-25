@@ -61,8 +61,9 @@ brew install gitleaks
 git config core.hooksPath .githooks
 ```
 
-`.githooks/pre-commit` bloquea el commit si detecta secretos. Si gitleaks no está instalado, el hook se
-omite y lo indica.
+`.githooks/pre-commit` es un despachador. `20-gitleaks.sh` escanea los cambios en stage y bloquea el
+commit si detecta secretos; si gitleaks no está instalado, avisa y no bloquea. El guard de la rama base
+se ejecuta igual. Detalle: [`HOOKS.md`](HOOKS.md).
 
 ---
 
