@@ -184,7 +184,7 @@ answers.** Present exactly these three options:
 
 | Option | What it does | Consequence |
 |---|---|---|
-| **(a) recommended** | Delete **only the duplicate IDs** from `.opencode/skills/`, so the canonical `.agents/skills/` wins | Same behavior across OpenCode, Claude and Codex |
+| **(a) recommended** | Delete **only the duplicate IDs** from `.opencode/skills/`, so the canonical `.agents/skills/` wins | Same behavior across every supported host |
 | **(b)** | Keep the native `.opencode/skills/` | Template canonical skills are shadowed and do not receive their improvements |
 | **(c)** | Keep both, with an explicit justification recorded | Two copies of the same skill; the recorded reason explains why |
 
