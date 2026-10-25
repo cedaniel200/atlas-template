@@ -6,7 +6,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -251,5 +251,93 @@ test('el stack se inserta antes del punto y solo en los adaptadores por stack', 
       '**Exclusive role:** build things without a final period',
       'el adaptador genérico no lleva sufijo de stack',
     );
+  });
+});
+
+test('Cursor: model inherit, sin readonly y descripción entrecomillada y recortada', async () => {
+  const template = await crearTemplateSintetico({
+    narrador: [
+      '# narrador',
+      '',
+      "> **Exclusive role:** keep the project's notes aligned.",
+      '> Second sentence skipped.',
+      '',
+    ].join('\n'),
+  });
+  const state = { host: 'cursor', stacks: [], optional_agents: [] };
+
+  await conFixture({ agentsMd: AGENTS_MINIMO, state, template }, async ({ proyecto }) => {
+    await renderizarAdaptadores({ template, proyecto, log: () => {} });
+
+    const contenido = await readFile(join(proyecto, '.cursor/agents/narrador.md'), 'utf8');
+    assert.match(
+      contenido,
+      /^---\nname: narrador\ndescription: '\*\*Exclusive role:\*\* keep the project''s notes aligned\.'\nmodel: inherit\n---\n\n/,
+      'el frontmatter de Cursor debe declarar nombre, descripción y modelo heredado',
+    );
+    assert.ok(!/^readonly:/m.test(contenido), 'Cursor no debe restringir la escritura por rol');
+    // El adaptador es el único artefacto: no se genera configuración de host por rol.
+    assert.deepEqual(await readdir(join(proyecto, '.cursor/agents')), ['narrador.md']);
+  });
+});
+
+test('un host sin adaptador falla y enumera los tres soportados', async () => {
+  const state = { host: 'windsurf', stacks: [], optional_agents: [] };
+
+  await conFixture({ agentsMd: AGENTS_MINIMO, state, template: RAIZ }, async ({ proyecto }) => {
+    await assert.rejects(
+      renderizarAdaptadores({ template: RAIZ, proyecto, log: () => {} }),
+      (error) => {
+        assert.match(error.message, /host no soportado: windsurf/);
+        for (const host of ['opencode', 'claude', 'cursor']) {
+          assert.ok(error.message.includes(host), `el mensaje debe enumerar ${host}`);
+        }
+        return true;
+      },
+    );
+  });
+});
+
+test('Cursor: un rol opcional desactivado no genera adaptador ni filtra la marca', async () => {
+  const marca = '<!-- optional-role -->';
+  const template = await crearTemplateSintetico({
+    mentor: [`${marca} # mentor`, '', '> Teach the concepts the project uses.', ''].join('\n'),
+  });
+  const desactivado = { host: 'cursor', stacks: [], optional_agents: [] };
+
+  await conFixture({ agentsMd: AGENTS_MINIMO, state: desactivado, template }, async ({ proyecto }) => {
+    await renderizarAdaptadores({ template, proyecto, log: () => {} });
+    await assert.rejects(readFile(join(proyecto, '.cursor/agents/mentor.md')), { code: 'ENOENT' });
+
+    const activado = { ...desactivado, optional_agents: ['mentor'] };
+    await writeFile(join(proyecto, '.atlas/state.json'), JSON.stringify(activado, null, 2), 'utf8');
+    await renderizarAdaptadores({ template, proyecto, log: () => {} });
+
+    const contenido = await readFile(join(proyecto, '.cursor/agents/mentor.md'), 'utf8');
+    assert.ok(contenido.includes('model: inherit'));
+    assert.ok(!contenido.includes(marca), 'la marca interna no debe llegar al adaptador');
+  });
+});
+
+test('Cursor: los adaptadores engineer de stacks retirados se eliminan', async () => {
+  const template = await crearTemplateSintetico({
+    engineer: ['# engineer', '', '> Build the approved tasks.', ''].join('\n'),
+  });
+  const dosStacks = { host: 'cursor', stacks: [{ id: 'api' }, { id: 'web' }], optional_agents: [] };
+
+  await conFixture({ agentsMd: AGENTS_MINIMO, state: dosStacks, template }, async ({ proyecto }) => {
+    await renderizarAdaptadores({ template, proyecto, log: () => {} });
+    try {
+      await readFile(join(proyecto, '.cursor/agents/engineer-web.md'), 'utf8');
+    } catch {
+      assert.fail('el adaptador del stack vigente debe existir tras la primera generación');
+    }
+
+    const unStack = { ...dosStacks, stacks: [{ id: 'api' }] };
+    await writeFile(join(proyecto, '.atlas/state.json'), JSON.stringify(unStack, null, 2), 'utf8');
+    await renderizarAdaptadores({ template, proyecto, log: () => {} });
+
+    const entradas = (await readdir(join(proyecto, '.cursor/agents'))).sort();
+    assert.deepEqual(entradas, ['engineer-api.md'], 'solo debe quedar el adaptador del stack vigente');
   });
 });

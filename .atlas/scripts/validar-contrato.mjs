@@ -11,6 +11,8 @@
 import { access, readdir, readFile } from 'node:fs/promises';
 import { basename, join, relative } from 'node:path';
 
+import { HOSTS } from './lib/hosts.mjs';
+
 const CONTRATO = '.atlas/PLACEHOLDERS.md';
 const CONSUMIDORES_PROYECTO = ['AGENTS.md', 'openspec/config.yaml', '.atlas/PROJECT-README.md'];
 const DIRECTORIOS_PROYECTO = ['.atlas/agents', '.agents/skills'];
@@ -165,7 +167,7 @@ if (stacks.length > 0) {
   }
 
   const host = estado.host;
-  const directorio = host === 'opencode' ? '.opencode/agent' : host === 'claude' ? '.claude/agents' : null;
+  const directorio = HOSTS[host]?.agentes ?? null;
   if (directorio) {
     for (const stack of stacks) {
       const esperado = `engineer-${stack.id}.md`;
@@ -187,7 +189,7 @@ if (stacks.length > 0) {
 const agentesOpcionales = Array.isArray(estado.optional_agents) ? estado.optional_agents : [];
 if (agentesOpcionales.length > 0) {
   const host = estado.host;
-  const directorio = host === 'opencode' ? '.opencode/agent' : host === 'claude' ? '.claude/agents' : null;
+  const directorio = HOSTS[host]?.agentes ?? null;
   if (!directorio) {
     errores.push(`state.optional_agents: el host ${host ?? '(sin host)'} no soporta subagentes`);
   }

@@ -12,12 +12,34 @@
 //             .atlas/scripts/**, .atlas/README.md, .atlas/legal/**,
 //             .atlas/profiles/_templates/**, .atlas/profiles/_examples/**, .atlas/packs/**,
 //             .githooks/**
-//   generated .opencode/agent/**, .claude/agents/**, .opencode/commands/**,
-//             .claude/commands/**, .codex/prompts/**, opencode.json, CLAUDE.md
+//   generated .opencode/agent/**, .claude/agents/**, .cursor/agents/**,
+//             .opencode/commands/**, .claude/commands/**, .cursor/commands/**,
+//             .codex/prompts/**, opencode.json, CLAUDE.md
+//             La configuración MCP del host (`.cursor/mcp.json`) queda fuera: es del
+//             usuario y el actualizador nunca debe reescribirla.
 
 import { readdir, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
+
+import { HOSTS } from './hosts.mjs';
+
+const escaparRegex = (texto) => texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Las rutas de adaptadores y comandos se derivan del registro de hosts: añadir un
+// host no exige recordar este patrón. `.codex/prompts/**` se conserva como ruta
+// histórica porque Codex no declara descriptor de adaptador.
+const PATRON_GENERADO_HOST = new RegExp(
+  [
+    ...Object.values(HOSTS).flatMap((host) => [
+      `^${escaparRegex(host.agentes)}/`,
+      `^${escaparRegex(host.comandos)}/`,
+    ]),
+    '^\\.codex/prompts/',
+    '^opencode\\.json$',
+    '^CLAUDE\\.md$',
+  ].join('|'),
+);
 
 export const EXCLUIR = new Set([
   '.git', 'node_modules', 'build', 'dist', 'graphify-out',
@@ -81,8 +103,7 @@ export function crearReglas({ raizDocs = 'docs', host = 'host' } = {}) {
       origin: (rel) => `pack:${rel.split('/')[2]}`,
     },
     {
-      patron:
-        /^\.opencode\/agent\/|^\.claude\/agents\/|^\.opencode\/commands\/|^\.claude\/commands\/|^\.codex\/prompts\/|^opencode\.json$|^CLAUDE\.md$/,
+      patron: PATRON_GENERADO_HOST,
       ownership: 'generated',
       origin: () => `host:${host}`,
     },

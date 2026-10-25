@@ -12,10 +12,26 @@
 // error accionable en lugar de un `ERR_MODULE_NOT_FOUND` sin contexto; el
 // updater es quien resuelve el módulo desde el template.
 //
-// Uso: node .atlas/scripts/generar-manifiesto.mjs --host opencode|claude|codex
+// Uso: node .atlas/scripts/generar-manifiesto.mjs --host opencode|claude|cursor|codex
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+
+// El script debe funcionar en un proyecto a medio actualizar que aún no tiene
+// `lib/`: no importa el registro de hosts de forma estática. Cuando está
+// disponible se deriva de él; si no, conserva la última lista conocida.
+const HOSTS_VALIDOS_POR_DEFECTO = 'opencode|claude|cursor|codex';
+
+async function hostsValidos() {
+  try {
+    const { HOSTS_SOPORTADOS } = await import('./lib/hosts.mjs');
+    // Codex no tiene adaptadores, pero sus comandos generados sí se inventarían.
+    return [...HOSTS_SOPORTADOS, 'codex'].join('|');
+  } catch (error) {
+    if (error?.code !== 'ERR_MODULE_NOT_FOUND') throw error;
+    return HOSTS_VALIDOS_POR_DEFECTO;
+  }
+}
 
 let inventariar;
 try {
@@ -37,7 +53,7 @@ const proyecto = valor('--project') ?? '.';
 const state = JSON.parse(await readFile(join(proyecto, '.atlas/state.json'), 'utf8'));
 const host = valor('--host') ?? state.host;
 if (!host) {
-  console.error('❌ host no detectado; pasa --host opencode|claude|codex');
+  console.error(`❌ host no detectado; pasa --host ${await hostsValidos()}`);
   process.exit(1);
 }
 

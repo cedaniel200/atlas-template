@@ -30,6 +30,7 @@ import { dirname, join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 import { renderizarAdaptadores } from './renderizar-adaptadores.mjs';
+import { HOSTS, HOSTS_SOPORTADOS } from './lib/hosts.mjs';
 
 const sha256 = async (ruta) => createHash('sha256').update(await readFile(ruta)).digest('hex');
 const existe = async (ruta) => {
@@ -130,8 +131,9 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
   const host = state.host;
   const resultado = { actualizados: [], sinCambios: [], regenerados: [], conflictos: [], omitidos: [], nuevos: [], eliminados: [], ajenosAlTemplate: [], avisos: [], errores: [] };
 
-  // Los adaptadores se regeneran todos de una vez (y sin placeholders).
-  if (!dryRun && ['opencode', 'claude'].includes(host)) {
+  // Los adaptadores se regeneran todos de una vez (y sin placeholders). El registro
+  // de hosts decide cuáles existen; Codex no tiene adaptadores.
+  if (!dryRun && HOSTS_SOPORTADOS.includes(host)) {
     await renderizarAdaptadores({ host, template, proyecto, dryRun, log: () => {} });
   }
 
@@ -146,7 +148,10 @@ export async function actualizarArnes({ template, proyecto = '.', dryRun = false
     }
 
     if (datos.ownership === 'generated') {
-      if (rel.startsWith('.opencode/agent/') || rel.startsWith('.claude/agents/')) {
+      const esAdaptador = Object.values(HOSTS).some((descriptor) =>
+        rel.startsWith(`${descriptor.agentes}/`),
+      );
+      if (esAdaptador) {
         if (dryRun) resultado.regenerados.push(rel);
         else {
           await mkdir(dirname(join(proyecto, rel)), { recursive: true });

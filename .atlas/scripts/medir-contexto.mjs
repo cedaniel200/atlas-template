@@ -19,6 +19,8 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { HOSTS } from './lib/hosts.mjs';
+
 const PROXY = 4;
 const json = process.argv.includes('--json');
 const medirTodo = process.argv.includes('--all');
@@ -132,7 +134,7 @@ const AGENTES = '.atlas/agents/*.md';
 const SKILLS = '.agents/skills/*/SKILL.md';
 
 // Política de medición:
-// - Base: AGENTS + CLAUDE + host activo + descripciones de skills.
+// - Base: AGENTS + CLAUDE + configuración del host activo + descripciones de skills.
 // - Arranque mínimo: lo que el bootstrap necesita (BOOTSTRAP, AGENTS, config, placeholders, README base, host).
 // - Arranque completo: + prompts de agente activos (core + opcionales en state.optional_agents).
 // - Techo: todo el arnés, incluidas referencias on-demand y prompts opcionales.
@@ -145,9 +147,12 @@ try {
 }
 const opcionalesActivos = new Set(Array.isArray(estado.optional_agents) ? estado.optional_agents : []);
 const host = estado.host;
-const hostConfig = host === 'claude' || host === 'codex'
-  ? null
-  : ((await expandir('opencode.json')).length > 0 ? 'opencode.json' : '.atlas/hosts/opencode/opencode.json');
+// El medidor usa el host activo: sumar los adaptadores de todos los hosts contaba
+// archivos que el proyecto no carga.
+const descriptorHost = HOSTS[host];
+const hostConfig = host === 'opencode'
+  ? ((await expandir('opencode.json')).length > 0 ? 'opencode.json' : '.atlas/hosts/opencode/opencode.json')
+  : null;
 const patronesHost = hostConfig ? [hostConfig] : [];
 
 const arranqueMinimo = await medirPatrones([
@@ -200,13 +205,11 @@ imprimir('Arranque mínimo del ritual (sin leer prompts de agente)', arranqueMin
 imprimir('Arranque completo (si además lee los prompts de agente activos)', arranque);
 const tokensBase = imprimir('Contexto base de sesión (siempre)', baseConSkills);
 
-const adaptadores = [
-  ...(await expandir('.opencode/agent/*.md')),
-  ...(await expandir('.claude/agents/*.md')),
-];
+const patronAdaptadores = descriptorHost ? `${descriptorHost.agentes}/*.md` : null;
+const adaptadores = patronAdaptadores ? await expandir(patronAdaptadores) : [];
 const fuenteAgentes = adaptadores.length > 0 ? 'adaptadores del host' : 'prompts canónicos';
-const agentes = adaptadores.length > 0
-  ? await medirPatrones(['.opencode/agent/*.md', '.claude/agents/*.md'])
+const agentes = patronAdaptadores && adaptadores.length > 0
+  ? await medirPatrones([patronAdaptadores])
   : agentesActivos;
 log(`\n## Por agente (base + prompt + núcleo de skills) — fuente: ${fuenteAgentes}`);
 const porAgente = [];
