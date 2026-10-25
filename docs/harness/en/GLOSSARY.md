@@ -6,8 +6,8 @@
 |---|---|
 | **Harness** | The set of instructions, skills, agents and configuration that guide the agent. |
 | **Portable core** | What every project receives (`AGENTS.md`, skills, agents, schema, ritual). It does not depend on domain, architecture or host. |
-| **Host** | OpenCode, Claude Code or Codex. |
-| **Adapter** | Files a host needs: `opencode.json`, `.claude/agents/`, `CLAUDE.md`, `opsx-*` commands. |
+| **Host** | OpenCode, Claude Code, Codex or Cursor. |
+| **Adapter** | Files a host needs: `opencode.json`, `.claude/agents/`, `.cursor/agents/`, `CLAUDE.md`, `opsx-*` commands. |
 | **Skill** | A reusable procedure the agent loads when the task matches its description. |
 | **Role / agent** | `analyst`, `engineer`, `reviewer`, `qa-analyst`, `doc-writer`; optional: `mentor`, `business-strategist`. |
 | **Pack** | Optional procedural knowledge (mobile, web, design, ddd, integrations). |

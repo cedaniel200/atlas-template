@@ -70,7 +70,7 @@ personal data.
 
 ## gitleaks (secrets)
 
-It is a **git hook**, not an agent hook: it works in all three hosts.
+It is a **git hook**, not an agent hook: it works in all four hosts.
 
 ```bash
 brew install gitleaks

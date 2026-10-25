@@ -70,7 +70,7 @@ secretos ni datos personales.
 
 ## gitleaks (secretos)
 
-Es un **git hook**, no un hook de agente: funciona en las tres herramientas.
+Es un **git hook**, no un hook de agente: funciona en las cuatro herramientas.
 
 ```bash
 brew install gitleaks
