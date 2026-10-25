@@ -87,6 +87,7 @@ metadata: <optional string map>
 3. The renderer (`renderizar-adaptadores.mjs`) generates the adapters:
    - OpenCode: `.opencode/agent/<role>.md` (`description`, `mode: all`).
    - Claude Code: `.claude/agents/<role>.md` (`name`, `description`).
+   - Cursor: `.cursor/agents/<role>.md` (`name`, `description`, `model: inherit`; no `readonly`).
    - Codex: no subagents; the role is emulated through `AGENTS.md`.
    - Every stack: `engineer-<stack>` with `STACK_CONTEXT` (single-stack included); `state.stacks` is the source.
 4. If the role is **optional**, start the prompt with `<!-- optional-role -->` and record it in
@@ -157,10 +158,15 @@ Never edit `engineer-<id>.md` by hand: it is regenerated.
 
 ## Add a host adapter
 
-1. Create `.atlas/hosts/<host>/` with the files the host needs at the project root.
-2. Document the adapter in `.atlas/hosts/README.md`.
-3. Update `docs/harness/en/COMPATIBILITY.md` with the capability matrix and any degradation.
-4. The bootstrap must be able to create the adapter without destroying other hosts' files.
+1. Add the host to `.atlas/scripts/lib/hosts.mjs`: `id`, `agentes` (subagent directory) and `comandos`.
+   The renderer, updater, contract validator, context meter and inventory derive from that single
+   registry, so no other script needs a new condition.
+2. Create `.atlas/hosts/<host>/` with the files the host needs at the project root (Cursor only needs
+   `mcp.json`, copied **only if missing**).
+3. Document the adapter in `.atlas/hosts/README.md`.
+4. Update `docs/harness/en/COMPATIBILITY.md` with the capability matrix, adapter generation and any
+   degradation.
+5. The bootstrap must be able to create the adapter without destroying other hosts' files.
 
 ---
 
@@ -195,7 +201,7 @@ Never edit `engineer-<id>.md` by hand: it is regenerated.
 # skills
 for f in .agents/skills/*/SKILL.md; do sed -n '1,5p' "$f"; done
 # agent references (informational: never fails)
-grep -rn "ddd-\|opencode\|claude" .atlas/agents/ .agents/skills/ || true
+grep -rn "ddd-\|opencode\|claude\|cursor" .atlas/agents/ .agents/skills/ || true
 # profiles (gate): structural with no dependencies; `npm i yaml` adds real parsing
 node .atlas/scripts/validar-perfiles.mjs
 # placeholder contract (gate)

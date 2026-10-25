@@ -1,4 +1,4 @@
-# COMPATIBILITY.md — OpenCode · Claude Code · Codex
+# COMPATIBILITY.md — OpenCode · Claude Code · Codex · Cursor
 
 > Matriz de lo que funciona igual, lo que degrada y lo que **no** se intenta unificar.
 > **Regla:** si no hay una solución simple y verificable, se documenta la limitación; no se fuerza.
@@ -7,22 +7,22 @@
 
 ## Matriz de capacidades
 
-| Capacidad | OpenCode | Claude Code | Codex | Estrategia del template |
-|---|---|---|---|---|
-| Instrucciones | `AGENTS.md` (+ `instructions` en `opencode.json`) | `CLAUDE.md` con `@AGENTS.md` | `AGENTS.md` nativo | **`AGENTS.md` es la fuente única**; `CLAUDE.md` es un stub |
-| Instrucciones anidadas | Sube del cwd al worktree | Lee `AGENTS.md` anidados al abrir un subdirectorio | Raíz; el comportamiento anidado no está garantizado | Núcleo **solo en la raíz**; anidar es opcional |
-| Skills | `.agents/skills/` (+ `.opencode/`, `.claude/`) | `.claude/skills/` | `.agents/skills/` | Canónico `.agents/skills/`; Claude por symlink |
-| Invocación de skill | Automática; `/nombre` si `metadata.opencode/slash` | Automática | `$nombre` o `/skills` | El cuerpo no depende de sintaxis de comando |
-| Comandos OpenSpec | `.opencode/commands/opsx-*` | `.claude/commands/opsx/*` | `.codex/prompts/*` | **Generados por `openspec update --tools <host>`** |
-| Subagentes | `.opencode/agent/*.md` | `.claude/agents/*.md` | **No existen** | Prompts canónicos en `.atlas/agents/`; adaptador por host; cada stack: `engineer-<stack>` |
-| Roles en Codex | — | — | Un solo agente | Se emulan con `AGENTS.md` y el anuncio de rol |
-| Hooks de agente | Plugins | Hooks nativos | No disponibles | **El flujo núcleo no depende de hooks** |
-| Git hooks | `core.hooksPath` | `core.hooksPath` | `core.hooksPath` | **Tool‑agnósticos**: gitleaks funciona en los tres |
-| MCP | `opencode.json` | Configuración de Claude | Configuración de Codex | Se configura por herramienta; nunca se versionan credenciales |
-| Modelos | `model` / `small_model` | `model` | `model` | **Nunca hardcodeados** en el template |
-| Permisos / sandbox | `permission` del agente | Settings / modo | Sandbox | Se declaran en el adaptador del host |
-| Memoria persistente | Plugin + hook git | Hook git / MCP | Hook git / MCP | **Pack opcional**, nunca requisito |
-| Grafo de conocimiento | Plugin | No | No | **Pack opcional** |
+| Capacidad | OpenCode | Claude Code | Codex | Cursor | Estrategia del template |
+|---|---|---|---|---|---|
+| Instrucciones | `AGENTS.md` (+ `instructions` en `opencode.json`) | `CLAUDE.md` con `@AGENTS.md` | `AGENTS.md` nativo | `AGENTS.md` nativo | **`AGENTS.md` es la fuente única**; `CLAUDE.md` es un stub |
+| Instrucciones anidadas | Sube del cwd al worktree | Lee `AGENTS.md` anidados al abrir un subdirectorio | Raíz; el comportamiento anidado no está garantizado | Raíz y subdirectorios | Núcleo **solo en la raíz**; anidar es opcional |
+| Skills | `.agents/skills/` (+ `.opencode/`, `.claude/`) | `.claude/skills/` | `.agents/skills/` | `.agents/skills/` | Canónico `.agents/skills/`; Claude por symlink; Cursor sin copia propia |
+| Invocación de skill | Automática; `/nombre` si `metadata.opencode/slash` | Automática | `$nombre` o `/skills` | `/nombre` o `@nombre` | El cuerpo no depende de sintaxis de comando |
+| Comandos OpenSpec | `.opencode/commands/opsx-*` | `.claude/commands/opsx/*` | `.codex/prompts/*` | `.cursor/commands/opsx-*` | **Generados por `openspec init --tools <host>`**; `openspec update` los regenera |
+| Subagentes | `.opencode/agent/*.md` | `.claude/agents/*.md` | **No existen** | `.cursor/agents/*.md` | Prompts canónicos en `.atlas/agents/`; adaptador por host; cada stack: `engineer-<stack>` |
+| Roles en Codex | — | — | Un solo agente | — | Se emulan con `AGENTS.md` y el anuncio de rol |
+| Hooks de agente | Plugins | Hooks nativos | No disponibles | — | **El flujo núcleo no depende de hooks** |
+| Git hooks | `core.hooksPath` | `core.hooksPath` | `core.hooksPath` | `core.hooksPath` | **Tool‑agnósticos**: gitleaks funciona en los cuatro |
+| MCP | `opencode.json` | Configuración de Claude | Configuración de Codex | `.cursor/mcp.json` | Se configura por herramienta; el archivo de Cursor solo se crea si falta; nunca se versionan credenciales |
+| Modelos | `model` / `small_model` | `model` | `model` | `model: inherit` | **Nunca hardcodeados** en el template |
+| Permisos / sandbox | `permission` del agente | Settings / modo | Sandbox | `permissions.json` del proyecto; sin permisos por rol | Se declaran en el adaptador del host cuando el host lo permite |
+| Memoria persistente | Plugin + hook git | Hook git / MCP | Hook git / MCP | Hook git / MCP | **Pack opcional**, nunca requisito |
+| Grafo de conocimiento | Plugin | No | No | No | **Pack opcional** |
 
 ---
 
@@ -34,11 +34,14 @@ Los prompts de `.atlas/agents/<rol>.md` son la fuente canónica, **sin frontmatt
 |---|---|---|
 | OpenCode | `.opencode/agent/<rol>.md` | `description`, `mode: all` |
 | Claude Code | `.claude/agents/<rol>.md` | `name`, `description` |
+| Cursor | `.cursor/agents/<rol>.md` | `name`, `description`, `model: inherit` |
 | Codex | — | No hay subagentes |
 
-Cada stack genera `engineer-<stack>.md` (OpenCode/Claude) con su `STACK_CONTEXT`; Codex no tiene subagentes y usa `AGENTS.md § Stacks`.
+Cada stack genera `engineer-<stack>.md` (OpenCode/Claude/Cursor) con su `STACK_CONTEXT`; Codex no tiene subagentes y usa `AGENTS.md § Stacks`.
 
-Los comandos `opsx-*` **no** se mantienen a mano: `openspec update --tools <host>` los regenera.
+El nombre y los directorios del adaptador salen de un único registro de hosts (`.atlas/scripts/lib/hosts.mjs`): añadir un host es añadir una entrada, no editar cinco scripts. Los adaptadores de Cursor nunca declaran `readonly` (ver C‑10).
+
+Los comandos `opsx-*` **no** se mantienen a mano: `openspec init --tools <host>` los crea y `openspec update` los regenera.
 
 ---
 
@@ -55,6 +58,9 @@ Los comandos `opsx-*` **no** se mantienen a mano: `openspec update --tools <host
 | C‑7 | MCP no es portable | Cada host tiene su formato | `.env.example` generado por el bootstrap + bloque por host en `.atlas/hosts/` |
 | C‑8 | Hooks de ciclo de vida del agente no existen en Codex | Automatizaciones que dependen de ellos no funcionan | Los hooks de agente son opcionales; el flujo vive en skills e instrucciones |
 | C‑9 | Dos fuentes de instrucciones (`CLAUDE.md` y `AGENTS.md`) | Reglas contradictorias | `CLAUDE.md` contiene **solo** `@AGENTS.md`; nunca duplicar |
+| C‑10 | Cursor no ofrece permisos de escritura por rol: `readonly: true` es todo-o-nada y bloquea edición de archivos y shell | El `reviewer` podría escribir código (su contrato de solo lectura no lo impone el host) y no podría emitir su informe obligatorio si se activa `readonly` | El adaptador **omite `readonly`** y el contrato de solo lectura sigue en el prompt, como en los demás hosts; `.cursor/permissions.json` es del usuario porque afecta a todos los roles |
+| C‑11 | Cursor 2.4+ puede migrar los comandos de OpenSpec a skills | Los wrappers de comandos podrían sustituirse por skills en una release futura | Los `.cursor/commands/opsx-*` generados siguen funcionando; la migración se documenta y se revisa en la próxima release |
+| C‑12 | `CURSOR_CLI` no está documentada oficialmente | La detección por entorno podría no reconocer Cursor | Evidencia `.cursor/` más pregunta explícita de confirmación cuando no hay señal o la evidencia contradice a la señal |
 
 ---
 
@@ -63,7 +69,7 @@ Los comandos `opsx-*` **no** se mantienen a mano: `openspec update --tools <host
 | Tipo | Dónde vive | Portabilidad |
 |---|---|---|
 | **Hook de agente** (ciclo de vida de la sesión) | Plugin/hook de cada herramienta | Baja: solo OpenCode y Claude Code |
-| **Hook de git** (`pre-commit`, `post-commit`) | `.githooks/` + `core.hooksPath` | **Alta: funciona en las tres** |
+| **Hook de git** (`pre-commit`, `post-commit`) | `.githooks/` + `core.hooksPath` | **Alta: funciona en los cuatro** |
 
 El núcleo no depende de hooks de agente. Si un proyecto usa gitleaks o Engram, lo hace vía git hooks,
 que son independientes de la herramienta anfitriona.
@@ -79,6 +85,7 @@ No se unifican. Cada host tiene su configuración:
 | OpenCode | `opencode.json` → `mcp` |
 | Claude Code | Configuración de MCP de Claude |
 | Codex | Configuración de MCP de Codex |
+| Cursor | `.cursor/mcp.json` → `mcpServers` (solo se crea si falta; después es del proyecto) |
 
 `Context7` es la integración recomendada para verificar documentación. **Caveat:** las consultas salen a
 un servicio externo; nunca incluir código propietario, secretos ni datos personales.
@@ -114,5 +121,8 @@ El ritual usa comandos **POSIX** (`sh`, `grep`, `diff`, `mkdir`). En Windows se 
   symlink; `.claude/agents/` para subagentes.
 - **Codex** — descubrimiento de skills compartidas desde `.agents/skills`; mención con `$` o `/skills`;
   sin subagentes.
+- **Cursor** — `AGENTS.md` y `.agents/skills/` nativos; subagentes en `.cursor/agents/*.md` con
+  frontmatter `name`, `description`, `model` y `readonly`; MCP del proyecto en `.cursor/mcp.json`
+  (`mcpServers` con `url` remota); comandos generados por OpenSpec en `.cursor/commands/`.
 - **OpenSpec 1.5** — `openspec init --tools <lista>`; adaptadores de comandos por herramienta; schema
   `spec-driven-with-adr` resuelto desde `openspec/schemas/`.

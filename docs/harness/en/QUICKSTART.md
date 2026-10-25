@@ -11,7 +11,7 @@
 - **Git**
 - **Node.js 20+** and **OpenSpec CLI** (`npm i -g @fission-ai/openspec`)
 - **POSIX shell** (`sh`, `grep`, `diff`). On **Windows**: Git Bash or WSL
-- One host: **OpenCode**, **Claude Code** or **Codex**
+- One host: **OpenCode**, **Claude Code**, **Codex** or **Cursor**
 - Optional: Docker, Context7 (MCP), Engram (memory)
 
 ---
@@ -43,6 +43,7 @@ The agent reads `AGENTS.md`, sees `.atlas/state.json` is `pending`, and runs `.a
 | **OpenCode** | Creates `opencode.json` from `.atlas/hosts/opencode/` and generates command wrappers |
 | **Claude Code** | Creates `.claude/agents/` and the `.claude/skills` symlink; `CLAUDE.md` already points to `AGENTS.md` |
 | **Codex** | Reads `AGENTS.md` and `.agents/skills/` natively; there are no subagents |
+| **Cursor** | Creates `.cursor/agents/` and `.cursor/mcp.json` only if missing; reads `AGENTS.md` and `.agents/skills/` natively |
 
 ---
 
@@ -75,6 +76,7 @@ openspec doctor                              # OpenSpec root: ok
 openspec schema which spec-driven-with-adr   # Source: project
 openspec context                             # no warnings
 ls .agents/skills/*/SKILL.md                 # ≥1 skill
+ls .cursor/agents/*.md                       # Cursor only: one adapter per active role + engineer-<stack>
 ```
 
 Review the bootstrap branch diff: `AGENTS.md`, `openspec/config.yaml`, the host adapter and `docs/`
@@ -149,6 +151,8 @@ The template does not detect or configure this by default; it only runs when you
 | `AGENTS.md` changed after `openspec init` | The CLI rewrote it | Restore the backup and merge manually |
 | `openspec init` writes skills to `.opencode/skills` | OpenCode's native path, with precedence over `.agents/skills` | Do not delete the directory: it can host team skills. If IDs collide, you decide (see below) |
 | The gate fails | Commands or sections still `TBD` | Complete them in `AGENTS.md` |
+| Cursor does not list the agents | Wrong path or host not restarted | Check `.cursor/agents/*.md` and restart Cursor |
+| Cursor has no `opsx-*` commands | OpenSpec was initialized for another tool | Run `openspec init --tools cursor` (back up `AGENTS.md` and merge) |
 
 If `openspec init` leaves duplicate IDs between `.opencode/skills/` and `.agents/skills/`, you decide:
 
