@@ -22,7 +22,7 @@ It is **agnostic** of:
 
 - **Domain**: no business terms are baked in.
 - **Architecture**: the project declares its own stance.
-- **Host tool**: OpenCode, Claude Code and Codex are supported.
+- **Host tool**: OpenCode, Claude Code, Codex and Cursor are supported.
 - **Stack**: commands come from a profile, not from the prompts.
 
 ---

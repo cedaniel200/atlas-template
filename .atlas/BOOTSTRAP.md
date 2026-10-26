@@ -101,7 +101,7 @@ Phase 1, with answers pre-filled in brownfield.
 ## 0.1 Detection
 
 ```bash
-env | grep -E '^(OPENCODE|CODEX_[A-Z_]+|CLAUDECODE|CLAUDE_CODE)=' || echo "NO_SIGNAL"
+env | grep -E '^(OPENCODE|CODEX_[A-Z_]+|CLAUDECODE|CLAUDE_CODE|CURSOR_CLI)=' || echo "NO_SIGNAL"
 ```
 
 | Signal | Tool |
@@ -109,22 +109,31 @@ env | grep -E '^(OPENCODE|CODEX_[A-Z_]+|CLAUDECODE|CLAUDE_CODE)=' || echo "NO_SI
 | `OPENCODE` | **OpenCode** |
 | `CODEX_CI`, `CODEX_THREAD_ID` or `CODEX_SANDBOX` | **Codex** |
 | `CLAUDECODE` or `CLAUDE_CODE` | **Claude Code** |
+| `CURSOR_CLI` | **Cursor** (integrated terminal) |
 | no signal | **Ask** |
 
 Secondary evidence (tie-breaker only): `opencode.json` → OpenCode; `.claude/` → Claude Code; `.codex/` →
-Codex. If the environment signal and file evidence disagree, **ask**.
+Codex; `.cursor/` → Cursor. If there is no environment signal but there is `.cursor/` evidence, propose
+Cursor and **ask for confirmation** before adapting. If the signal and the evidence disagree, **stop and
+ask**. `CURSOR_CLI` is not officially documented, so evidence plus confirmation is the safety net.
 
 ## 0.2 Adaptation
 
 **It is additive by default**: nothing is moved; only the missing adapter is created.
 
-| Action | OpenCode | Claude Code | Codex |
-|---|---|---|---|
-| `opencode.json` | create from `.atlas/hosts/opencode/` | ignore | ignore |
-| `.atlas/agents/` | canonical source | canonical source | canonical source |
-| Agent adapter | `.opencode/agent/<role>.md` | `.claude/agents/<role>.md` | *(no subagents)* |
-| Skills | `.agents/skills/` (canonical) + `.opencode/skills/` (native, takes precedence) | `.claude/skills` → symlink to `.agents/skills` | `.agents/skills/` (native) |
-| `CLAUDE.md` | preserve | must contain only `@AGENTS.md` | preserve |
+| Action | OpenCode | Claude Code | Codex | Cursor |
+|---|---|---|---|---|
+| `opencode.json` | create from `.atlas/hosts/opencode/` | ignore | ignore | ignore |
+| `.atlas/agents/` | canonical source | canonical source | canonical source | canonical source |
+| Agent adapter | `.opencode/agent/<role>.md` | `.claude/agents/<role>.md` | *(no subagents)* | `.cursor/agents/<role>.md` |
+| Skills | `.agents/skills/` (canonical) + `.opencode/skills/` (native, takes precedence) | `.claude/skills` → symlink to `.agents/skills` | `.agents/skills/` (native) | `.agents/skills/` (native) |
+| `CLAUDE.md` | preserve | must contain only `@AGENTS.md` | preserve | preserve |
+| MCP | `opencode.json` → `mcp` | Claude configuration | Codex configuration | `.cursor/mcp.json` from `.atlas/hosts/cursor/mcp.json`, **only if missing** |
+
+Cursor reads `AGENTS.md` natively and needs neither `opencode.json` nor `CLAUDE.md`; it does **not**
+create `.cursor/rules/` (there is a single source of instructions). The MCP file is created **only when
+it is missing**, announced to the human and never overwritten: after that it belongs to the project and
+is not registered in `.atlas/manifest.json` (§ 0.4).
 
 **`prune` (opt-in, never by default):** if the user asks, move non-active host artifacts to
 `.atlas/adapters/<host>/` and record it in `state.json.displaced`. Recover with `git revert`.
@@ -133,9 +142,11 @@ Codex. If the environment signal and file evidence disagree, **ask**.
 
 | Host | Action | Verification |
 |---|---|---|
-| OpenCode / Codex | none | `ls .agents/skills/*/SKILL.md` |
+| OpenCode / Codex / Cursor | none | `ls .agents/skills/*/SKILL.md` |
 | Claude Code | `ln -s ../.agents/skills .claude/skills` | `readlink .claude/skills` |
 | Claude Code without symlink (Windows) | copy and warn that it is static | `diff -r .agents/skills .claude/skills` |
+
+Cursor discovers `.agents/skills/` natively: no copy and no link, so there is a single canonical copy.
 
 **Packs**: not copied by default. Copy only `.atlas/packs/<id>/skills` and
 `.atlas/packs/<id>/agents` for packs active in `state.stacks[].packs`; the rest consumes no context.
@@ -148,7 +159,7 @@ They are not written by hand: OpenSpec generates them.
 
 ```bash
 cp AGENTS.md /tmp/agents.bootstrap.bak
-openspec init --tools <opencode|claude|codex>
+openspec init --tools <opencode|claude|codex|cursor>
 diff /tmp/agents.bootstrap.bak AGENTS.md && echo "AGENTS.md unchanged" || echo "⚠️ review and merge"
 
 # .opencode/skills/ is OpenCode's native path and takes precedence over
@@ -158,16 +169,22 @@ ls .opencode/skills 2>/dev/null | sort > /tmp/skills-opencode.txt
 comm -12 /tmp/skills-agents.txt /tmp/skills-opencode.txt  # duplicate IDs, if any
 ```
 
-Expected output: `.opencode/commands/opsx-*` · `.claude/commands/opsx/*` · `.codex/prompts/*`.
+Expected output: `.opencode/commands/opsx-*` · `.claude/commands/opsx/*` · `.codex/prompts/*` ·
+`.cursor/commands/opsx-*`.
 `openspec update` does not accept `--tools`: use it only to update already generated instructions.
 If `openspec init` rewrites `AGENTS.md`, restore it from the backup and merge only what is new.
+
+**Cursor MCP:** if the host is Cursor and `.cursor/mcp.json` does not exist, copy it from
+`.atlas/hosts/cursor/mcp.json` and announce that it was created. If it already exists, **do not modify
+it**: report that it was preserved. The file is the project's from then on and is not added to the
+manifest. `openspec init` does not create it.
 
 **If `comm` returns one or more IDs, stop and ask the human. Do not continue until the human
 answers.** Present exactly these three options:
 
 | Option | What it does | Consequence |
 |---|---|---|
-| **(a) recommended** | Delete **only the duplicate IDs** from `.opencode/skills/`, so the canonical `.agents/skills/` wins | Same behavior across OpenCode, Claude and Codex |
+| **(a) recommended** | Delete **only the duplicate IDs** from `.opencode/skills/`, so the canonical `.agents/skills/` wins | Same behavior across every supported host |
 | **(b)** | Keep the native `.opencode/skills/` | Template canonical skills are shadowed and do not receive their improvements |
 | **(c)** | Keep both, with an explicit justification recorded | Two copies of the same skill; the recorded reason explains why |
 
@@ -313,7 +330,8 @@ Do not present them as recommended or activate them by default.
 - **Agents**: generate the host adapter with
   `node .atlas/scripts/renderizar-adaptadores.mjs --host <host>`. The script replaces the
   placeholders from `AGENTS.md` § Placeholders (OpenCode: `description` + `mode: all`; Claude Code:
-  `name` + `description`; Codex: no subagents). **Do not copy the body by hand.**
+  `name` + `description`; Cursor: `name` + `description` + `model: inherit`; Codex: no subagents).
+  **Do not copy the body by hand.**
   - **Stacks**: each stack is rendered as `engineer-<id>` (even with only one). Without stacks, the
     bootstrap `engineer.md` is generated and removed when the first stack appears. The other roles are
     stack-agnostic.
@@ -349,7 +367,8 @@ Do not present them as recommended or activate them by default.
   request it explicitly. In brownfield, if the project already has its own legal files, do not move them.
 - **Manifest**: `node .atlas/scripts/generar-manifiesto.mjs --host <host>`. It applies the ownership
   and origin rules (owned: AGENTS/config/README/docs/adr/specs; managed: skills/prompts/schemas/packs/legal;
-  generated: adapters/commands/opencode.json/CLAUDE.md), computes `sha256` and writes
+  generated: adapters/commands/opencode.json/CLAUDE.md; `.cursor/mcp.json` is excluded because it belongs
+  to the user), computes `sha256` and writes
   `.atlas/manifest.json`. **Contract: 64 lowercase hex characters, no file name** (enforced by the script).
   **Run it at the end of Phase 2**, after placeholders, docs and contribution; if you change a file later, run it again.
 - **Shell**: the ritual uses POSIX commands (`sh`, `grep`, `diff`, `mkdir`). On Windows run it from
@@ -397,7 +416,7 @@ Advancing to `propose` is not allowed until **everything** is green.
 - [ ] Placeholder contract is consistent: `node .atlas/scripts/validar-contrato.mjs`
 - [ ] Profiles are valid: `node .atlas/scripts/validar-perfiles.mjs`
 - [ ] Manifest is consistent: `node .atlas/scripts/validar-manifiesto.mjs`
-- [ ] Adapters without placeholders: `grep -rn "{{" .opencode/agent .claude/agents` → empty (if they exist)
+- [ ] Adapters without placeholders: `grep -rn "{{" .opencode/agent .claude/agents .cursor/agents` → empty (if they exist)
 - [ ] Git hooks path active: `git config --get core.hooksPath` → `.githooks` (a foreign path is preserved and reported; if gitleaks is missing the secret guard warns and does not block, but the base-branch guard still runs)
 - [ ] No health/port: if `qa.health_path` or `qa.app_port` are empty, `HEALTH_URL` is `N/A` (never compose a URL with an empty path)
 - [ ] `openspec doctor` → root ok
@@ -406,6 +425,7 @@ Advancing to `propose` is not allowed until **everything** is green.
 - [ ] `ls .agents/skills/*/SKILL.md` → ≥1 skill
 - [ ] Duplicate skill IDs: `state.skills` records the human's decision (or there were none)
 - [ ] Active host adapter present (agents and commands)
+- [ ] Cursor only: `.cursor/mcp.json` was created when missing (and announced) or preserved untouched; it is not in `.atlas/manifest.json`
 - [ ] Optional agents: only those chosen in `state.optional_agents` have an adapter
 - [ ] Stacks: each one has `engineer-<stack>.md` and no `engineer.md` remains
 - [ ] Template legal: if moved, `.atlas/legal/` has the five files and the root is free; if the project has its own, they remain at the root
@@ -478,12 +498,12 @@ agents: `.atlas/docs/en/extending.md` (human version: `.atlas/docs/<language.use
 | Situation | Action |
 |---|---|
 | `status == configured` | Do not repeat. Reconfigure only on explicit request |
-| Host change | Phase 0 with the new host; restore adapters from `.atlas/adapters/` or `git revert` |
+| Host change | Phase 0 with the new host (including Cursor); restore adapters from `.atlas/adapters/` or `git revert` |
 | Repo cloned again | `.atlas/state.json` travels in git → the ritual skips itself |
 
 ## What this ritual does NOT do
 
 - It does not install stack dependencies.
-- It does not configure MCP (it is per tool; see `docs/harness/<lang>/COMPATIBILITY.md`).
+- It does not configure MCP beyond creating the host template when it is missing (Cursor: `.cursor/mcp.json`); MCP is per tool (see `docs/harness/<lang>/COMPATIBILITY.md`).
 - It does not create specs, ADRs or business code.
 - It does not decide the architecture: it collects it and declares it.

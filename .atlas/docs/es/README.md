@@ -22,7 +22,7 @@ Es **agnóstico** de:
 
 - **Dominio**: no hay términos de negocio embebidos.
 - **Arquitectura**: cada proyecto declara la suya.
-- **Herramienta**: OpenCode, Claude Code y Codex.
+- **Herramienta**: OpenCode, Claude Code, Codex y Cursor.
 - **Stack**: los comandos vienen de un perfil, no de los prompts.
 
 ---

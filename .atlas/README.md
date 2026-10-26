@@ -42,7 +42,7 @@ It is consumed by `.atlas/BOOTSTRAP.md` on the first session.
 | `template_source` | `{url, commit}` | Origin for reproducible updates |
 | `status` | `pending` \| `configured` | If `configured`, the ritual is not repeated |
 | `mode` | `greenfield` \| `brownfield` \| `null` | How ATLAS was adopted |
-| `host` | `opencode` \| `claude` \| `codex` \| `null` | Host tool |
+| `host` | `opencode` \| `claude` \| `codex` \| `cursor` \| `null` | Host tool |
 | `host_source` | `env` \| `user` \| `files` \| `null` | How it was determined |
 | `language.user` | `es` \| `en` \| other \| `null` | User documentation language |
 | `language.agent` | `en` (default) | Skills and prompt language |

@@ -52,8 +52,8 @@ async function crearFixture({ contenido = CONTENIDO, estado = ESTADO } = {}) {
   return fixture;
 }
 
-function generar(fixture) {
-  execFileSync(process.execPath, [RUTA_SCRIPT, '--project', fixture, '--host', 'opencode'], {
+function generar(fixture, host = 'opencode') {
+  execFileSync(process.execPath, [RUTA_SCRIPT, '--project', fixture, '--host', host], {
     stdio: 'pipe',
   });
   return readFile(join(fixture, '.atlas/manifest.json'), 'utf8').then(JSON.parse);
@@ -217,6 +217,52 @@ test('escapa los metacaracteres de la raíz de documentación', async () => {
       origin: 'core',
     });
     assert.ok(!('docXv1/guide.md' in manifest.files), 'solo la raíz exacta debe inventariarse');
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('un proyecto Cursor clasifica adaptadores y comandos y deja fuera mcp.json', async () => {
+  const contenido = {
+    '.cursor/agents/reviewer.md': '# reviewer\n',
+    '.cursor/commands/opsx-apply.md': '# opsx-apply\n',
+    '.cursor/mcp.json': '{ "mcpServers": {} }\n',
+  };
+  const fixture = await crearFixture({
+    contenido,
+    estado: { host: 'cursor', template_version: '0.1.2' },
+  });
+  try {
+    const manifest = await generar(fixture, 'cursor');
+
+    assert.deepEqual(Object.keys(manifest.files).sort(), [
+      '.cursor/agents/reviewer.md',
+      '.cursor/commands/opsx-apply.md',
+    ]);
+    for (const rel of Object.keys(manifest.files)) {
+      await afirmarEntrada(manifest, fixture, rel, {
+        ownership: 'generated',
+        origin: 'host:cursor',
+      });
+    }
+    assert.ok(
+      !('.cursor/mcp.json' in manifest.files),
+      'la configuración MCP del usuario no debe entrar en el manifiesto',
+    );
+  } finally {
+    await rm(fixture, { recursive: true, force: true });
+  }
+});
+
+test('el error de host enumera Cursor entre las opciones', async () => {
+  const fixture = await crearFixture({ estado: { template_version: '0.1.2' } });
+  try {
+    const salida = spawnSync(process.execPath, [RUTA_SCRIPT, '--project', fixture], {
+      encoding: 'utf8',
+    });
+
+    assert.equal(salida.status, 1);
+    assert.match(salida.stderr, /pasa --host opencode\|claude\|cursor\|codex/);
   } finally {
     await rm(fixture, { recursive: true, force: true });
   }

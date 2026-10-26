@@ -5,8 +5,8 @@
 // Requisito: Node 20+ (declarado en el template). Cero dependencias externas.
 //
 // Canónico vs renderizado: `.atlas/agents/<rol>.md` conserva `{{...}}`;
-// el adaptador generado (`.opencode/agent` / `.claude/agents`) se escribe con
-// los valores de AGENTS.md § Placeholders. Así el agente no tiene que resolver
+// el adaptador generado se escribe en el directorio que declare `lib/hosts.mjs`
+// con los valores de AGENTS.md § Placeholders. Así el agente no tiene que resolver
 // placeholders en su propio prompt.
 //
 // Multi-stack: `state.stacks` es la fuente única. El rol `engineer` se renderiza
@@ -20,11 +20,13 @@
 // uno por uno). La marca no llega al adaptador.
 //
 // Uso:
-//   node .atlas/scripts/renderizar-adaptadores.mjs [--host opencode|claude] [--template <dir>] [--dry-run]
+//   node .atlas/scripts/renderizar-adaptadores.mjs [--host opencode|claude|cursor] [--template <dir>] [--dry-run]
 
 import { readdir, readFile, writeFile, mkdir, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+
+import { HOSTS, HOSTS_SOPORTADOS } from './lib/hosts.mjs';
 
 const PATRON = /\{\{([A-Z0-9_]+)\}\}/g;
 const STACK_CONTEXT = '{{STACK_CONTEXT}}';
@@ -96,6 +98,18 @@ function comillarYaml(texto) {
   return `'${texto.replace(/'/g, "''")}'`;
 }
 
+// Frontmatter mínimo por host. Cursor declara `model: inherit` para no cablear un
+// modelo, y nunca `readonly`: restringiría la escritura del reviewer, que debe
+// emitir su informe.
+function componerFrontmatter(hostElegido, nombreAdaptador, descripcionYaml) {
+  if (hostElegido === 'opencode') {
+    return `---\ndescription: ${descripcionYaml}\nmode: all\n---\n\n`;
+  }
+  const lineas = [`name: ${nombreAdaptador}`, `description: ${descripcionYaml}`];
+  if (hostElegido === 'cursor') lineas.push('model: inherit');
+  return `---\n${lineas.join('\n')}\n---\n\n`;
+}
+
 export async function renderizarAdaptadores({
   host,
   template = '.',
@@ -105,8 +119,9 @@ export async function renderizarAdaptadores({
 } = {}) {
   const state = JSON.parse(await readFile(join(proyecto, '.atlas/state.json'), 'utf8'));
   const hostElegido = host ?? state.host;
-  if (!['opencode', 'claude'].includes(hostElegido)) {
-    throw new Error(`host no soportado: ${hostElegido} (usa opencode o claude)`);
+  const descriptor = HOSTS[hostElegido];
+  if (!descriptor) {
+    throw new Error(`host no soportado: ${hostElegido} (usa ${HOSTS_SOPORTADOS.join(', ')})`);
   }
 
   const agentsMd = await readFile(join(proyecto, 'AGENTS.md'), 'utf8');
@@ -124,7 +139,7 @@ export async function renderizarAdaptadores({
   const stacks = Array.isArray(state.stacks) ? state.stacks : [];
   const agentesOpcionales = new Set(Array.isArray(state.optional_agents) ? state.optional_agents : []);
   const directorioAgentes = join(template, '.atlas/agents');
-  const destino = hostElegido === 'opencode' ? join(proyecto, '.opencode/agent') : join(proyecto, '.claude/agents');
+  const destino = join(proyecto, descriptor.agentes);
   if (!dryRun) await mkdir(destino, { recursive: true });
 
   const renderizados = [];
@@ -142,10 +157,7 @@ export async function renderizarAdaptadores({
     const descripcion = extraerDescripcion(cuerpo) || `Rol ${rol} del arnés`;
     const descripcionConStack = stackId ? marcarStack(descripcion, stackId) : descripcion;
     const descripcionYaml = comillarYaml(descripcionConStack);
-    const frontmatter =
-      hostElegido === 'opencode'
-        ? `---\ndescription: ${descripcionYaml}\nmode: all\n---\n\n`
-        : `---\nname: ${nombreAdaptador}\ndescription: ${descripcionYaml}\n---\n\n`;
+    const frontmatter = componerFrontmatter(hostElegido, nombreAdaptador, descripcionYaml);
 
     const archivo = join(destino, archivoSalida);
     if (!dryRun) await writeFile(archivo, frontmatter + cuerpo, 'utf8');

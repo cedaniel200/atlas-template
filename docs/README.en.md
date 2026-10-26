@@ -16,7 +16,7 @@
 > the skills, the stack profiles and the bootstrap ritual: use the template, answer a questionnaire
 > and start building.
 >
-> It is **agnostic** of domain, architecture and host tool (OpenCode, Claude Code, Codex), and
+> It is **agnostic** of domain, architecture and host tool (OpenCode, Claude Code, Codex, Cursor), and
 > **efficient by design**: bounded context, on-demand procedures and automated validations before
 > every merge.
 >

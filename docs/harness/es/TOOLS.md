@@ -7,16 +7,31 @@
 
 ## Configuración por herramienta
 
-| Capacidad | OpenCode | Claude Code | Codex |
-|---|---|---|---|
-| Instrucciones | `AGENTS.md` + `opencode.json` | `CLAUDE.md` → `@AGENTS.md` | `AGENTS.md` |
-| Skills | `.agents/skills/` (canónico) y `.opencode/skills/` (nativo, con prioridad) | `.claude/skills` (symlink) | `.agents/skills/` |
-| Agentes | `.opencode/agent/` (+ opcionales si se activan) | `.claude/agents/` (+ opcionales si se activan) | *(sin subagentes)* |
-| Comandos OpenSpec | `.opencode/commands/` | `.claude/commands/opsx/` | `.codex/prompts/` |
-| MCP | `opencode.json` → `mcp` | Configuración de Claude | Configuración de Codex |
-| Modelo | `model` / `small_model` | `model` | `model` |
+| Capacidad | OpenCode | Claude Code | Codex | Cursor |
+|---|---|---|---|---|
+| Instrucciones | `AGENTS.md` + `opencode.json` | `CLAUDE.md` → `@AGENTS.md` | `AGENTS.md` | `AGENTS.md` (nativo) |
+| Skills | `.agents/skills/` (canónico) y `.opencode/skills/` (nativo, con prioridad) | `.claude/skills` (symlink) | `.agents/skills/` | `.agents/skills/` (nativo) |
+| Agentes | `.opencode/agent/` (+ opcionales si se activan) | `.claude/agents/` (+ opcionales si se activan) | *(sin subagentes)* | `.cursor/agents/` (+ opcionales si se activan) |
+| Comandos OpenSpec | `.opencode/commands/` | `.claude/commands/opsx/` | `.codex/prompts/` | `.cursor/commands/opsx-*` |
+| MCP | `opencode.json` → `mcp` | Configuración de Claude | Configuración de Codex | `.cursor/mcp.json` → `mcpServers` |
+| Modelo | `model` / `small_model` | `model` | `model` | `model: inherit` en cada subagente |
 
-Los adaptadores los genera el bootstrap. Los comandos, `openspec update --tools <host>`.
+Los adaptadores los genera el bootstrap. Los comandos, `openspec init --tools <host>`
+(`openspec update` regenera instrucciones pero no admite `--tools`).
+
+### Particularidades de Cursor
+
+- **Instrucciones:** `AGENTS.md` es la única fuente. El template no crea `.cursor/rules/*.mdc`.
+- **Skills:** Cursor descubre `.agents/skills/` de forma nativa; no hay copia ni enlace en
+  `.cursor/skills/`. Se invocan como `/nombre` o `@nombre`.
+- **Subagentes:** `.cursor/agents/<rol>.md` con `name`, `description` y `model: inherit`. El template
+  nunca escribe `readonly`: bloquea la edición de archivos y el `reviewer` debe escribir su informe.
+- **Comandos:** `openspec init --tools cursor` escribe `.cursor/commands/opsx-*`. Cursor 2.4+ puede
+  migrar comandos a skills; los comandos generados siguen funcionando mientras tanto.
+- **MCP:** `.cursor/mcp.json` se crea desde `.atlas/hosts/cursor/mcp.json` **solo si falta** y se anuncia.
+  Después pertenece al proyecto y nunca se sobrescribe.
+- **Permisos:** `.cursor/permissions.json` y `.cursor/cli.json` son una **opción del usuario**. Aplican a
+  todo el proyecto y no distinguen roles, así que el template no los crea ni los versiona.
 
 ---
 
@@ -29,6 +44,7 @@ Los adaptadores los genera el bootstrap. Los comandos, `openspec update --tools 
 | OpenCode | Bloque `mcp.context7` en `opencode.json` (ya incluido en la plantilla de host) |
 | Claude Code | Añadir el servidor MCP remoto `https://mcp.context7.com/mcp` |
 | Codex | Añadir el servidor MCP en su configuración |
+| Cursor | `mcpServers.context7` en `.cursor/mcp.json` (el bootstrap lo crea solo si falta) |
 
 **Regla del proyecto:** no se propone ni se usa una librería sin verificarla con Context7; si no se puede,
 se justifica en `design.md`.
@@ -54,7 +70,7 @@ secretos ni datos personales.
 
 ## gitleaks (secretos)
 
-Es un **git hook**, no un hook de agente: funciona en las tres herramientas.
+Es un **git hook**, no un hook de agente: funciona en las cuatro herramientas.
 
 ```bash
 brew install gitleaks
@@ -105,4 +121,6 @@ Antes de conectar cualquier herramienta externa, revisa [`SECURITY.md`](../../..
 | La memoria no persiste | Revisar la configuración del host y que `.engram/` exista |
 | gitleaks no se ejecuta | `git config core.hooksPath .githooks` |
 | Codex no invoca una skill | Usar `$nombre` o `/skills`; no hay subagentes |
-| Los comandos `opsx-*` no aparecen | `openspec update --tools <host>` |
+| Cursor no muestra un subagente | Verificar `.cursor/agents/<rol>.md` y reiniciar Cursor |
+| Cursor no puede escribir el informe del reviewer | No añadir `readonly: true` al adaptador: bloquea toda edición |
+| Los comandos `opsx-*` no aparecen | `openspec init --tools <host>` (o `openspec update` para regenerarlos) |

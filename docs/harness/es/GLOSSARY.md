@@ -6,8 +6,8 @@
 |---|---|
 | **Arnés** (harness) | Conjunto de instrucciones, skills, agentes y configuración que guían al agente. |
 | **Núcleo portable** | Lo que todo proyecto recibe (`AGENTS.md`, skills, agentes, schema, ritual). No depende de dominio, arquitectura ni herramienta. |
-| **Herramienta anfitriona** (host) | OpenCode, Claude Code o Codex. |
-| **Adaptador** | Archivos que una herramienta necesita: `opencode.json`, `.claude/agents/`, `CLAUDE.md`, comandos `opsx-*`. |
+| **Herramienta anfitriona** (host) | OpenCode, Claude Code, Codex o Cursor. |
+| **Adaptador** | Archivos que una herramienta necesita: `opencode.json`, `.claude/agents/`, `.cursor/agents/`, `CLAUDE.md`, comandos `opsx-*`. |
 | **Skill** | Procedimiento reutilizable que el agente carga cuando la tarea coincide con su descripción. |
 | **Rol / agente** | `analyst`, `engineer`, `reviewer`, `qa-analyst`, `doc-writer`; opcionales: `mentor`, `business-strategist`. |
 | **Pack** | Conocimiento procedimental opcional (mobile, web, diseño, ddd, integraciones). |

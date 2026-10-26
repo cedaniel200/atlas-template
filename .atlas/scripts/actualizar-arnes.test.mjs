@@ -341,3 +341,59 @@ test('si core.hooksPath ya es .githooks no avisa', async () => {
     await rm(raiz, { recursive: true, force: true });
   }
 });
+
+const AGENTS_MINIMO = [
+  '# AGENTS.md',
+  '',
+  '| Placeholder | Value |',
+  '|---|---|',
+  '| `TEST_COMMAND` | `node --test` |',
+  '',
+].join('\n');
+
+test('con host cursor regenera los adaptadores y conserva .cursor/mcp.json', async () => {
+  const raiz = await mkdtemp(join(tmpdir(), 'atlas-actualizar-'));
+  try {
+    const proyecto = join(raiz, 'proyecto');
+    await escribir(
+      join(proyecto, '.atlas/state.json'),
+      `${JSON.stringify(
+        {
+          status: 'configured',
+          host: 'cursor',
+          stacks: [],
+          optional_agents: [],
+          template_version: '0.1.2',
+        },
+        null,
+        2,
+      )}\n`,
+    );
+    await escribir(join(proyecto, 'AGENTS.md'), AGENTS_MINIMO);
+    await escribir(
+      join(proyecto, '.atlas/manifest.json'),
+      `${JSON.stringify({ template_version: '0.1.2', generated_at: null, files: {} }, null, 2)}\n`,
+    );
+    const MCP = '{"mcpServers":{"propio":{"url":"https://example.test/mcp"}}}\n';
+    await escribir(join(proyecto, '.cursor/mcp.json'), MCP);
+
+    const template = await crearTemplateConArchivos(raiz, {
+      '.atlas/agents/demo.md': '# demo\n\n> **Exclusive role:** demo the cursor adapter.\n',
+    });
+
+    const resultado = await actualizarArnes({ template, proyecto, log: () => {} });
+
+    const adaptador = await readFile(join(proyecto, '.cursor/agents/demo.md'), 'utf8');
+    assert.match(adaptador, /^---\nname: demo\ndescription: /);
+    assert.match(adaptador, /^model: inherit$/m);
+    assert.ok(!/^readonly:/m.test(adaptador), 'Cursor no debe restringir la escritura por rol');
+    assert.equal(
+      await readFile(join(proyecto, '.cursor/mcp.json'), 'utf8'),
+      MCP,
+      'la configuración MCP del usuario no se toca',
+    );
+    assert.deepEqual(resultado.errores, []);
+  } finally {
+    await rm(raiz, { recursive: true, force: true });
+  }
+});

@@ -16,7 +16,7 @@
 > las skills, los perfiles de stack y el ritual de arranque: usas la plantilla, respondes un
 > cuestionario y empiezas a construir.
 >
-> Es **agnóstica** de dominio, arquitectura y herramienta anfitriona (OpenCode, Claude Code, Codex), y
+> Es **agnóstica** de dominio, arquitectura y herramienta anfitriona (OpenCode, Claude Code, Codex, Cursor), y
 > **eficiente por diseño**: contexto acotado, procedimientos bajo demanda y validaciones automáticas
 > antes de cada merge.
 >
