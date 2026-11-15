@@ -163,6 +163,22 @@ What tools cannot see:
 **Reviewer:** Architecture, security and API design reviewer
 **Date:** [current date]
 
+## 0. Findings ledger (mandatory)
+
+**Totals:** 🔴 [n] · 🟠 [n] · 🟡 [n] · 🟢/💡 [n] · **open: [n]** · closed: [n] · documented: [n]
+
+| ID | Severity | Status | What it is | Evidence / owner |
+|---|---|---|---|---|
+| F-01 | 🔴🔴/🟠/🟡/🟢 | closed \| open \| documented | one line | commit, test name, measurement, or owner + where it was recorded |
+
+Rules:
+- Every finding in the body has an `F-NN` id and appears **once** in the ledger.
+- `closed` requires evidence (commit, test name, measurement or file). `documented` requires an owner and
+  where it was recorded (task, roadmap, ADR). `open` requires an owner.
+- The totals must reconcile with the body. If they do not, **the report is invalid**: fix it before
+  writing anything else.
+- A finding becomes `closed` only with the evidence; never by rephrasing it away.
+
 ## 1. Executive summary
 - **Overall status:** [APPROVED / REJECTED / APPROVED WITH RECOMMENDATIONS]
 - **Quality score:** [X]/100
@@ -215,6 +231,8 @@ What tools cannot see:
 
 - If there are **no critical findings** and all **high** findings are fixed, emit a report with the
   `-FINAL` suffix and tell the user the change is ready to archive.
+- **`-FINAL` is decided by the ledger (§0):** only when `open = 0`; `documented` findings are allowed but
+  must be listed with their owner. Totals that do not reconcile with the body invalidate the report.
 - On the final iteration, verify that findings from previous reports (including low and 💡) are fixed
   or documented — no invisible debt is carried to close.
 - After **3 iterations** with critical findings, do not write a fourth report: recommend a design
